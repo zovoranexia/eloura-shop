@@ -21,8 +21,9 @@ const schema = z.object({
 });
 const first = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
 
-export async function generateMetadata({ searchParams }: { searchParams: SP }): Promise<Metadata> {
-  const { t, locale } = getT();
+export async function generateMetadata(props: { searchParams: Promise<SP> }): Promise<Metadata> {
+  const searchParams = await props.searchParams;
+  const { t, locale } = await getT();
   const cat = first(searchParams.category);
   if (cat) {
     const c = (await listCategories(locale)).find((x) => x.slug === cat);
@@ -31,8 +32,9 @@ export async function generateMetadata({ searchParams }: { searchParams: SP }): 
   return { title: t('nav.shop') };
 }
 
-export default async function ShopPage({ searchParams }: { searchParams: SP }) {
-  const { t, locale } = getT();
+export default async function ShopPage(props: { searchParams: Promise<SP> }) {
+  const searchParams = await props.searchParams;
+  const { t, locale } = await getT();
   const f = schema.parse(Object.fromEntries(Object.entries(searchParams).map(([k, v]) => [k, first(v)])));
   const [categories, result] = await Promise.all([
     listCategories(locale),

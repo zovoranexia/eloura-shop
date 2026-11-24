@@ -1,5 +1,6 @@
 import { PrintSheet } from '@/components/admin/PrintSheet';
 
-export default function InvoicePage({ params }: { params: { id: string } }) {
+export default async function InvoicePage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   return <PrintSheet id={Number(params.id)} kind="invoice" />;
 }

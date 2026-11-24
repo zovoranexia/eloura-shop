@@ -10,7 +10,7 @@ export function Overlay({ open, onClose, title, side = false, children, wide = f
   const last = useRef<Element | null>(null);
   // keep the latest onClose without re-running the focus/scroll-lock effect on every parent render (the cart drawer re-renders on each quote)
   const closeRef = useRef(onClose);
-  closeRef.current = onClose;
+  useEffect(() => { closeRef.current = onClose; });
 
   useEffect(() => {
     if (!open) return;

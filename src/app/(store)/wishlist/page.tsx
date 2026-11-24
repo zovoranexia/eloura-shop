@@ -7,11 +7,11 @@ import { cardsByIds } from '@/server/catalog';
 import { ProductCard } from '@/components/store/ProductCard';
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: getT().t('nav.wishlist'), robots: { index: false } };
+  return { title: (await getT()).t('nav.wishlist'), robots: { index: false } };
 }
 
 export default async function WishlistPage() {
-  const { t, locale } = getT();
+  const { t, locale } = await getT();
   const user = await getSessionUser();
   const ids = user ? (await prisma.wishlistItem.findMany({ where: { userId: user.id }, orderBy: { createdAt: 'desc' }, select: { productId: true } })).map((r) => r.productId) : [];
   const items = ids.length ? await cardsByIds(ids, locale) : [];

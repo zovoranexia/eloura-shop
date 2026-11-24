@@ -5,6 +5,7 @@
 # Debian bookworm images can fail with "operation not permitted" errors; build with a bullseye image instead:
 #   NODE_IMAGE=node:20-bullseye-slim docker compose build
 # (the Prisma schema already lists the debian-openssl-1.1.x / 3.0.x engines). Package installs below work on both apk and apt bases.
+# (Next.js 16 needs Node >= 20.9; node:20 images satisfy that.)
 ARG NODE_IMAGE=node:20-alpine
 
 # ---------------------------------------------------------------- base

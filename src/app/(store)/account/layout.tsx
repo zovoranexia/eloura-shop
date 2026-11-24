@@ -6,7 +6,7 @@ import { AccountNav } from '@/components/store/AccountNav';
 export default async function AccountLayout({ children }: { children: React.ReactNode }) {
   const user = await getSessionUser();
   if (!user) redirect('/login?next=/account');
-  const { t } = getT();
+  const { t } = await getT();
   return (
     <div className="container-x py-8 md:py-10">
       <p className="eyebrow">{t('nav.account')}</p>

@@ -2,7 +2,8 @@ import { notFound } from 'next/navigation';
 import { requirePagePermission } from '@/components/admin/guard';
 import { ProductEditor } from '../ProductEditor';
 
-export default async function EditProductPage({ params }: { params: { id: string } }) {
+export default async function EditProductPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   await requirePagePermission('products.view');
   const id = Number(params.id);
   if (!Number.isInteger(id) || id < 1) notFound();

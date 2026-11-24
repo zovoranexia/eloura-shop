@@ -71,7 +71,7 @@ async function readBodyCapped(req: NextRequest, max: number): Promise<Uint8Array
 }
 
 /** Double-submit CSRF token + Origin check for state-changing requests. */
-function checkCsrf(req: NextRequest) {
+async function checkCsrf(req: NextRequest) {
   const origin = req.headers.get('origin');
   if (origin) {
     let ok = false;
@@ -83,21 +83,22 @@ function checkCsrf(req: NextRequest) {
     if (!ok) throw forbidden('BAD_ORIGIN');
   }
   const header = req.headers.get('x-csrf-token');
-  const cookie = cookies().get(CSRF_COOKIE)?.value;
+  const cookie = (await cookies()).get(CSRF_COOKIE)?.value;
   if (!header || !cookie || header !== cookie) throw forbidden('CSRF');
 }
 
 export function route<P = Record<string, string>>(opts: Opts, handler: (ctx: Ctx<P>) => Promise<unknown> | unknown) {
-  return async (req: NextRequest, extra: { params: P }): Promise<Response> => {
+  return async (req: NextRequest, extra: { params: Promise<P> }): Promise<Response> => {
     try {
+      const params = ((await extra?.params) ?? {}) as P;
       const ip = clientIp(req);
       if (opts.limit) rateLimit(`${opts.limit[0]}:${ip}`, opts.limit[1], opts.limit[2]);
-      if (!opts.noCsrf && MUTATING.has(req.method)) checkCsrf(req);
+      if (!opts.noCsrf && MUTATING.has(req.method)) await checkCsrf(req);
 
       // Numeric path ids must be plain digits ("abc", "1.5", "1e3" are 404, never silently coerced).
       for (const k of ['id', 'productId']) {
-        const v = (extra?.params as Record<string, string> | undefined)?.[k];
-        if (v !== undefined && !/^\d{1,10}$/.test(v)) throw notFound();
+        const v = (params as Record<string, string | string[] | undefined>)[k];
+        if (v !== undefined && !(typeof v === 'string' && /^\d{1,10}$/.test(v))) throw notFound();
       }
 
       const user = await getSessionUser();
@@ -109,7 +110,7 @@ export function route<P = Record<string, string>>(opts: Opts, handler: (ctx: Ctx
       }
 
       const ctx: Ctx<P> = {
-        req, params: extra?.params ?? ({} as P), user, ip, userAgent: (req.headers.get('user-agent') || '').slice(0, 255), locale: getLocale(),
+        req, params, user, ip, userAgent: (req.headers.get('user-agent') || '').slice(0, 255), locale: await getLocale(),
         async body<S extends ZodTypeAny>(schema: S): Promise<z.output<S>> {
           let raw: unknown;
           try { raw = JSON.parse(new TextDecoder().decode(await readBodyCapped(req, MAX_JSON_BYTES))); } catch (e) {

@@ -11,7 +11,7 @@ import { PrintButton } from './PrintButton';
 /** Branded A4 print sheet for an order. `kind="invoice"` shows prices; `kind="packing"` is the warehouse / courier slip (no prices, COD cash due highlighted). */
 export async function PrintSheet({ id, kind }: { id: number; kind: 'invoice' | 'packing' }) {
   await requirePagePermission(['orders.view', 'invoices.print']);
-  const { t, locale } = getT({ admin: true });
+  const { t, locale } = await getT({ admin: true });
   if (!Number.isInteger(id) || id < 1) notFound();
   const raw = await findOrderById(id);
   if (!raw) notFound();

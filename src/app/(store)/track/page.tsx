@@ -5,11 +5,11 @@ import { getSessionUser } from '@/lib/auth';
 import { TrackForm } from '@/components/store/TrackForm';
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: getT().t('track.title'), robots: { index: false } };
+  return { title: (await getT()).t('track.title'), robots: { index: false } };
 }
 
 export default async function TrackPage() {
-  const { t } = getT();
+  const { t } = await getT();
   const user = await getSessionUser();
   return (
     <div className="container-x py-12">

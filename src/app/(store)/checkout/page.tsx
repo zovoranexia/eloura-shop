@@ -5,11 +5,11 @@ import { listCustomerAddresses } from '@/server/storefront';
 import { CheckoutFlow } from '@/components/store/CheckoutFlow';
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: getT().t('checkout.title'), robots: { index: false } };
+  return { title: (await getT()).t('checkout.title'), robots: { index: false } };
 }
 
 export default async function CheckoutPage() {
-  const { t } = getT();
+  const { t } = await getT();
   const user = await getSessionUser();
   const addresses = user ? await listCustomerAddresses(user.id) : [];
   return (

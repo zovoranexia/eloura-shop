@@ -7,7 +7,7 @@ import { redirect } from 'next/navigation';
 export default async function ForbiddenPage() {
   const user = await getSessionUser();
   if (!user || !user.isStaff) redirect('/admin/login');
-  const { t } = getT({ admin: true });
+  const { t } = await getT({ admin: true });
   return (
     <div className="mx-auto max-w-md py-20 text-center">
       <ShieldAlert className="mx-auto text-mauve" size={44} />

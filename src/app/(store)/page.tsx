@@ -9,12 +9,12 @@ import { PromoBanner } from '@/components/store/PromoBanner';
 import { ValueBar } from '@/components/store/ValueBar';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { t } = getT();
+  const { t } = await getT();
   return { title: { absolute: t('home.meta_title') }, description: t('home.meta_description') };
 }
 
 export default async function HomePage() {
-  const { t, locale } = getT();
+  const { t, locale } = await getT();
   const [hero, promo, categories, featured, config] = await Promise.all([
     getBanners('HERO', locale), getBanners('PROMO', locale), listCategories(locale), featuredProducts(locale, 8), getStoreConfig(locale),
   ]);

@@ -48,7 +48,7 @@ export function ProductsList({ initialLowStock }: { initialLowStock: boolean }) 
             <tbody>
               {data.items.map((p) => (
                 <tr key={p.id} className={trCls}>
-                  <td className={`${td} w-16`}>{p.image ? /* eslint-disable-next-line @next/next/no-img-element */ <img src={p.image} alt="" className="h-12 w-12 rounded-lg object-cover" /> : <div className="h-12 w-12 rounded-lg bg-cream-deep" />}</td>
+                  <td className={`${td} w-16`}>{p.image ?   <img src={p.image} alt="" className="h-12 w-12 rounded-lg object-cover" /> : <div className="h-12 w-12 rounded-lg bg-cream-deep" />}</td>
                   <td className={td}><Link href={`/admin/products/${p.id}`} className="font-semibold text-mauve hover:underline">{p.name}</Link><div className="text-xs text-taupe">{p.sku} · {t('admin.products.variantsCount', { n: p.variantCount })}</div></td>
                   <td className={td}>{p.category ?? '—'}</td>
                   <td className={`${td} text-right`}><b>{formatUSD(p.priceCents)}</b>{p.compareAtCents && <div className="text-xs text-taupe line-through">{formatUSD(p.compareAtCents)}</div>}</td>

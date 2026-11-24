@@ -6,7 +6,7 @@ granular RBAC, four languages (**Tetum default**, Portuguese, English, Indonesia
 
 | Layer | Technology |
 |---|---|
-| Frontend + API | Next.js 14 (App Router, route handlers), TypeScript, Tailwind CSS, Lucide icons |
+| Frontend + API | Next.js 16 (App Router, Turbopack, route handlers, `proxy.ts`), React 19, TypeScript, Tailwind CSS 3, Lucide icons |
 | Database | PostgreSQL 15 via Prisma 5 (migrations + seed) |
 | Auth | JWT in HTTP-only cookie (jose), bcrypt (cost 12), CSRF double-submit token, per-IP rate limits, account lockout |
 | Uploads | Re-encoded with sharp (images) / magic-byte checked (PDF); payment proofs stored **privately** |
@@ -60,7 +60,8 @@ Development seed accounts (`NODE_ENV!=production`, password = `SEED_DEMO_PASSWOR
 |---|---|
 | `npm test` | unit tests (phone, money, Asia/Dili days, i18n fallback, RBAC catalogue, geography) |
 | `npm run test:api` | 57 end-to-end API checks against a running server with seeded demo accounts (COD rules, payments, RBAC, audit immutability…). Start the server with `TRUST_PROXY=1`; the suite configures test payment details itself, so it also works against a production build |
-| `npm run typecheck` | `tsc --noEmit` |
+| `npm run typecheck` / `npm run lint` | `tsc --noEmit` / ESLint 9 flat config (`eslint-config-next` 16) |
+| `npm run test:services` | 7 integration tests of the business services (expiry, coupons, delivery thresholds, COD caps, concurrency, idempotency) |
 | `npm run db:migrate` / `db:deploy` / `db:seed` / `db:reset` | Prisma migrations and seeding |
 | `npm run assets` | regenerates logo variants, favicon, hero/category/product images from `design/source` |
 
@@ -70,6 +71,7 @@ Development seed accounts (`NODE_ENV!=production`, password = `SEED_DEMO_PASSWOR
 prisma/                 schema.prisma, migrations (incl. immutable audit trigger), seed.ts, seed-content.ts (4-language seed data)
 src/app/(store)/        storefront pages            src/app/admin/       admin dashboard (RBAC-gated)
 src/app/api/            REST route handlers         src/app/media/       public uploaded images
+src/proxy.ts            CSRF cookie + /admin gate (Next 16 `proxy`, formerly middleware)
 src/lib/                auth, rbac, i18n, api wrapper (CSRF, rate limit, errors), money, time (Asia/Dili), phone, geo, uploads, audit
 src/server/             services: catalog, orders (checkout, proofs, fulfilment), payments (methods, COD rules), coupons, reports, notify
 src/messages/           tet.json pt.json en.json id.json (+ admin/*.json for the dashboard)
@@ -153,3 +155,11 @@ The rate limiter is in-memory (single instance); use Redis/proxy limits if you s
   Delivery times, the 7-day return window and delivery fees in the seed are placeholders to adjust to your real policy.
 * Set up SMTP (`SMTP_*`) for order e-mails; without it they are only logged.
 * Take database backups (`pg_dump`) and back up the `uploads` volume (it contains private payment proofs).
+
+## Framework version notes (Next.js 16)
+* Requires **Node.js >= 20.9**. `cookies()`, `headers()`, `params` and `searchParams` are asynchronous everywhere (`await getT()`, `await getLocale()`;
+  the `route()` wrapper awaits the route `params`, so numeric ids are still validated centrally).
+* `src/proxy.ts` replaces `middleware.ts` and runs on the Node.js runtime. `next lint` no longer exists: use `npm run lint` (ESLint 9).
+  The React-Compiler advisory rule `react-hooks/set-state-in-effect` is a warning, not an error: those effects intentionally sync props/URL/storage into state.
+* `next dev` and `next build` use Turbopack. Background job for unpaid-order expiry starts from `src/instrumentation.ts` (automatic, no flag needed).
+* `react-dom` 19 treats `inert` as a boolean prop (`inert={!active}`); the old `inert=""` form silently disables it.

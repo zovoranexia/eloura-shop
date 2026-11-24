@@ -13,7 +13,7 @@ import { cn } from '@/lib/client/cn';
 
 export default async function DashboardPage() {
   const user = await requirePagePermission({ any: ALL_PERMISSIONS });
-  const { t, locale } = getT({ admin: true });
+  const { t, locale } = await getT({ admin: true });
   const can = (p: string) => user.permissions.includes(p);
   if (!can('dashboard.view')) {
     return (

@@ -6,16 +6,18 @@ import { getCmsPage } from '@/server/storefront';
 import { formatDate } from '@/lib/time';
 import { Markdown } from '@/components/store/Markdown';
 
-type Props = { params: { slug: string } };
+type Props = { params: Promise<{ slug: string }> };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale } = getT();
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
+  const { locale } = await getT();
   const p = await getCmsPage(params.slug, locale);
   return p ? { title: p.title } : {};
 }
 
-export default async function CmsPage({ params }: Props) {
-  const { t, locale } = getT();
+export default async function CmsPage(props: Props) {
+  const params = await props.params;
+  const { t, locale } = await getT();
   const page = await getCmsPage(params.slug, locale);
   if (!page) notFound();
   return (

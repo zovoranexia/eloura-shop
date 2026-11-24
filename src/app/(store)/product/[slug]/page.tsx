@@ -8,18 +8,20 @@ import { siteUrl } from '@/server/storefront';
 import { ProductDetailView } from '@/components/store/ProductDetailView';
 import { ProductCard } from '@/components/store/ProductCard';
 
-type Props = { params: { slug: string } };
+type Props = { params: Promise<{ slug: string }> };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale } = getT();
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
+  const { locale } = await getT();
   const p = await productDetail(params.slug, locale);
   if (!p) return {};
   const desc = p.description.slice(0, 155);
   return { title: p.name, description: desc, openGraph: { title: p.name, description: desc, images: p.images[0] ? [p.images[0]] : [] } };
 }
 
-export default async function ProductPage({ params }: Props) {
-  const { t, locale } = getT();
+export default async function ProductPage(props: Props) {
+  const params = await props.params;
+  const { t, locale } = await getT();
   const user = await getSessionUser();
   const p = await productDetail(params.slug, locale, user?.id);
   if (!p) notFound();

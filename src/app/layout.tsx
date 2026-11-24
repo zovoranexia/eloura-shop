@@ -13,8 +13,8 @@ export const metadata: Metadata = {
 };
 export const viewport: Viewport = { themeColor: '#7D4E57', width: 'device-width', initialScale: 1 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const locale = getLocale();
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getLocale();
   return (
     <html lang={locale === 'tet' ? 'tet' : locale}>
       <body>

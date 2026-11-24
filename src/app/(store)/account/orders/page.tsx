@@ -8,7 +8,7 @@ import { formatDateTime } from '@/lib/time';
 import { ProductImage } from '@/components/store/ProductImage';
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: getT().t('account.nav_orders'), robots: { index: false } };
+  return { title: (await getT()).t('account.nav_orders'), robots: { index: false } };
 }
 
 const TONE: Record<string, string> = {
@@ -17,7 +17,7 @@ const TONE: Record<string, string> = {
 };
 
 export default async function OrdersPage() {
-  const { t, locale } = getT();
+  const { t, locale } = await getT();
   const user = (await getSessionUser())!;
   const orders = await listCustomerOrders(user.id, locale);
   if (!orders.length) {

@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import { getT } from '@/lib/i18n';
 
-export default function NotFound() {
-  const { t } = getT();
+export default async function NotFound() {
+  const { t } = await getT();
   return (
     <div className="container-x py-20 text-center">
       <p className="font-serif text-8xl text-gold">404</p>

@@ -5,7 +5,7 @@ import { listCustomerAddresses } from '@/server/storefront';
 import { AddressManager } from '@/components/store/AddressManager';
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: getT().t('account.nav_addresses'), robots: { index: false } };
+  return { title: (await getT()).t('account.nav_addresses'), robots: { index: false } };
 }
 
 export default async function AddressesPage() {

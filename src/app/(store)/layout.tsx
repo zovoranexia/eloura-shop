@@ -16,7 +16,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = { metadataBase: new URL(siteUrl()) };
 
 export default async function StoreLayout({ children }: { children: React.ReactNode }) {
-  const locale = getLocale();
+  const locale = await getLocale();
   const [user, config] = await Promise.all([getSessionUser(), getStoreConfig(locale)]);
   return (
     <StoreConfigProvider config={config}>

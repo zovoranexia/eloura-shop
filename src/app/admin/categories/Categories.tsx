@@ -41,7 +41,7 @@ export function Categories() {
           <tbody>
             {data.map((c) => (
               <tr key={c.id} className={trCls}>
-                <td className={`${td} w-16`}>{c.image ? /* eslint-disable-next-line @next/next/no-img-element */ <img src={c.image} alt="" className="h-12 w-12 rounded-lg object-cover" /> : <div className="h-12 w-12 rounded-lg bg-cream-deep" />}</td>
+                <td className={`${td} w-16`}>{c.image ?   <img src={c.image} alt="" className="h-12 w-12 rounded-lg object-cover" /> : <div className="h-12 w-12 rounded-lg bg-cream-deep" />}</td>
                 <td className={td}><b>{loc(c.name, locale)}</b><div className="text-xs text-taupe">{['tet', 'pt', 'en', 'id'].filter((l) => l !== locale).map((l) => c.name[l]).filter(Boolean).join(' · ')}</div></td>
                 <td className={`${td} font-mono text-xs text-taupe`}>{c.slug}</td><td className={td}>{c.productCount}</td><td className={td}>{c.sortOrder}</td>
                 <td className={td}>{c.isActive ? <Badge tone="green">{t('admin.common.active')}</Badge> : <Badge>{t('admin.common.inactive')}</Badge>}</td>

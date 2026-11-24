@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+ 
 // Idempotent seed: RBAC roles/permissions, Super Admin, Dili delivery zones + sucos, payment configs, banners,
 // CMS pages, 6 categories and 8 sample products in 4 languages. Run: npm run db:seed
 import { PrismaClient } from '@prisma/client';

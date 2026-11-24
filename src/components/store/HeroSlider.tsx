@@ -42,7 +42,7 @@ export function HeroSlider({ banners }: { banners: StoreBanner[] }) {
           const active = i === cur;
           const H = i === 0 ? 'h1' : 'h2';
           return (
-            <div key={b.id} role="group" aria-roledescription="slide" aria-label={`${i + 1} / ${n}`} aria-hidden={!active} {...(!active ? { inert: '' as unknown as boolean } : {})}
+            <div key={b.id} role="group" aria-roledescription="slide" aria-label={`${i + 1} / ${n}`} aria-hidden={!active} inert={!active}
               className={`col-start-1 row-start-1 grid transition-opacity duration-700 md:block md:h-[470px] ${active ? 'opacity-100' : 'pointer-events-none opacity-0'}`}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={b.image} alt="" className="h-[230px] w-full object-cover object-[76%_center] sm:h-[300px] md:absolute md:inset-0 md:h-full" loading={i === 0 ? 'eager' : 'lazy'} fetchPriority={i === 0 ? 'high' : 'auto'} />

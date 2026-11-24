@@ -3,7 +3,7 @@ import { getT } from '@/lib/i18n';
 import { ProfileForm, PasswordForm } from '@/components/store/ProfileForms';
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: getT().t('nav.account'), robots: { index: false } };
+  return { title: (await getT()).t('nav.account'), robots: { index: false } };
 }
 
 export default function AccountPage() {

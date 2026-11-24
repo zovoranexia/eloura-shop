@@ -86,7 +86,7 @@ export function OrderDetail({ id }: { id: number }) {
                 <tbody>
                   {order.items.map((i) => (
                     <tr key={i.id} className="border-b border-cream-line last:border-0">
-                      <td className="w-16 p-3">{i.image ? /* eslint-disable-next-line @next/next/no-img-element */ <img src={i.image} alt="" className="h-14 w-14 rounded-lg object-cover" /> : <div className="h-14 w-14 rounded-lg bg-cream-deep" />}</td>
+                      <td className="w-16 p-3">{i.image ?   <img src={i.image} alt="" className="h-14 w-14 rounded-lg object-cover" /> : <div className="h-14 w-14 rounded-lg bg-cream-deep" />}</td>
                       <td className="p-3"><p className="font-semibold">{i.name}</p><p className="text-xs text-taupe">{i.sku}{i.size ? ` · ${i.size}` : ''}{i.color ? ` · ${i.color}` : ''}</p></td>
                       <td className="p-3 text-right text-taupe">{formatUSD(i.unitPriceCents)} × {i.qty}</td>
                       <td className="p-3 text-right font-semibold">{formatUSD(i.unitPriceCents * i.qty)}</td>

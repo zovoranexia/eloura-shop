@@ -6,7 +6,7 @@ import { InventoryTable } from './InventoryTable';
 
 export default async function InventoryPage() {
   const user = await requirePagePermission({ any: ['inventory.update', 'products.view'] });
-  const locale = getLocale();
+  const locale = await getLocale();
   const [threshold, rows] = await Promise.all([
     getSetting('commerce').then((c) => c.lowStockThreshold),
     prisma.productVariant.findMany({

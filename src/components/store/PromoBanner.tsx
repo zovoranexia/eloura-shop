@@ -5,8 +5,8 @@ import type { StoreBanner } from '@/server/storefront';
 import { Botanical } from './Icons';
 
 /** Mid-page promotional banner (managed in the admin CMS, placement PROMO). */
-export function PromoBanner({ banner }: { banner: StoreBanner | undefined }) {
-  const { t } = getT();
+export async function PromoBanner({ banner }: { banner: StoreBanner | undefined }) {
+  const { t } = await getT();
   if (!banner) return null;
   return (
     <section className="container-x mt-14" aria-label={banner.badge || t('home.promo_label')}>

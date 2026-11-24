@@ -5,11 +5,11 @@ import { listCategories } from '@/server/catalog';
 import { ProductImage } from '@/components/store/ProductImage';
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: getT().t('nav.categories') };
+  return { title: (await getT()).t('nav.categories') };
 }
 
 export default async function CategoriesPage() {
-  const { t, locale } = getT();
+  const { t, locale } = await getT();
   const categories = await listCategories(locale);
   return (
     <div className="container-x py-10">

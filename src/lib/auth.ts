@@ -54,15 +54,15 @@ const cookieSecure = () => env.appUrl.startsWith('https://');
 
 export async function startSession(userId: number, tokenVersion: number, staff: boolean) {
   const { token, ttl } = await signSession(userId, tokenVersion, staff);
-  cookies().set(SESSION_COOKIE, token, { httpOnly: true, sameSite: 'lax', secure: cookieSecure(), path: '/', maxAge: ttl });
+  (await cookies()).set(SESSION_COOKIE, token, { httpOnly: true, sameSite: 'lax', secure: cookieSecure(), path: '/', maxAge: ttl });
 }
-export function endSession() {
-  cookies().set(SESSION_COOKIE, '', { httpOnly: true, sameSite: 'lax', secure: cookieSecure(), path: '/', maxAge: 0 });
+export async function endSession() {
+  (await cookies()).set(SESSION_COOKIE, '', { httpOnly: true, sameSite: 'lax', secure: cookieSecure(), path: '/', maxAge: 0 });
 }
 
 /** The signed-in user for this request (null when anonymous / token revoked / account disabled). */
 export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
-  const token = cookies().get(SESSION_COOKIE)?.value;
+  const token = (await cookies()).get(SESSION_COOKIE)?.value;
   if (!token) return null;
   try {
     const { payload } = await jwtVerify(token, key(), { algorithms: ['HS256'] });

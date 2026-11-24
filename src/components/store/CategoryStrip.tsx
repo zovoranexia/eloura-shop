@@ -5,7 +5,7 @@ import { listCategories } from '@/server/catalog';
 import { ProductImage } from './ProductImage';
 
 export async function CategoryStrip({ categories }: { categories: Awaited<ReturnType<typeof listCategories>> }) {
-  const { t } = getT();
+  const { t } = await getT();
   if (!categories.length) return null;
   return (
     <section className="container-x mt-14" aria-labelledby="cat-title">

@@ -6,11 +6,12 @@ import { RegisterForm } from '@/components/store/AuthForms';
 import { safeNext } from '@/lib/client/safe-next';
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: getT().t('auth.register_title'), robots: { index: false } };
+  return { title: (await getT()).t('auth.register_title'), robots: { index: false } };
 }
 
-export default async function RegisterPage({ searchParams }: { searchParams: { next?: string } }) {
-  const { t } = getT();
+export default async function RegisterPage(props: { searchParams: Promise<{ next?: string }> }) {
+  const searchParams = await props.searchParams;
+  const { t } = await getT();
   if (await getSessionUser()) redirect(safeNext(searchParams.next));
   return (
     <div className="container-x py-12">

@@ -10,7 +10,7 @@ import { addDays, diliDay } from '@/lib/time';
 
 export default async function ReportsPage() {
   const user = await requirePagePermission({ any: ['reports.view', 'reports.export'] });
-  const { t, locale } = getT({ admin: true });
+  const { t, locale } = await getT({ admin: true });
   const canView = user.permissions.includes('reports.view');
   const canExport = user.permissions.includes('reports.export');
   const d = canView ? await dashboard(locale) : null;

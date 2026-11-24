@@ -13,7 +13,7 @@ export const dynamic = 'force-dynamic';
  */
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const user = await getSessionUser();
-  const locale = getLocale();
+  const locale = await getLocale();
   const shell = user?.isStaff
     ? { id: user.id, name: user.name, email: user.email, roles: user.roles, permissions: user.permissions }
     : null;

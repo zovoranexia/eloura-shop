@@ -6,12 +6,12 @@ import { normalizePhone } from '@/lib/phone';
 import { ContactForm } from '@/components/store/ContactForm';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { t } = getT();
+  const { t } = await getT();
   return { title: t('contact.title'), description: t('contact.subtitle') };
 }
 
 export default async function ContactPage() {
-  const { t } = getT();
+  const { t } = await getT();
   const store = await getSetting('store');
   const wa = normalizePhone(store.whatsapp);
   return (

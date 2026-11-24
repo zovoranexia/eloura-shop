@@ -20,11 +20,8 @@ const nextConfig = {
   // The shop serves its own pre-sized WebP files with plain <img>; switching the image optimizer off removes /_next/image
   // (several Next 14 advisories target it) as an attack surface.
   images: { unoptimized: true },
-  eslint: { ignoreDuringBuilds: true },
-  experimental: {
-    instrumentationHook: true,
-    serverComponentsExternalPackages: ['sharp', '@prisma/client', 'bcryptjs', 'nodemailer'],
-  },
+  // native / CJS server-only packages are loaded from node_modules at runtime instead of being bundled
+  serverExternalPackages: ['sharp', '@prisma/client', 'bcryptjs', 'nodemailer'],
   async headers() {
     return [
       {

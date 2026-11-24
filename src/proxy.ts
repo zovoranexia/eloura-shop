@@ -5,10 +5,10 @@ const SESSION_COOKIE = 'ec_session';
 
 /**
  * 1. Issues the CSRF double-submit cookie (readable by JS so the client can echo it in `x-csrf-token`).
- * 2. Coarse gate for /admin: no session cookie -> login page. Real authorisation (JWT + permissions) happens server-side in
+ * 2. Coarse gate for /admin (Next 16 "proxy", formerly middleware): no session cookie -> login page. Real authorisation (JWT + permissions) happens server-side in
  *    the admin layout / pages and in every API route; this just avoids rendering admin shells for anonymous visitors.
  */
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
   if (pathname.startsWith('/admin') && pathname !== '/admin/login' && !req.cookies.get(SESSION_COOKIE)) {
     const url = req.nextUrl.clone();

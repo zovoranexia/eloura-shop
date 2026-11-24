@@ -8,8 +8,8 @@ import { Botanical, TikTokIcon } from './Icons';
 import { NewsletterForm } from './NewsletterForm';
 
 /** Dark espresso footer with a curved top edge, botanical line-art accents and the newsletter form. */
-export function Footer({ store }: { store: StoreConfig['store'] }) {
-  const { t } = getT();
+export async function Footer({ store }: { store: StoreConfig['store'] }) {
+  const { t } = await getT();
   const wa = normalizePhone(store.whatsapp);
   const socials = [
     { href: store.instagram, label: 'Instagram', icon: <Instagram size={18} /> },

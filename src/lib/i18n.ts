@@ -23,14 +23,14 @@ export function getFallbackDictionary(opts: { admin?: boolean } = {}): Dict {
   return opts.admin ? { ...STORE.tet, admin: ADMIN.tet } : STORE.tet;
 }
 
-export function getLocale(): Locale {
-  const v = cookies().get(LOCALE_COOKIE)?.value;
+export async function getLocale(): Promise<Locale> {
+  const v = (await cookies()).get(LOCALE_COOKIE)?.value;
   return isLocale(v) ? v : DEFAULT_LOCALE;
 }
 
 /** Server-side translator bound to the request locale. */
-export function getT(opts: { admin?: boolean } = {}) {
-  const locale = getLocale();
+export async function getT(opts: { admin?: boolean } = {}) {
+  const locale = await getLocale();
   const dict = getDictionary(locale, opts);
   const fb = getFallbackDictionary(opts);
   return { locale, dict, t: (key: string, vars?: Record<string, string | number>) => translate(dict, fb, key, vars) };

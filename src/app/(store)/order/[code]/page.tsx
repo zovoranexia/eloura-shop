@@ -6,11 +6,12 @@ import { getSessionUser } from '@/lib/auth';
 import { findOrderByCode, orderView } from '@/server/orders';
 import { OrderView } from '@/components/store/OrderView';
 
-type Props = { params: { code: string }; searchParams: { t?: string | string[] } };
+type Props = { params: Promise<{ code: string }>; searchParams: Promise<{ t?: string | string[] }> };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
   // the access token travels in the URL: never leak it through the Referer header to third-party links / images
-  return { title: `${getT().t('order.title')} ${params.code}`, robots: { index: false, follow: false }, referrer: 'no-referrer' };
+  return { title: `${(await getT()).t('order.title')} ${params.code}`, robots: { index: false, follow: false }, referrer: 'no-referrer' };
 }
 
 const same = (a: string, b: string) => {
@@ -18,8 +19,10 @@ const same = (a: string, b: string) => {
   return x.length === y.length && crypto.timingSafeEqual(x, y);
 };
 
-export default async function OrderPage({ params, searchParams }: Props) {
-  const { t, locale } = getT();
+export default async function OrderPage(props: Props) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
+  const { t, locale } = await getT();
   const user = await getSessionUser();
   const order = await findOrderByCode(params.code);
   const token = Array.isArray(searchParams.t) ? searchParams.t[0] : searchParams.t;
