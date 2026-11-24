@@ -28,18 +28,22 @@ The container waits for Postgres, applies migrations, seeds reference data (idem
 Put nginx/Caddy/Cloudflare in front for HTTPS (it must send `X-Forwarded-For`; keep `TRUST_PROXY=1`).
 Sign in at `/admin/login` with `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD`.
 
-### Ubuntu 16.04 / legacy hosts
-Ubuntu 16.04 is end-of-life. The stack runs there through Docker (`docker-compose` 1.x is supported: the compose file is format 3.8),
-but old Docker/libseccomp versions can reject newer base images (Alpine 3.14+, Debian bookworm) with *"operation not permitted"*.
-If that happens, set in `.env`:
+### Production on a VPS (Ubuntu 26.04 LTS)
+Step-by-step guide (server hardening, Docker, `.env`, HTTPS with Caddy, shop configuration, backups, updates, troubleshooting):
+**[docs/INSTALL-UBUNTU-26.04.md](docs/INSTALL-UBUNTU-26.04.md)** (Indonesian). Helper files live in `deploy/`:
+`backup.sh`, `restore.sh`, `reset-admin-password.sh`, `Caddyfile.example`, `nginx-eloura.conf.example`.
+
+### Legacy hosts (Ubuntu 16.04)
+Ubuntu 16.04 is end-of-life. The stack can still run there through Docker, but old Docker/libseccomp versions may reject newer base images
+(Alpine 3.14+, Debian bookworm) with *"operation not permitted"*, and docker-compose 1.x needs the line `version: "3.8"` at the top of
+`docker-compose.yml`. If the image fails to start, set in `.env`:
 
 ```
 NODE_IMAGE=node:20-bullseye-slim
 POSTGRES_IMAGE=postgres:15-bullseye
 ```
 
-The Prisma schema already targets `debian-openssl-1.1.x` and `3.0.x`. This repository was verified with a current Docker only;
-upgrading the host OS is the real fix.
+The Prisma schema already targets `debian-openssl-1.1.x` and `3.0.x`. This was verified with a current Docker only; upgrading the host OS is the real fix.
 
 ## Local development
 

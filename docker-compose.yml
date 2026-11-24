@@ -1,9 +1,8 @@
 # Eloura Chic - app + PostgreSQL with persistent volumes.
-# Works with Docker Compose v2 and with legacy docker-compose 1.x (file format 3.x) used on older hosts such as Ubuntu 16.04.
+# Written for Docker Compose v2 (Compose Specification: no `version:` key). Very old docker-compose 1.x hosts (e.g. Ubuntu 16.04)
+# additionally need the line `version: "3.8"` at the very top of this file.
 #   cp .env.example .env   # then edit secrets
 #   docker compose up -d --build        (or: docker-compose up -d --build)
-version: "3.8"
-
 services:
   db:
     image: ${POSTGRES_IMAGE:-postgres:15-alpine}

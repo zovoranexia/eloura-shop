@@ -1,0 +1,29 @@
+# Alternative to Caddy: nginx + certbot.
+#   sudo apt install nginx certbot python3-certbot-nginx
+#   sudo cp deploy/nginx-eloura.conf.example /etc/nginx/sites-available/eloura   # edit the domain
+#   sudo ln -s /etc/nginx/sites-available/eloura /etc/nginx/sites-enabled/eloura
+#   sudo nginx -t && sudo systemctl reload nginx
+#   sudo certbot --nginx -d shop.example.com        # adds the HTTPS server block + automatic renewal
+# Keep TRUST_PROXY=1 in .env: nginx below overwrites X-Forwarded-For with the real client address.
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name shop.example.com;
+
+    # 5 MB upload limit in the app (+ multipart overhead)
+    client_max_body_size 7m;
+
+    gzip on;
+    gzip_types text/css application/javascript application/json image/svg+xml;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $remote_addr;      # overwrite (never append) client-supplied values
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 60s;
+    }
+}
