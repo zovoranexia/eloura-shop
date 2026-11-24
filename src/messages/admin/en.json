@@ -1,0 +1,153 @@
+{
+  "common": { "active": "Active", "inactive": "Inactive" },
+  "upload": { "choose": "Choose image", "add": "Add", "hint": "JPG, PNG or WebP · max 5 MB · re-encoded and metadata removed" },
+  "nav": {
+    "badge": "Admin", "menu": "Open menu", "viewStore": "View store", "logout": "Sign out",
+    "groups": { "overview": "Overview", "sales": "Sales", "catalogue": "Catalogue", "storefront": "Storefront", "settings": "Settings", "access": "Access" },
+    "dashboard": "Dashboard", "orders": "Orders", "payments": "Payment verification", "cod": "COD cash", "customers": "Customers",
+    "products": "Products", "categories": "Categories", "inventory": "Inventory", "coupons": "Coupons", "reviews": "Reviews",
+    "banners": "Banners", "pages": "Pages (CMS)", "inquiries": "Inquiries", "newsletter": "Newsletter",
+    "zones": "Delivery & COD zones", "paymentMethods": "Payment methods", "settings": "Store settings", "reports": "Reports & exports",
+    "staff": "Staff", "roles": "Roles & permissions", "audit": "Audit log"
+  },
+  "login": { "title": "Admin sign in", "subtitle": "Eloura Chic back office", "submit": "Sign in", "secure": "Protected area. Every action is recorded in the audit log.", "notStaff": "This account has no admin access." },
+  "forbidden": { "title": "Access denied", "text": "Your role does not include this area. Ask a Super Admin if you need access.", "back": "Back to dashboard" },
+  "dashboard": {
+    "title": "Dashboard", "subtitle": "Today is {date} · Asia/Dili", "welcome": "Welcome, {name}", "welcomeText": "Use the menu to open the areas your role can access.",
+    "revenueToday": "Revenue today", "revenueMonth": "Revenue this month", "revenue14": "Revenue, last 14 days", "newCustomers": "New customers",
+    "ordersToday": "{n} orders today", "paidOnly": "Paid orders only", "last14": "Paid orders", "last7": "Last 7 days",
+    "chartTitle": "Revenue and orders · 14 days", "revenue": "Revenue", "orders": "Orders", "tzNote": "Days are bucketed in Dili time (UTC+9).",
+    "queues": "Work queues", "byStatus": "Orders by status", "byMethod": "Payment methods", "topProducts": "Top products · 30 days", "units": "{n} pcs",
+    "lowStock": "Low stock", "manageStock": "Manage stock", "stockOk": "All stock levels are healthy.", "soldOut": "Sold out", "left": "{n} left", "monthly": "Monthly revenue",
+    "q": {
+      "awaitingVerification": "Payments to verify", "codToConfirm": "COD to confirm (call / WhatsApp)", "toPack": "Orders to pack", "outForDelivery": "Out for delivery",
+      "codCash": "COD cash to reconcile", "refunds": "Refunds pending", "inquiries": "Unread inquiries"
+    }
+  },
+  "orders": {
+    "title": "Orders", "subtitle": "Search, filter and fulfil customer orders.", "searchPlaceholder": "Order code, name or phone", "allStatuses": "All statuses", "allPayments": "All payments", "allMethods": "All methods",
+    "order": "Order", "customer": "Customer", "area": "Area", "method": "Method", "payment": "Payment", "items": "{n} items", "total": "{n} orders found",
+    "placedOn": "Placed on {date}", "payBy": "Pay by {date}", "itemsTitle": "Items", "discount": "Discount", "shipping": "Delivery", "codFee": "COD fee",
+    "proofs": "Payment proofs", "openPayments": "Payment center", "timeline": "Timeline", "byCustomer": "Customer", "bySystem": "System",
+    "actions": "Actions", "updated": "Order updated", "courierFirst": "Assign a courier before sending this COD order out.", "codCollectHint": "Confirm the courier collected exactly this amount in cash.",
+    "awaitPaymentHint": "This order moves forward automatically when finance approves the payment proof.", "cancelOrder": "Cancel order", "cancelText": "Stock is returned to inventory. Paid orders are marked for refund.",
+    "reason": "Reason", "codRefused": "Customer refused the COD delivery", "codRefusedHint": "Counts toward the automatic COD flag for this customer.", "markRefunded": "Mark refund as done", "refundText": "Confirm that {total} was refunded to the customer.",
+    "customerNote": "Customer note", "deliverTo": "Deliver to", "whatsApp": "WhatsApp customer", "confirmWhatsApp": "Confirm via WhatsApp", "codPanel": "Cash on delivery", "termsAccepted": "Terms accepted", "cashDue": "Cash due",
+    "collected": "Cash collected", "reconciled": "Reconciled by finance", "courier": "Courier", "noCourier": "— not assigned —", "courierNote": "Note for the courier", "saveCourier": "Save courier",
+    "internalNotes": "Internal notes", "notePlaceholder": "Add a note for the team…", "noteHint": "Notes are visible to staff only, never to the customer.", "invoice": "Invoice", "packingSlip": "Packing slip",
+    "next": { "confirmCod": "Confirm COD order", "markPacked": "Mark as packed", "sendOut": "Send out for delivery", "markDelivered": "Mark delivered" },
+    "reasons": { "CUSTOMER_REQUEST": "Customer request", "UNREACHABLE": "Customer unreachable", "COD_REFUSED": "COD refused at the door", "OUT_OF_STOCK": "Out of stock", "PAYMENT_PROBLEM": "Payment problem", "OTHER": "Other", "PAYMENT_DEADLINE_EXPIRED": "Payment deadline expired" },
+    "events": {
+      "created": "Order placed", "status": "Status changed", "payment_submitted": "Payment proof submitted", "payment_approved": "Payment approved", "payment_rejected": "Payment rejected",
+      "cancelled": "Order cancelled", "refund": "Refund completed", "note": "Internal note", "courier_assigned": "Courier assigned", "cod_flagged": "Customer flagged for COD", "cod_reconciled": "COD cash reconciled"
+    }
+  },
+  "payments": {
+    "title": "Payment verification", "subtitle": "Review BNCTL bank, ATM, T-Pay and Mosan proofs and approve or reject them.", "inQueue": "{n} in queue", "search": "Search order, customer or reference",
+    "queueEmpty": "The queue is empty. Nice work!", "pick": "Select a payment to review.", "duplicate": "Duplicate reference", "amountDiffers": "Amount differs", "proof": "Payment proof", "openFile": "Open file",
+    "noFile": "No file attached.", "pdfHint": "This proof is a PDF. Open it in a new tab to read it.", "zoom": "Zoom proof", "zoomHint": "Click the image to zoom", "details": "Payment details", "reference": "Reference / transaction ID",
+    "payer": "Payer", "statedTime": "Time stated by customer", "submittedAt": "Submitted", "proofAmount": "Amount on proof", "orderTotal": "Order total", "amountOk": "Amount matches the order total.",
+    "amountWarn": "The amount does not match the order total. Check the receipt carefully.", "duplicateWarn": "The same reference was submitted for: {codes}. Check for reuse of one transfer.", "reviewNote": "Review note",
+    "orderSummary": "Order summary", "decision": "Decision", "approve": "Approve payment", "reject": "Reject", "approveNote": "Note (optional)", "approvePlaceholder": "e.g. seen on BNCTL statement", "rejectReason": "Reason for rejection",
+    "rejectHint": "The customer sees this reason and can upload a new proof.", "confirmReject": "Reject payment", "approved": "Payment approved. Order moved to processing.", "rejected": "Payment rejected. The customer was notified.",
+    "methodsTitle": "Payment methods", "methodsSubtitle": "Account numbers, wallet numbers, QR codes and instructions shown to customers.",
+    "walletNote": "T-Pay and Mosan run in manual-verification mode: customers pay your merchant number and submit the transaction ID and screenshot; finance verifies it against the wallet statement. A live API can be plugged in later without changing the checkout.",
+    "configured": "Configured", "notConfigured": "Not configured", "hiddenWarn": "No real receiving details yet: in production this method is hidden from customers until you fill them in.",
+    "enabled": "Enabled at checkout", "bankName": "Bank name", "accountHolder": "Account holder", "accountNumber": "Account number", "branch": "Branch", "merchantName": "Merchant name", "merchantNumber": "Merchant number",
+    "qr": "Merchant QR code", "qrHint": "Customers can scan this QR with the app.", "displayName": "Name shown to customers", "instructions": "Step-by-step instructions", "codInfo": "COD availability (Dili zones, caps and fees) is managed in Delivery zones and Store settings."
+  },
+  "cod": {
+    "title": "COD cash reconciliation", "subtitle": "Cash collected by couriers on delivery, waiting to be handed over to finance.", "export": "Export CSV", "toReconcile": "Cash to reconcile", "selected": "Selected",
+    "ordersCount": "{n} orders", "reconcileSelected": "Reconcile selected", "tabPending": "With couriers", "tabDone": "Reconciled", "allCouriers": "All couriers", "empty": "No COD deliveries here.", "delivered": "Delivered",
+    "collected": "Collected", "withCourier": "With courier", "reconciledDone": "Cash reconciled", "confirmText": "Confirm that {n} orders worth {total} were handed over by the couriers?"
+  },
+  "customers": {
+    "title": "Customers", "subtitle": "Accounts, orders and COD eligibility.", "search": "Name, email or phone", "onlyFlagged": "COD-blocked only", "orders": "Orders", "joined": "Joined", "lastLogin": "Last sign-in",
+    "codBlocked": "COD blocked", "refusals": "{n} COD refusals", "profile": "Profile", "codControl": "COD eligibility", "codAllowed": "COD allowed", "codHint": "Flagged customers never see Cash on Delivery. Auto-flag threshold is set in Store settings.",
+    "flag": "Block COD", "unflag": "Allow COD again", "flagText": "This customer will no longer be offered Cash on Delivery. They can still pay by bank, ATM, T-Pay or Mosan.", "flagSaved": "COD eligibility updated", "addresses": "Saved addresses",
+    "deactivate": "Deactivate account", "activate": "Reactivate account", "deactivateText": "The customer will be signed out and unable to sign in.", "activateText": "The customer will be able to sign in again."
+  },
+  "products": {
+    "title": "Products", "subtitle": "Multilingual catalogue with size / colour variants.", "new": "New product", "edit": "Edit product", "search": "Name or SKU", "allCategories": "All categories", "anyStatus": "Any status",
+    "lowOnly": "Low stock only", "product": "Product", "category": "Category", "price": "Price (USD)", "stock": "Stock", "variantsCount": "{n} variants", "featured": "Featured", "readOnly": "You can view this product but not change it.",
+    "content": "Content (4 languages)", "name": "Name", "description": "Description", "langHint": "Tetum is the default; empty languages fall back to Tetum automatically.", "images": "Images", "mainImage": "Main", "variants": "Variants",
+    "variant": "Variant", "size": "Size", "color": "Colour", "hex": "Swatch", "priceOverride": "Price override", "addVariant": "Add variant", "genSizes": "Sizes (comma separated)", "genColors": "Colours (comma separated)", "generate": "Generate",
+    "pricing": "Pricing", "compareAt": "Compare-at price (USD)", "compareHint": "Higher than the price: shows the discount badge and strikethrough.", "organization": "Organisation", "slug": "URL slug", "slugHint": "Leave empty to generate automatically.",
+    "visible": "Visible in the store", "featuredHome": "Show on the home page", "deleteText": "Products that were already ordered are only deactivated, so order history stays intact.", "deleted": "Product deleted", "deactivated": "Product deactivated (it has order history)"
+  },
+  "categories": { "title": "Categories", "subtitle": "Group products and feed the home page category strip.", "new": "New category", "edit": "Edit category", "image": "Image", "order": "Order", "products": "Products", "visible": "Visible in the store", "deleteText": "{n} products will become uncategorised. Continue?" },
+  "inventory": { "title": "Inventory", "subtitle": "Stock per variant. Alert threshold: {n} units.", "ok": "In stock" },
+  "coupons": {
+    "title": "Coupons & discounts", "subtitle": "Percentage or fixed USD discounts with validity in Dili time.", "new": "New coupon", "edit": "Edit coupon", "code": "Code", "codeHint": "Letters, digits, - and _ only.", "type": "Type",
+    "percent": "Percentage", "fixed": "Fixed amount (USD)", "percentValue": "Percent off", "fixedValue": "Amount off", "discount": "Discount", "maxDiscount": "Maximum discount", "maxDiscountHint": "Caps percentage coupons. Empty = no cap.",
+    "upTo": "up to {max}", "minOrder": "Minimum order", "usage": "Used", "usageLimit": "Usage limit", "usageHint": "Empty = unlimited.", "startsAt": "Starts", "endsAt": "Ends", "validity": "Validity", "description": "Description", "deleteText": "Delete coupon {code}?"
+  },
+  "reviews": { "title": "Reviews", "subtitle": "Verified buyer reviews. Hide anything inappropriate.", "product": "Product", "rating": "Rating", "comment": "Comment", "verified": "verified purchase", "published": "Published", "hidden": "Hidden", "hide": "Hide", "publish": "Publish" },
+  "banners": {
+    "title": "Banners", "subtitle": "Hero slider and mid-page promo banner shown on the home page.", "hero": "Hero slides", "promo": "Promo banner", "new": "New banner", "edit": "Edit banner", "image": "Image",
+    "heroHint": "Wide image (about 1024×430 or larger) with empty space on the left for the text.", "promoHint": "Wide lifestyle image shown on the right side of the promo.", "badge": "Pill tag", "titleField": "Headline", "highlight": "Italic accent", "subtitleField": "Subtitle",
+    "cta": "Button label", "link": "Button link", "deleteText": "Delete this banner?"
+  },
+  "pages": {
+    "title": "Pages (CMS)", "subtitle": "About, COD terms, Privacy and other static pages in four languages.", "new": "New page", "edit": "Edit page", "page": "Page", "languages": "Languages", "updated": "Updated", "published": "Published", "draft": "Draft",
+    "slugHint": "Lowercase letters, digits and dashes. Public URL: /page/<slug>.", "titleField": "Title", "body": "Content", "markdownHint": "Light markdown: ## headings, - bullet lists, 1. numbered lists, **bold**, blank line = new paragraph. HTML is never rendered."
+  },
+  "inquiries": { "title": "Inquiries", "subtitle": "Messages sent from the contact form.", "unread": "Unread", "new": "New", "reply": "Reply by email", "markRead": "Mark as read", "markUnread": "Mark as unread", "deleteText": "Delete this message permanently?" },
+  "newsletter": { "title": "Newsletter subscribers", "subtitle": "{n} subscribers", "csv": "Download CSV" },
+  "zones": {
+    "title": "Delivery & COD zones", "subtitle": "Delivery fees, free-delivery thresholds and where Cash on Delivery is allowed.",
+    "codRule": "Cash on Delivery works ONLY inside Dili municipality, in the administrative posts and sucos switched on below. Atauro and every other municipality are always excluded.",
+    "diliTitle": "Dili municipality", "othersTitle": "Other municipalities", "municipality": "Municipality", "fee": "Delivery fee", "freeOver": "Free delivery over", "eta": "Delivery time", "codEnabled": "Allow COD in this post",
+    "deliveryActive": "Deliver here", "sucos": "Sucos ({n})", "sucoHint": "Click a suco to switch COD on/off for it. Crossed-out sucos are excluded from COD.", "toggleSuco": "Toggle COD for this suco", "noCod": "no COD", "addSuco": "Add a suco…",
+    "codDiliOnly": "COD is only available in Dili", "codDiliOnlyShort": "Dili only"
+  },
+  "settings": {
+    "title": "Store settings", "subtitle": "Store details, COD rules and order operations.", "storeInfo": "Store details", "storeName": "Store name", "address": "Address", "tagline": "Tagline", "returnDays": "Return window (days)",
+    "codRules": "COD rules", "codRulesHint": "Applied on the server for every order. Currency is USD.", "codMin": "Minimum COD order", "codMax": "Maximum COD order", "codFee": "COD handling fee", "codFeeHint": "0 = no fee.",
+    "codAutoBlock": "Auto-flag after refusals", "codAutoBlockHint": "Refused COD deliveries before COD is hidden for the customer. 0 = never.", "codTermsVersion": "COD terms version", "codTermsVersionHint": "Change it when you update the COD terms page; it is stored with each accepted order.",
+    "zonesNote": "Delivery fees and free-delivery thresholds are set per zone in Delivery & COD zones.", "operations": "Operations", "deadline": "Payment deadline (hours)", "deadlineHint": "Unpaid bank / wallet orders are cancelled after this time.",
+    "lowStock": "Low-stock alert at", "maxQty": "Max quantity per item", "currencyNote": "All amounts are in US dollars. Dates and day boundaries use Asia/Dili (UTC+9)."
+  },
+  "reports": {
+    "title": "Reports & exports", "subtitle": "Revenue overview and CSV exports (Asia/Dili).", "monthly": "Monthly revenue (paid orders)", "exports": "CSV exports", "lastDays": "Last {n} days", "badRange": "Choose a valid date range.",
+    "note": "CSV files are UTF-8 (open in Excel or Google Sheets) and every export is recorded in the audit log.",
+    "type": { "orders": "Orders", "payments": "Payments", "cod": "COD cash", "revenue": "Daily revenue" },
+    "typeHint": { "orders": "All orders with totals, status and area", "payments": "Payment proofs and review results", "cod": "Delivered COD orders and reconciliation", "revenue": "Paid revenue per day and per method" }
+  },
+  "staff": {
+    "title": "Staff", "subtitle": "Back-office accounts and their roles.", "new": "New staff account", "edit": "Edit staff account", "roles": "Roles", "you": "you", "superLocked": "Only a Super Admin can edit a Super Admin",
+    "resetPassword": "New password (reset)", "resetHint": "Leave empty to keep the current password. Resetting signs the user out everywhere.", "passwordHint": "At least 8 characters with a letter and a number.",
+    "selfLocked": "You cannot change your own roles or deactivate yourself.", "grantHint": "You can only assign roles whose permissions you hold yourself.", "accountActive": "Account active"
+  },
+  "roles": {
+    "title": "Roles & permissions", "subtitle": "Control exactly what each role can see and do.", "new": "New custom role", "newHint": "Start from an empty role, then tick its permissions.", "system": "System", "custom": "Custom", "all": "all",
+    "locked": "This role cannot be edited.", "viewOnly": "You can view this role but not change it.", "description": "Description", "matrix": "Permission matrix", "selectGroup": "Select all", "clearGroup": "Clear all",
+    "grantHint": "You can only grant permissions you hold yourself. Users with this role are signed out so changes apply immediately.", "saved": "Role saved. Affected users must sign in again.", "deleteText": "Delete this custom role?",
+    "groups": { "dashboard": "Dashboard", "catalogue": "Catalogue", "cms": "Storefront CMS", "orders": "Orders", "payments": "Payments", "customers": "Customers", "reports": "Reports", "settings": "Settings", "access": "Access control" },
+    "names": { "SUPER_ADMIN": "Super Admin", "STORE_MANAGER": "Store Manager", "FINANCE_STAFF": "Finance Staff", "ORDER_FULFILLMENT": "Order Fulfilment", "CUSTOMER_SUPPORT": "Customer Support", "CUSTOMER": "Customer" },
+    "descriptions": {
+      "SUPER_ADMIN": "Unrestricted access, including roles, staff, settings and audit logs.", "STORE_MANAGER": "Catalogue, inventory, coupons, banners, CMS and order oversight.",
+      "FINANCE_STAFF": "Payment verification, COD reconciliation, revenue reports and exports.", "ORDER_FULFILLMENT": "Pack, dispatch and deliver orders; Dili COD courier assignments.",
+      "CUSTOMER_SUPPORT": "Customers, orders (read-only), inquiries and review moderation.", "CUSTOMER": "Storefront customer. Blocked from the admin area."
+    }
+  },
+  "perm": {
+    "dashboard": { "view": "See the analytics dashboard" },
+    "products": { "view": "View products and stock", "create": "Create products", "update": "Edit products and variants", "delete": "Delete or deactivate products" },
+    "inventory": { "update": "Adjust stock levels" }, "categories": { "manage": "Manage categories" }, "coupons": { "manage": "Manage coupons and discounts" }, "reviews": { "moderate": "Hide or publish reviews" },
+    "banners": { "manage": "Manage hero and promo banners" }, "cms": { "manage": "Edit static pages" },
+    "orders": { "view": "View orders", "update_status": "Confirm, pack, dispatch and deliver orders", "cancel": "Cancel orders", "assign_courier": "Assign Dili COD couriers" },
+    "invoices": { "print": "Print invoices and packing slips" },
+    "payments": { "view": "View payment proofs and the queue", "verify": "Approve or reject payments", "refund": "Mark refunds as done" },
+    "cod": { "reconcile": "Reconcile COD cash", "flag_customers": "Flag customers for COD refusals" },
+    "customers": { "view": "View customers", "manage": "Activate or deactivate customers" }, "inquiries": { "manage": "Read and handle inquiries" },
+    "reports": { "view": "View revenue reports", "export": "Export CSV reports" },
+    "zones": { "manage": "Manage delivery and COD zones" }, "settings": { "manage": "Manage store and payment settings" },
+    "staff": { "manage": "Create staff and assign roles" }, "roles": { "manage": "Edit roles and permissions" }, "audit": { "view": "View the audit log" }
+  },
+  "audit": { "title": "Audit log", "subtitle": "Who did what, when and from where.", "immutable": "Append-only", "allActions": "All actions", "action": "Action", "who": "User", "target": "Target", "tz": "Times in Asia/Dili. The database rejects any edit or deletion of these rows." },
+  "print": {
+    "invoice": "Invoice", "packingSlip": "Packing slip", "billTo": "Billed to", "shipTo": "Ship to", "details": "Order details", "paymentMethod": "Payment method", "paymentStatus": "Payment status", "area": "Area",
+    "collectCash": "Collect cash on delivery", "exactCash": "Exact amount in USD cash", "item": "Item", "qty": "Qty", "unit": "Unit price", "thanks": "Thank you for shopping with {store}!", "handle": "Handle with care · check every item before sealing"
+  }
+}

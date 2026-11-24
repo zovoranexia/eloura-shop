@@ -1,0 +1,63 @@
+# Eloura Chic - app + PostgreSQL with persistent volumes.
+# Works with Docker Compose v2 and with legacy docker-compose 1.x (file format 3.x) used on older hosts such as Ubuntu 16.04.
+#   cp .env.example .env   # then edit secrets
+#   docker compose up -d --build        (or: docker-compose up -d --build)
+version: "3.8"
+
+services:
+  db:
+    image: ${POSTGRES_IMAGE:-postgres:15-alpine}
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-eloura}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-eloura}
+      TZ: Asia/Dili
+      PGTZ: Asia/Dili
+    # Business timezone: Timor-Leste (UTC+9). Timestamps are stored in UTC, sessions default to Asia/Dili.
+    command: ["postgres", "-c", "timezone=Asia/Dili", "-c", "log_timezone=Asia/Dili"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-eloura} -d $${POSTGRES_DB:-eloura}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    # The database is only reachable from the app container (no published port).
+
+  app:
+    build:
+      context: .
+      args:
+        NODE_IMAGE: ${NODE_IMAGE:-node:20-alpine}
+    image: eloura-chic:latest
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      NODE_ENV: production
+      TZ: Asia/Dili
+      DATABASE_URL: postgresql://${POSTGRES_USER:-eloura}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-eloura}?schema=public
+      APP_URL: ${APP_URL:?set APP_URL in .env (e.g. https://shop.example.com)}
+      AUTH_SECRET: ${AUTH_SECRET:?set AUTH_SECRET in .env (openssl rand -base64 48)}
+      TRUST_PROXY: ${TRUST_PROXY:-1}
+      UPLOAD_DIR: /data/uploads
+      RUN_SEED: ${RUN_SEED:-1}
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-admin@eloura.local}
+      SEED_ADMIN_NAME: ${SEED_ADMIN_NAME:-Eloura Admin}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:?set SEED_ADMIN_PASSWORD in .env (>= 12 characters)}
+      SEED_CATALOG: ${SEED_CATALOG:-1}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      MAIL_FROM: ${MAIL_FROM:-Eloura Chic <no-reply@eloura.example>}
+    volumes:
+      - uploads:/data/uploads
+    # Bind to localhost only: put nginx / Caddy / Cloudflare in front for HTTPS (it must set X-Forwarded-For).
+    ports:
+      - "127.0.0.1:${APP_PORT:-3000}:3000"
+
+volumes:
+  pgdata:
+  uploads:

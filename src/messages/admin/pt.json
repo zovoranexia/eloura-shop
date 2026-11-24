@@ -1,0 +1,153 @@
+{
+  "common": { "active": "Ativo", "inactive": "Inativo" },
+  "upload": { "choose": "Escolher imagem", "add": "Adicionar", "hint": "JPG, PNG ou WebP · máx. 5 MB · recodificada e sem metadados" },
+  "nav": {
+    "badge": "Administração", "menu": "Abrir menu", "viewStore": "Ver loja", "logout": "Terminar sessão",
+    "groups": { "overview": "Visão geral", "sales": "Vendas", "catalogue": "Catálogo", "storefront": "Loja online", "settings": "Definições", "access": "Acessos" },
+    "dashboard": "Painel", "orders": "Encomendas", "payments": "Verificação de pagamentos", "cod": "Dinheiro COD", "customers": "Clientes",
+    "products": "Produtos", "categories": "Categorias", "inventory": "Inventário", "coupons": "Cupões", "reviews": "Avaliações",
+    "banners": "Banners", "pages": "Páginas (CMS)", "inquiries": "Mensagens", "newsletter": "Newsletter",
+    "zones": "Zonas de entrega e COD", "paymentMethods": "Métodos de pagamento", "settings": "Definições da loja", "reports": "Relatórios e exportações",
+    "staff": "Equipa", "roles": "Perfis e permissões", "audit": "Registo de auditoria"
+  },
+  "login": { "title": "Entrada na administração", "subtitle": "Back-office da Eloura Chic", "submit": "Entrar", "secure": "Área protegida. Todas as ações ficam registadas na auditoria.", "notStaff": "Esta conta não tem acesso à administração." },
+  "forbidden": { "title": "Acesso negado", "text": "O seu perfil não inclui esta área. Peça acesso a um Super Admin.", "back": "Voltar ao painel" },
+  "dashboard": {
+    "title": "Painel", "subtitle": "Hoje é {date} · Asia/Dili", "welcome": "Bem-vindo(a), {name}", "welcomeText": "Use o menu para abrir as áreas a que o seu perfil dá acesso.",
+    "revenueToday": "Receita de hoje", "revenueMonth": "Receita do mês", "revenue14": "Receita, últimos 14 dias", "newCustomers": "Novos clientes",
+    "ordersToday": "{n} encomendas hoje", "paidOnly": "Apenas encomendas pagas", "last14": "Encomendas pagas", "last7": "Últimos 7 dias",
+    "chartTitle": "Receita e encomendas · 14 dias", "revenue": "Receita", "orders": "Encomendas", "tzNote": "Os dias são contados na hora de Díli (UTC+9).",
+    "queues": "Filas de trabalho", "byStatus": "Encomendas por estado", "byMethod": "Métodos de pagamento", "topProducts": "Produtos mais vendidos · 30 dias", "units": "{n} un.",
+    "lowStock": "Stock baixo", "manageStock": "Gerir stock", "stockOk": "Todos os níveis de stock estão saudáveis.", "soldOut": "Esgotado", "left": "Restam {n}", "monthly": "Receita mensal",
+    "q": {
+      "awaitingVerification": "Pagamentos a verificar", "codToConfirm": "COD a confirmar (chamada / WhatsApp)", "toPack": "Encomendas a embalar", "outForDelivery": "Em entrega",
+      "codCash": "Dinheiro COD a reconciliar", "refunds": "Reembolsos pendentes", "inquiries": "Mensagens por ler"
+    }
+  },
+  "orders": {
+    "title": "Encomendas", "subtitle": "Pesquise, filtre e processe as encomendas dos clientes.", "searchPlaceholder": "Código, nome ou telefone", "allStatuses": "Todos os estados", "allPayments": "Todos os pagamentos", "allMethods": "Todos os métodos",
+    "order": "Encomenda", "customer": "Cliente", "area": "Zona", "method": "Método", "payment": "Pagamento", "items": "{n} artigos", "total": "{n} encomendas encontradas",
+    "placedOn": "Feita em {date}", "payBy": "Pagar até {date}", "itemsTitle": "Artigos", "discount": "Desconto", "shipping": "Entrega", "codFee": "Taxa COD",
+    "proofs": "Comprovativos de pagamento", "openPayments": "Centro de pagamentos", "timeline": "Cronologia", "byCustomer": "Cliente", "bySystem": "Sistema",
+    "actions": "Ações", "updated": "Encomenda atualizada", "courierFirst": "Atribua um estafeta antes de enviar esta encomenda COD.", "codCollectHint": "Confirme que o estafeta recebeu exatamente este valor em dinheiro.",
+    "awaitPaymentHint": "Esta encomenda avança automaticamente quando as finanças aprovam o comprovativo.", "cancelOrder": "Cancelar encomenda", "cancelText": "O stock volta ao inventário. As encomendas pagas ficam marcadas para reembolso.",
+    "reason": "Motivo", "codRefused": "O cliente recusou a entrega COD", "codRefusedHint": "Conta para o bloqueio automático de COD deste cliente.", "markRefunded": "Marcar reembolso como concluído", "refundText": "Confirme que {total} foram reembolsados ao cliente.",
+    "customerNote": "Nota do cliente", "deliverTo": "Entregar a", "whatsApp": "WhatsApp do cliente", "confirmWhatsApp": "Confirmar por WhatsApp", "codPanel": "Pagamento na entrega", "termsAccepted": "Termos aceites", "cashDue": "Valor a receber",
+    "collected": "Dinheiro recebido", "reconciled": "Reconciliado pelas finanças", "courier": "Estafeta", "noCourier": "— sem atribuição —", "courierNote": "Nota para o estafeta", "saveCourier": "Guardar estafeta",
+    "internalNotes": "Notas internas", "notePlaceholder": "Adicione uma nota para a equipa…", "noteHint": "As notas são visíveis apenas para a equipa, nunca para o cliente.", "invoice": "Fatura", "packingSlip": "Guia de embalagem",
+    "next": { "confirmCod": "Confirmar encomenda COD", "markPacked": "Marcar como embalada", "sendOut": "Enviar para entrega", "markDelivered": "Marcar como entregue" },
+    "reasons": { "CUSTOMER_REQUEST": "Pedido do cliente", "UNREACHABLE": "Cliente incontactável", "COD_REFUSED": "COD recusado à porta", "OUT_OF_STOCK": "Sem stock", "PAYMENT_PROBLEM": "Problema de pagamento", "OTHER": "Outro", "PAYMENT_DEADLINE_EXPIRED": "Prazo de pagamento expirado" },
+    "events": {
+      "created": "Encomenda feita", "status": "Estado alterado", "payment_submitted": "Comprovativo submetido", "payment_approved": "Pagamento aprovado", "payment_rejected": "Pagamento rejeitado",
+      "cancelled": "Encomenda cancelada", "refund": "Reembolso concluído", "note": "Nota interna", "courier_assigned": "Estafeta atribuído", "cod_flagged": "Cliente sinalizado para COD", "cod_reconciled": "Dinheiro COD reconciliado"
+    }
+  },
+  "payments": {
+    "title": "Verificação de pagamentos", "subtitle": "Reveja os comprovativos BNCTL (banco e ATM), T-Pay e Mosan e aprove ou rejeite.", "inQueue": "{n} na fila", "search": "Pesquisar encomenda, cliente ou referência",
+    "queueEmpty": "A fila está vazia. Bom trabalho!", "pick": "Selecione um pagamento para rever.", "duplicate": "Referência duplicada", "amountDiffers": "Valor diferente", "proof": "Comprovativo", "openFile": "Abrir ficheiro",
+    "noFile": "Sem ficheiro anexo.", "pdfHint": "Este comprovativo é um PDF. Abra-o num novo separador para o ler.", "zoom": "Ampliar comprovativo", "zoomHint": "Clique na imagem para ampliar", "details": "Detalhes do pagamento", "reference": "Referência / ID da transação",
+    "payer": "Pagador", "statedTime": "Hora indicada pelo cliente", "submittedAt": "Submetido", "proofAmount": "Valor no comprovativo", "orderTotal": "Total da encomenda", "amountOk": "O valor coincide com o total da encomenda.",
+    "amountWarn": "O valor não coincide com o total da encomenda. Verifique o talão com atenção.", "duplicateWarn": "A mesma referência foi submetida em: {codes}. Verifique se uma transferência foi reutilizada.", "reviewNote": "Nota da revisão",
+    "orderSummary": "Resumo da encomenda", "decision": "Decisão", "approve": "Aprovar pagamento", "reject": "Rejeitar", "approveNote": "Nota (opcional)", "approvePlaceholder": "ex.: visto no extrato BNCTL", "rejectReason": "Motivo da rejeição",
+    "rejectHint": "O cliente vê este motivo e pode carregar um novo comprovativo.", "confirmReject": "Rejeitar pagamento", "approved": "Pagamento aprovado. Encomenda em preparação.", "rejected": "Pagamento rejeitado. O cliente foi notificado.",
+    "methodsTitle": "Métodos de pagamento", "methodsSubtitle": "Contas, números de carteira, códigos QR e instruções mostrados aos clientes.",
+    "walletNote": "T-Pay e Mosan funcionam em verificação manual: os clientes pagam ao seu número de comerciante e submetem o ID da transação e a captura de ecrã; as finanças verificam no extrato da carteira. Uma API real pode ser ligada mais tarde sem alterar o checkout.",
+    "configured": "Configurado", "notConfigured": "Não configurado", "hiddenWarn": "Ainda sem dados reais de receção: em produção este método fica oculto aos clientes até os preencher.",
+    "enabled": "Ativo no checkout", "bankName": "Nome do banco", "accountHolder": "Titular da conta", "accountNumber": "Número da conta", "branch": "Balcão", "merchantName": "Nome do comerciante", "merchantNumber": "Número do comerciante",
+    "qr": "Código QR do comerciante", "qrHint": "Os clientes podem ler este QR com a aplicação.", "displayName": "Nome mostrado aos clientes", "instructions": "Instruções passo a passo", "codInfo": "A disponibilidade do COD (zonas de Díli, limites e taxas) gere-se em Zonas de entrega e em Definições da loja."
+  },
+  "cod": {
+    "title": "Reconciliação de dinheiro COD", "subtitle": "Dinheiro recebido pelos estafetas na entrega, a aguardar entrega às finanças.", "export": "Exportar CSV", "toReconcile": "Dinheiro a reconciliar", "selected": "Selecionado",
+    "ordersCount": "{n} encomendas", "reconcileSelected": "Reconciliar selecionadas", "tabPending": "Com os estafetas", "tabDone": "Reconciliadas", "allCouriers": "Todos os estafetas", "empty": "Sem entregas COD aqui.", "delivered": "Entregue",
+    "collected": "Recebido", "withCourier": "Com o estafeta", "reconciledDone": "Dinheiro reconciliado", "confirmText": "Confirma que {n} encomendas no valor de {total} foram entregues pelos estafetas?"
+  },
+  "customers": {
+    "title": "Clientes", "subtitle": "Contas, encomendas e elegibilidade para COD.", "search": "Nome, e-mail ou telefone", "onlyFlagged": "Só com COD bloqueado", "orders": "Encomendas", "joined": "Registo", "lastLogin": "Último acesso",
+    "codBlocked": "COD bloqueado", "refusals": "{n} recusas COD", "profile": "Perfil", "codControl": "Elegibilidade COD", "codAllowed": "COD permitido", "codHint": "Clientes sinalizados nunca veem o pagamento na entrega. O limite de sinalização automática define-se em Definições da loja.",
+    "flag": "Bloquear COD", "unflag": "Permitir COD novamente", "flagText": "Este cliente deixará de ter o pagamento na entrega. Continua a poder pagar por banco, ATM, T-Pay ou Mosan.", "flagSaved": "Elegibilidade COD atualizada", "addresses": "Moradas guardadas",
+    "deactivate": "Desativar conta", "activate": "Reativar conta", "deactivateText": "O cliente terminará sessão e não poderá entrar.", "activateText": "O cliente poderá voltar a entrar."
+  },
+  "products": {
+    "title": "Produtos", "subtitle": "Catálogo multilingue com variantes de tamanho / cor.", "new": "Novo produto", "edit": "Editar produto", "search": "Nome ou SKU", "allCategories": "Todas as categorias", "anyStatus": "Qualquer estado",
+    "lowOnly": "Só stock baixo", "product": "Produto", "category": "Categoria", "price": "Preço (USD)", "stock": "Stock", "variantsCount": "{n} variantes", "featured": "Destaque", "readOnly": "Pode ver este produto mas não o pode alterar.",
+    "content": "Conteúdo (4 idiomas)", "name": "Nome", "description": "Descrição", "langHint": "O tétum é o idioma por defeito; os idiomas vazios usam automaticamente o tétum.", "images": "Imagens", "mainImage": "Principal", "variants": "Variantes",
+    "variant": "Variante", "size": "Tamanho", "color": "Cor", "hex": "Amostra", "priceOverride": "Preço próprio", "addVariant": "Adicionar variante", "genSizes": "Tamanhos (separados por vírgula)", "genColors": "Cores (separadas por vírgula)", "generate": "Gerar",
+    "pricing": "Preços", "compareAt": "Preço original (USD)", "compareHint": "Superior ao preço: mostra o selo de desconto e o preço riscado.", "organization": "Organização", "slug": "Slug do URL", "slugHint": "Deixe vazio para gerar automaticamente.",
+    "visible": "Visível na loja", "featuredHome": "Mostrar na página inicial", "deleteText": "Produtos já encomendados são apenas desativados, para manter o histórico de encomendas.", "deleted": "Produto eliminado", "deactivated": "Produto desativado (tem histórico de encomendas)"
+  },
+  "categories": { "title": "Categorias", "subtitle": "Agrupe produtos e alimente a faixa de categorias da página inicial.", "new": "Nova categoria", "edit": "Editar categoria", "image": "Imagem", "order": "Ordem", "products": "Produtos", "visible": "Visível na loja", "deleteText": "{n} produtos ficarão sem categoria. Continuar?" },
+  "inventory": { "title": "Inventário", "subtitle": "Stock por variante. Limite de alerta: {n} unidades.", "ok": "Em stock" },
+  "coupons": {
+    "title": "Cupões e descontos", "subtitle": "Descontos em percentagem ou valor fixo em USD, com validade na hora de Díli.", "new": "Novo cupão", "edit": "Editar cupão", "code": "Código", "codeHint": "Apenas letras, números, - e _.", "type": "Tipo",
+    "percent": "Percentagem", "fixed": "Valor fixo (USD)", "percentValue": "Percentagem de desconto", "fixedValue": "Valor de desconto", "discount": "Desconto", "maxDiscount": "Desconto máximo", "maxDiscountHint": "Limita cupões de percentagem. Vazio = sem limite.",
+    "upTo": "até {max}", "minOrder": "Encomenda mínima", "usage": "Usado", "usageLimit": "Limite de utilizações", "usageHint": "Vazio = ilimitado.", "startsAt": "Início", "endsAt": "Fim", "validity": "Validade", "description": "Descrição", "deleteText": "Eliminar o cupão {code}?"
+  },
+  "reviews": { "title": "Avaliações", "subtitle": "Avaliações de compradores verificados. Oculte o que for inadequado.", "product": "Produto", "rating": "Nota", "comment": "Comentário", "verified": "compra verificada", "published": "Publicada", "hidden": "Oculta", "hide": "Ocultar", "publish": "Publicar" },
+  "banners": {
+    "title": "Banners", "subtitle": "Slider principal e banner promocional da página inicial.", "hero": "Slides principais", "promo": "Banner promocional", "new": "Novo banner", "edit": "Editar banner", "image": "Imagem",
+    "heroHint": "Imagem larga (cerca de 1024×430 ou maior) com espaço livre à esquerda para o texto.", "promoHint": "Imagem larga de estilo de vida, mostrada no lado direito da promoção.", "badge": "Etiqueta", "titleField": "Título", "highlight": "Destaque em itálico", "subtitleField": "Subtítulo",
+    "cta": "Texto do botão", "link": "Ligação do botão", "deleteText": "Eliminar este banner?"
+  },
+  "pages": {
+    "title": "Páginas (CMS)", "subtitle": "Sobre nós, termos COD, privacidade e outras páginas estáticas em quatro idiomas.", "new": "Nova página", "edit": "Editar página", "page": "Página", "languages": "Idiomas", "updated": "Atualizada", "published": "Publicada", "draft": "Rascunho",
+    "slugHint": "Letras minúsculas, números e hífenes. URL público: /page/<slug>.", "titleField": "Título", "body": "Conteúdo", "markdownHint": "Markdown simples: ## títulos, - listas, 1. listas numeradas, **negrito**, linha em branco = novo parágrafo. O HTML nunca é interpretado."
+  },
+  "inquiries": { "title": "Mensagens", "subtitle": "Mensagens enviadas pelo formulário de contacto.", "unread": "Por ler", "new": "Nova", "reply": "Responder por e-mail", "markRead": "Marcar como lida", "markUnread": "Marcar como não lida", "deleteText": "Eliminar esta mensagem definitivamente?" },
+  "newsletter": { "title": "Subscritores da newsletter", "subtitle": "{n} subscritores", "csv": "Transferir CSV" },
+  "zones": {
+    "title": "Zonas de entrega e COD", "subtitle": "Taxas de entrega, limites de entrega grátis e onde o pagamento na entrega é permitido.",
+    "codRule": "O pagamento na entrega funciona APENAS no município de Díli, nos postos administrativos e sucos ativados abaixo. Atauro e todos os outros municípios ficam sempre excluídos.",
+    "diliTitle": "Município de Díli", "othersTitle": "Outros municípios", "municipality": "Município", "fee": "Taxa de entrega", "freeOver": "Entrega grátis acima de", "eta": "Prazo de entrega", "codEnabled": "Permitir COD neste posto",
+    "deliveryActive": "Entregar aqui", "sucos": "Sucos ({n})", "sucoHint": "Clique num suco para ativar/desativar o COD. Os sucos riscados estão excluídos do COD.", "toggleSuco": "Alternar COD neste suco", "noCod": "sem COD", "addSuco": "Adicionar suco…",
+    "codDiliOnly": "O COD só está disponível em Díli", "codDiliOnlyShort": "Só Díli"
+  },
+  "settings": {
+    "title": "Definições da loja", "subtitle": "Dados da loja, regras de COD e operação das encomendas.", "storeInfo": "Dados da loja", "storeName": "Nome da loja", "address": "Morada", "tagline": "Slogan", "returnDays": "Prazo de devolução (dias)",
+    "codRules": "Regras de COD", "codRulesHint": "Aplicadas no servidor em todas as encomendas. A moeda é o USD.", "codMin": "Encomenda mínima COD", "codMax": "Encomenda máxima COD", "codFee": "Taxa de manuseamento COD", "codFeeHint": "0 = sem taxa.",
+    "codAutoBlock": "Sinalizar após recusas", "codAutoBlockHint": "Entregas COD recusadas antes de o COD ficar oculto para o cliente. 0 = nunca.", "codTermsVersion": "Versão dos termos COD", "codTermsVersionHint": "Altere ao atualizar a página de termos COD; fica registada em cada encomenda aceite.",
+    "zonesNote": "As taxas de entrega e os limites de entrega grátis definem-se por zona em Zonas de entrega e COD.", "operations": "Operação", "deadline": "Prazo de pagamento (horas)", "deadlineHint": "As encomendas por banco / carteira não pagas são canceladas após este prazo.",
+    "lowStock": "Alerta de stock baixo em", "maxQty": "Quantidade máxima por artigo", "currencyNote": "Todos os valores estão em dólares americanos. Datas e limites de dia usam Asia/Dili (UTC+9)."
+  },
+  "reports": {
+    "title": "Relatórios e exportações", "subtitle": "Visão da receita e exportações CSV (Asia/Dili).", "monthly": "Receita mensal (encomendas pagas)", "exports": "Exportações CSV", "lastDays": "Últimos {n} dias", "badRange": "Escolha um intervalo de datas válido.",
+    "note": "Os ficheiros CSV são UTF-8 (abrem no Excel ou Google Sheets) e cada exportação fica registada na auditoria.",
+    "type": { "orders": "Encomendas", "payments": "Pagamentos", "cod": "Dinheiro COD", "revenue": "Receita diária" },
+    "typeHint": { "orders": "Todas as encomendas com totais, estado e zona", "payments": "Comprovativos e resultados da revisão", "cod": "Encomendas COD entregues e reconciliação", "revenue": "Receita paga por dia e por método" }
+  },
+  "staff": {
+    "title": "Equipa", "subtitle": "Contas de back-office e respetivos perfis.", "new": "Nova conta de equipa", "edit": "Editar conta de equipa", "roles": "Perfis", "you": "você", "superLocked": "Só um Super Admin pode editar um Super Admin",
+    "resetPassword": "Nova palavra-passe (repor)", "resetHint": "Deixe vazio para manter a atual. A reposição termina a sessão do utilizador em todo o lado.", "passwordHint": "Pelo menos 8 caracteres com uma letra e um número.",
+    "selfLocked": "Não pode alterar os seus próprios perfis nem desativar-se.", "grantHint": "Só pode atribuir perfis cujas permissões também possui.", "accountActive": "Conta ativa"
+  },
+  "roles": {
+    "title": "Perfis e permissões", "subtitle": "Controle exatamente o que cada perfil pode ver e fazer.", "new": "Novo perfil personalizado", "newHint": "Comece com um perfil vazio e marque as permissões.", "system": "Sistema", "custom": "Personalizado", "all": "todas",
+    "locked": "Este perfil não pode ser editado.", "viewOnly": "Pode ver este perfil mas não o pode alterar.", "description": "Descrição", "matrix": "Matriz de permissões", "selectGroup": "Selecionar tudo", "clearGroup": "Limpar tudo",
+    "grantHint": "Só pode conceder permissões que também possui. Os utilizadores deste perfil terminam sessão para as alterações valerem de imediato.", "saved": "Perfil guardado. Os utilizadores afetados têm de iniciar sessão novamente.", "deleteText": "Eliminar este perfil personalizado?",
+    "groups": { "dashboard": "Painel", "catalogue": "Catálogo", "cms": "CMS da loja", "orders": "Encomendas", "payments": "Pagamentos", "customers": "Clientes", "reports": "Relatórios", "settings": "Definições", "access": "Controlo de acessos" },
+    "names": { "SUPER_ADMIN": "Super Admin", "STORE_MANAGER": "Gestor da loja", "FINANCE_STAFF": "Finanças", "ORDER_FULFILLMENT": "Preparação de encomendas", "CUSTOMER_SUPPORT": "Apoio ao cliente", "CUSTOMER": "Cliente" },
+    "descriptions": {
+      "SUPER_ADMIN": "Acesso total, incluindo perfis, equipa, definições e auditoria.", "STORE_MANAGER": "Catálogo, inventário, cupões, banners, CMS e supervisão de encomendas.",
+      "FINANCE_STAFF": "Verificação de pagamentos, reconciliação COD, relatórios de receita e exportações.", "ORDER_FULFILLMENT": "Embalar, expedir e entregar encomendas; atribuição de estafetas COD em Díli.",
+      "CUSTOMER_SUPPORT": "Clientes, encomendas (só leitura), mensagens e moderação de avaliações.", "CUSTOMER": "Cliente da loja. Sem acesso à administração."
+    }
+  },
+  "perm": {
+    "dashboard": { "view": "Ver o painel de análise" },
+    "products": { "view": "Ver produtos e stock", "create": "Criar produtos", "update": "Editar produtos e variantes", "delete": "Eliminar ou desativar produtos" },
+    "inventory": { "update": "Ajustar níveis de stock" }, "categories": { "manage": "Gerir categorias" }, "coupons": { "manage": "Gerir cupões e descontos" }, "reviews": { "moderate": "Ocultar ou publicar avaliações" },
+    "banners": { "manage": "Gerir banners principais e promocionais" }, "cms": { "manage": "Editar páginas estáticas" },
+    "orders": { "view": "Ver encomendas", "update_status": "Confirmar, embalar, expedir e entregar encomendas", "cancel": "Cancelar encomendas", "assign_courier": "Atribuir estafetas COD de Díli" },
+    "invoices": { "print": "Imprimir faturas e guias de embalagem" },
+    "payments": { "view": "Ver comprovativos e a fila", "verify": "Aprovar ou rejeitar pagamentos", "refund": "Marcar reembolsos como concluídos" },
+    "cod": { "reconcile": "Reconciliar dinheiro COD", "flag_customers": "Sinalizar clientes por recusas COD" },
+    "customers": { "view": "Ver clientes", "manage": "Ativar ou desativar clientes" }, "inquiries": { "manage": "Ler e tratar mensagens" },
+    "reports": { "view": "Ver relatórios de receita", "export": "Exportar relatórios CSV" },
+    "zones": { "manage": "Gerir zonas de entrega e COD" }, "settings": { "manage": "Gerir definições da loja e pagamentos" },
+    "staff": { "manage": "Criar equipa e atribuir perfis" }, "roles": { "manage": "Editar perfis e permissões" }, "audit": { "view": "Ver o registo de auditoria" }
+  },
+  "audit": { "title": "Registo de auditoria", "subtitle": "Quem fez o quê, quando e de onde.", "immutable": "Só acrescenta", "allActions": "Todas as ações", "action": "Ação", "who": "Utilizador", "target": "Alvo", "tz": "Horas em Asia/Dili. A base de dados rejeita qualquer alteração ou eliminação destas linhas." },
+  "print": {
+    "invoice": "Fatura", "packingSlip": "Guia de embalagem", "billTo": "Faturado a", "shipTo": "Entregar a", "details": "Detalhes da encomenda", "paymentMethod": "Método de pagamento", "paymentStatus": "Estado do pagamento", "area": "Zona",
+    "collectCash": "Receber dinheiro na entrega", "exactCash": "Valor exato em dinheiro (USD)", "item": "Artigo", "qty": "Qtd.", "unit": "Preço unitário", "thanks": "Obrigado por comprar na {store}!", "handle": "Manusear com cuidado · verifique todos os artigos antes de selar"
+  }
+}

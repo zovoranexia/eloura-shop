@@ -1,0 +1,505 @@
+// Eloura Chic - PostgreSQL schema.
+// Money is stored as integer cents (USD). Translatable text is stored as JSONB: {"tet": "...", "pt": "...", "en": "...", "id": "..."}
+// with automatic fallback to `tet` (see src/lib/i18n.ts -> loc()). Timestamps are stored in UTC and always displayed in Asia/Dili.
+
+generator client {
+  provider      = "prisma-client-js"
+  // linux-musl-openssl-3.0.x = node:20-alpine, debian-openssl-1.1.x = *-bullseye-slim (legacy hosts)
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x", "debian-openssl-1.1.x", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT // bank/ATM/wallet order waiting for the customer's payment proof
+  AWAITING_VERIFICATION // proof submitted, finance must verify
+  PENDING_CONFIRMATION // COD order waiting for the pre-dispatch phone/WhatsApp confirmation
+  PROCESSING
+  PACKED
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  UNPAID
+  AWAITING_VERIFICATION
+  PAID
+  REFUND_PENDING
+  REFUNDED
+}
+
+enum PaymentMethodKey {
+  BANK_BNCTL
+  ATM_BNCTL
+  TPAY
+  MOSAN
+  COD
+}
+
+enum ProofStatus {
+  SUBMITTED
+  APPROVED
+  REJECTED
+  VOID
+}
+
+enum BannerPlacement {
+  HERO
+  PROMO
+}
+
+enum DiscountType {
+  PERCENT
+  FIXED
+}
+
+enum ReviewStatus {
+  PUBLISHED
+  HIDDEN
+}
+
+// ------------------------------------------------------------------ identity & RBAC
+
+model User {
+  id               Int       @id @default(autoincrement())
+  email            String    @unique
+  name             String
+  phone            String?
+  passwordHash     String
+  locale           String    @default("tet")
+  isActive         Boolean   @default(true)
+  /// bump to invalidate every issued JWT (password change, role change, deactivation)
+  tokenVersion     Int       @default(0)
+  failedLogins     Int       @default(0)
+  lockedUntil      DateTime?
+  lastLoginAt      DateTime?
+  /// COD abuse control: flagged accounts never see Cash on Delivery
+  codBlocked       Boolean   @default(false)
+  codBlockedReason String?
+  codRefusals      Int       @default(0)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  roles     UserRole[]
+  addresses Address[]
+  orders    Order[]
+  wishlist  WishlistItem[]
+  reviews   Review[]
+  cart      Cart?
+  assigned  Order[]        @relation("CourierAssignee")
+}
+
+model Role {
+  id          Int              @id @default(autoincrement())
+  key         String           @unique // SUPER_ADMIN, STORE_MANAGER, FINANCE_STAFF, ORDER_FULFILLMENT, CUSTOMER_SUPPORT, CUSTOMER or CUSTOM_*
+  name        String
+  description String?
+  isSystem    Boolean          @default(false)
+  permissions RolePermission[]
+  users       UserRole[]
+}
+
+model Permission {
+  key         String           @id // e.g. products.create
+  group       String
+  description String?
+  roles       RolePermission[]
+}
+
+model RolePermission {
+  roleId        Int
+  permissionKey String
+  role          Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission    Permission @relation(fields: [permissionKey], references: [key], onDelete: Cascade)
+
+  @@id([roleId, permissionKey])
+}
+
+model UserRole {
+  userId Int
+  roleId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+}
+
+model Address {
+  id           Int     @id @default(autoincrement())
+  userId       Int
+  label        String?
+  recipient    String
+  phone        String
+  municipality String
+  adminPost    String?
+  suco         String?
+  street       String
+  notes        String?
+  isDefault    Boolean @default(false)
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// ------------------------------------------------------------------ catalogue
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  slug      String    @unique
+  name      Json
+  image     String?
+  sortOrder Int       @default(0)
+  isActive  Boolean   @default(true)
+  products  Product[]
+}
+
+model Product {
+  id             Int              @id @default(autoincrement())
+  slug           String           @unique
+  sku            String           @unique
+  categoryId     Int?
+  name           Json
+  description    Json
+  /// lower-cased, accent-free concatenation of all language names (used for search)
+  searchText     String           @default("")
+  priceCents     Int
+  compareAtCents Int?
+  isActive       Boolean          @default(true)
+  isFeatured     Boolean          @default(false)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  category       Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  images         ProductImage[]
+  variants       ProductVariant[]
+  reviews        Review[]
+  wishlist       WishlistItem[]
+  orderItems     OrderItem[]
+
+  @@index([categoryId, isActive])
+  @@index([isActive, isFeatured])
+}
+
+model ProductImage {
+  id        Int     @id @default(autoincrement())
+  productId Int
+  url       String
+  sortOrder Int     @default(0)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+model ProductVariant {
+  id         Int         @id @default(autoincrement())
+  productId  Int
+  sku        String      @unique
+  size       String?
+  color      String?
+  colorHex   String?
+  stock      Int         @default(0)
+  /// optional per-variant price override
+  priceCents Int?
+  isActive   Boolean     @default(true)
+  product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  orderItems OrderItem[]
+  cartItems  CartItem[]
+
+  @@index([productId])
+}
+
+model WishlistItem {
+  userId    Int
+  productId Int
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([userId, productId])
+}
+
+model Review {
+  id         Int          @id @default(autoincrement())
+  productId  Int
+  userId     Int
+  orderId    Int?
+  rating     Int
+  comment    String?
+  status     ReviewStatus @default(PUBLISHED)
+  /// true when written by a customer with a delivered order containing the product
+  isVerified Boolean      @default(true)
+  createdAt  DateTime     @default(now())
+  product    Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, userId])
+}
+
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    Int        @unique
+  updatedAt DateTime   @updatedAt
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+}
+
+model CartItem {
+  id        Int            @id @default(autoincrement())
+  cartId    Int
+  variantId Int
+  qty       Int
+  cart      Cart           @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  variant   ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  @@unique([cartId, variantId])
+}
+
+model Coupon {
+  id               Int          @id @default(autoincrement())
+  code             String       @unique
+  description      Json?
+  type             DiscountType
+  /// PERCENT: 1-100, FIXED: cents
+  value            Int
+  minOrderCents    Int          @default(0)
+  maxDiscountCents Int?
+  usageLimit       Int?
+  usedCount        Int          @default(0)
+  startsAt         DateTime?
+  endsAt           DateTime?
+  isActive         Boolean      @default(true)
+  createdAt        DateTime     @default(now())
+}
+
+// ------------------------------------------------------------------ orders & payments
+
+model Order {
+  id                 Int              @id @default(autoincrement())
+  /// public order reference, e.g. EC-261124-K7QD (also used as the transfer reference)
+  code               String           @unique
+  accessToken        String
+  userId             Int?
+  status             OrderStatus      @default(PENDING_PAYMENT)
+  paymentStatus      PaymentStatus    @default(UNPAID)
+  paymentMethod      PaymentMethodKey
+  currency           String           @default("USD")
+  subtotalCents      Int
+  discountCents      Int              @default(0)
+  couponCode         String?
+  shippingCents      Int              @default(0)
+  codFeeCents        Int              @default(0)
+  totalCents         Int
+  customerName       String
+  customerEmail      String?
+  customerPhone      String
+  municipality       String
+  adminPost          String?
+  suco               String?
+  street             String
+  addressNotes       String?
+  customerNote       String?
+  locale             String           @default("tet")
+  expiresAt          DateTime?
+  stockRestored      Boolean          @default(false)
+  // COD
+  codTermsAcceptedAt DateTime?
+  codTermsVersion    String?
+  assignedCourierId  Int?
+  courierNote        String?
+  codCollectedCents  Int?
+  codCollectedAt     DateTime?
+  codCollectedById   Int?
+  codReconciledAt    DateTime?
+  codReconciledById  Int?
+  cancelReason       String?
+  paidAt             DateTime?
+  deliveredAt        DateTime?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  user            User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  assignedCourier User?          @relation("CourierAssignee", fields: [assignedCourierId], references: [id], onDelete: SetNull)
+  items           OrderItem[]
+  proofs          PaymentProof[]
+  events          OrderEvent[]
+
+  @@index([userId])
+  @@index([status, paymentStatus])
+  @@index([createdAt])
+  @@index([paymentMethod])
+}
+
+model OrderItem {
+  id             Int             @id @default(autoincrement())
+  orderId        Int
+  productId      Int?
+  variantId      Int?
+  /// snapshot of the translatable product name at purchase time
+  name           Json
+  sku            String
+  size           String?
+  color          String?
+  image          String?
+  unitPriceCents Int
+  qty            Int
+  order          Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product        Product?        @relation(fields: [productId], references: [id], onDelete: SetNull)
+  variant        ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+}
+
+/// A payment submission by the customer (bank/ATM/wallet). COD has no proof.
+model PaymentProof {
+  id           Int              @id @default(autoincrement())
+  orderId      Int
+  method       PaymentMethodKey
+  amountCents  Int
+  status       ProofStatus      @default(SUBMITTED)
+  bankKey      String?
+  /// bank transfer reference / ATM receipt no. / wallet transaction ID
+  reference    String?
+  payerName    String?
+  payerAccount String?
+  /// transaction timestamp stated by the customer (UTC)
+  paidAt       DateTime?
+  /// private file name under UPLOAD_DIR/private/proofs (never served statically)
+  fileKey      String?
+  fileMime     String?
+  fileSize     Int?
+  reviewerId   Int?
+  reviewedAt   DateTime?
+  reviewNote   String?
+  createdAt    DateTime         @default(now())
+  order        Order            @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([status])
+  @@index([method, reference])
+}
+
+model OrderEvent {
+  id         Int          @id @default(autoincrement())
+  orderId    Int
+  type       String
+  fromStatus OrderStatus?
+  toStatus   OrderStatus?
+  actorId    Int?
+  actorLabel String?
+  note       String?
+  createdAt  DateTime     @default(now())
+  order      Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+/// Admin-configurable payment methods (account numbers, wallet numbers, QR images, instructions).
+model PaymentMethodConfig {
+  key          PaymentMethodKey @id
+  enabled      Boolean          @default(true)
+  sortOrder    Int              @default(0)
+  name         Json
+  instructions Json
+  /// BANK/ATM: {accountHolder, accountNumber, bankName, branch, swift}; TPAY/MOSAN: {merchantName, merchantNumber, qrImage}
+  config       Json             @default("{}")
+}
+
+// ------------------------------------------------------------------ delivery zones (Dili COD)
+
+/// One row per Dili administrative post (COD capable) and one row per other municipality (never COD).
+model DeliveryZone {
+  id               Int     @id @default(autoincrement())
+  municipality     String // key: dili, atauro, baucau, ...
+  adminPost        String? // key: cristo_rei, dom_aleixo, ... (null for non-Dili municipalities)
+  name             String
+  codEnabled       Boolean @default(false)
+  deliveryFeeCents Int     @default(0)
+  freeOverCents    Int?
+  etaText          String?
+  sortOrder        Int     @default(0)
+  isActive         Boolean @default(true)
+  sucos            Suco[]
+
+  @@unique([municipality, adminPost])
+}
+
+model Suco {
+  id         Int          @id @default(autoincrement())
+  zoneId     Int
+  name       String
+  /// per-suco switch so a single suco can be excluded from COD
+  codEnabled Boolean      @default(true)
+  isActive   Boolean      @default(true)
+  zone       DeliveryZone @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+
+  @@unique([zoneId, name])
+}
+
+// ------------------------------------------------------------------ content
+
+model StoreSetting {
+  key   String @id
+  value Json
+}
+
+model Banner {
+  id        Int             @id @default(autoincrement())
+  placement BannerPlacement @default(HERO)
+  image     String
+  badge     Json?
+  title     Json
+  highlight Json?
+  subtitle  Json?
+  ctaLabel  Json?
+  ctaUrl    String          @default("/shop")
+  sortOrder Int             @default(0)
+  isActive  Boolean         @default(true)
+  startsAt  DateTime?
+  endsAt    DateTime?
+}
+
+model CmsPage {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique // about, cod-terms, privacy, terms, shipping-returns
+  title       Json
+  body        Json // light markdown per language
+  isPublished Boolean  @default(true)
+  updatedAt   DateTime @updatedAt
+}
+
+model NewsletterSubscriber {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  locale    String?
+  createdAt DateTime @default(now())
+}
+
+model ContactMessage {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String?
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+/// Append-only: a database trigger (see migrations/*_audit_immutable) rejects UPDATE and DELETE.
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int?
+  userLabel String
+  action    String
+  entity    String?
+  entityId  String?
+  meta      Json?
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([action])
+}

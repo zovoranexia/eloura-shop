@@ -1,0 +1,153 @@
+{
+  "common": { "active": "Ativu", "inactive": "La ativu" },
+  "upload": { "choose": "Hili imajen", "add": "Aumenta", "hint": "JPG, PNG ka WebP · máx. 5 MB · konverte fali no metadata hasai" },
+  "nav": {
+    "badge": "Admin", "menu": "Loke menu", "viewStore": "Hare loja", "logout": "Sai",
+    "groups": { "overview": "Rezumu", "sales": "Faan", "catalogue": "Katálogu", "storefront": "Loja online", "settings": "Konfigurasaun", "access": "Asesu" },
+    "dashboard": "Painel", "orders": "Pedidu sira", "payments": "Verifikasaun pagamentu", "cod": "Osan-kash COD", "customers": "Kliente sira",
+    "products": "Produtu sira", "categories": "Kategoria sira", "inventory": "Inventáriu", "coupons": "Kupaun sira", "reviews": "Avaliasaun sira",
+    "banners": "Banner sira", "pages": "Pájina sira (CMS)", "inquiries": "Mensajen sira", "newsletter": "Buletín",
+    "zones": "Zona entrega no COD", "paymentMethods": "Métodu pagamentu", "settings": "Konfigurasaun loja", "reports": "Relatóriu no ezporta",
+    "staff": "Funsionáriu sira", "roles": "Papél no permisaun", "audit": "Rejistu auditoria"
+  },
+  "login": { "title": "Tama ba admin", "subtitle": "Back office Eloura Chic", "submit": "Tama", "secure": "Área proteje. Asaun hotu rejistu iha auditoria.", "notStaff": "Konta ne'e la iha asesu ba admin." },
+  "forbidden": { "title": "La bele tama", "text": "Ita-nia papél la inklui área ne'e. Husu asesu ba Super Admin.", "back": "Fila ba painel" },
+  "dashboard": {
+    "title": "Painel", "subtitle": "Ohin {date} · Asia/Dili", "welcome": "Bemvindu, {name}", "welcomeText": "Uza menu atu loke área sira ne'ebé ita-nia papél bele asesu.",
+    "revenueToday": "Reseita ohin", "revenueMonth": "Reseita fulan ne'e", "revenue14": "Reseita loron 14 ikus", "newCustomers": "Kliente foun",
+    "ordersToday": "Pedidu {n} ohin", "paidOnly": "Pedidu selu ona deit", "last14": "Pedidu selu ona", "last7": "Loron 7 ikus",
+    "chartTitle": "Reseita no pedidu · loron 14", "revenue": "Reseita", "orders": "Pedidu", "tzNote": "Loron konta tuir oras Dili (UTC+9).",
+    "queues": "Servisu hein", "byStatus": "Pedidu tuir estadu", "byMethod": "Métodu pagamentu", "topProducts": "Produtu faan barak · loron 30", "units": "{n} unidade",
+    "lowStock": "Estoke ki'ik", "manageStock": "Jere estoke", "stockOk": "Nivel estoke hotu di'ak.", "soldOut": "Remata", "left": "Sobra {n}", "monthly": "Reseita fulan-fulan",
+    "q": {
+      "awaitingVerification": "Pagamentu atu verifika", "codToConfirm": "COD atu konfirma (telefone / WhatsApp)", "toPack": "Pedidu atu empaka", "outForDelivery": "Iha dalan entrega",
+      "codCash": "Osan COD atu rekonsilia", "refunds": "Osan fila fali hein", "inquiries": "Mensajen seidauk lee"
+    }
+  },
+  "orders": {
+    "title": "Pedidu sira", "subtitle": "Buka, filtra no prosesa kliente nia pedidu.", "searchPlaceholder": "Kódigu pedidu, naran ka telefone", "allStatuses": "Estadu hotu", "allPayments": "Pagamentu hotu", "allMethods": "Métodu hotu",
+    "order": "Pedidu", "customer": "Kliente", "area": "Área", "method": "Métodu", "payment": "Pagamentu", "items": "Sasán {n}", "total": "Hetan pedidu {n}",
+    "placedOn": "Halo iha {date}", "payBy": "Selu molok {date}", "itemsTitle": "Sasán sira", "discount": "Deskonto", "shipping": "Entrega", "codFee": "Taxa COD",
+    "proofs": "Komprovativu pagamentu", "openPayments": "Sentru pagamentu", "timeline": "Istória pedidu", "byCustomer": "Kliente", "bySystem": "Sistema",
+    "actions": "Asaun sira", "updated": "Pedidu atualiza ona", "courierFirst": "Hili entregadór molok haruka pedidu COD ne'e.", "codCollectHint": "Konfirma katak entregadór simu osan-kash ho folin loos.",
+    "awaitPaymentHint": "Pedidu ne'e sei avansa automátiku bainhira finansa aprova komprovativu pagamentu.", "cancelOrder": "Kansela pedidu", "cancelText": "Estoke fila fali ba inventáriu. Pedidu selu ona sei marka ba osan fila fali.",
+    "reason": "Razaun", "codRefused": "Kliente rejeita entrega COD", "codRefusedHint": "Konta ba marka automátiku COD ba kliente ne'e.", "markRefunded": "Marka osan fila fali ona", "refundText": "Konfirma katak {total} fila ona ba kliente.",
+    "customerNote": "Nota husi kliente", "deliverTo": "Entrega ba", "whatsApp": "WhatsApp kliente", "confirmWhatsApp": "Konfirma liuhosi WhatsApp", "codPanel": "Selu bainhira simu", "termsAccepted": "Termu aseita ona", "cashDue": "Osan tenke simu",
+    "collected": "Osan simu ona", "reconciled": "Rekonsilia husi finansa", "courier": "Entregadór", "noCourier": "— seidauk hili —", "courierNote": "Nota ba entregadór", "saveCourier": "Rai entregadór",
+    "internalNotes": "Nota internu", "notePlaceholder": "Aumenta nota ba ekipa…", "noteHint": "Nota sira ne'e funsionáriu deit mak bele haree, la'ós kliente.", "invoice": "Fatura", "packingSlip": "Folha empakamentu",
+    "next": { "confirmCod": "Konfirma pedidu COD", "markPacked": "Marka empaka ona", "sendOut": "Haruka ba entrega", "markDelivered": "Marka entrega ona" },
+    "reasons": { "CUSTOMER_REQUEST": "Kliente husu", "UNREACHABLE": "La bele kontaktu kliente", "COD_REFUSED": "COD rejeita iha odamatan", "OUT_OF_STOCK": "Estoke remata", "PAYMENT_PROBLEM": "Problema pagamentu", "OTHER": "Seluk", "PAYMENT_DEADLINE_EXPIRED": "Prazu pagamentu remata" },
+    "events": {
+      "created": "Pedidu halo ona", "status": "Estadu troka", "payment_submitted": "Komprovativu submete ona", "payment_approved": "Pagamentu aprova ona", "payment_rejected": "Pagamentu rejeita ona",
+      "cancelled": "Pedidu kansela ona", "refund": "Osan fila fali ona", "note": "Nota internu", "courier_assigned": "Entregadór hili ona", "cod_flagged": "Kliente marka ba COD", "cod_reconciled": "Osan COD rekonsilia ona"
+    }
+  },
+  "payments": {
+    "title": "Verifikasaun pagamentu", "subtitle": "Hare komprovativu BNCTL (banku no ATM), T-Pay no Mosan, depois aprova ka rejeita.", "inQueue": "{n} iha lista", "search": "Buka pedidu, kliente ka referénsia",
+    "queueEmpty": "Lista mamuk. Servisu di'ak!", "pick": "Hili pagamentu ida atu hare.", "duplicate": "Referénsia dupla", "amountDiffers": "Folin la hanesan", "proof": "Komprovativu pagamentu", "openFile": "Loke fitxeiru",
+    "noFile": "La iha fitxeiru.", "pdfHint": "Komprovativu ne'e PDF. Loke iha tab foun atu lee.", "zoom": "Boot komprovativu", "zoomHint": "Klik imajen atu boot", "details": "Detallu pagamentu", "reference": "Referénsia / ID transaksaun",
+    "payer": "Na'in selu", "statedTime": "Oras ne'ebé kliente hatudu", "submittedAt": "Submete", "proofAmount": "Folin iha komprovativu", "orderTotal": "Total pedidu", "amountOk": "Folin hanesan ho total pedidu.",
+    "amountWarn": "Folin la hanesan ho total pedidu. Hare resibu ho kuidadu.", "duplicateWarn": "Referénsia hanesan submete ona ba: {codes}. Hare se transferénsia ida uza dala barak.", "reviewNote": "Nota revizaun",
+    "orderSummary": "Rezumu pedidu", "decision": "Desizaun", "approve": "Aprova pagamentu", "reject": "Rejeita", "approveNote": "Nota (opsionál)", "approvePlaceholder": "ez.: hetan iha extratu BNCTL", "rejectReason": "Razaun rejeita",
+    "rejectHint": "Kliente sei haree razaun ne'e no bele upload komprovativu foun.", "confirmReject": "Rejeita pagamentu", "approved": "Pagamentu aprova ona. Pedidu hahú prosesa.", "rejected": "Pagamentu rejeita ona. Kliente hetan avizu.",
+    "methodsTitle": "Métodu pagamentu", "methodsSubtitle": "Númeru konta, númeru karteira, kódigu QR no instrusaun ne'ebé hatudu ba kliente.",
+    "walletNote": "T-Pay no Mosan funsiona ho verifikasaun manuál: kliente selu ba ita-nia númeru merchant no submete ID transaksaun ho screenshot; finansa verifika ho extratu karteira. API direta bele tau iha futuru la presiza troka checkout.",
+    "configured": "Konfigura ona", "notConfigured": "Seidauk konfigura", "hiddenWarn": "Seidauk iha detallu simu ne'ebé loos: iha produsaun métodu ne'e subar husi kliente to'o ita hatama.",
+    "enabled": "Ativu iha checkout", "bankName": "Naran banku", "accountHolder": "Na'in konta", "accountNumber": "Númeru konta", "branch": "Ajénsia", "merchantName": "Naran merchant", "merchantNumber": "Númeru merchant",
+    "qr": "Kódigu QR merchant", "qrHint": "Kliente bele scan QR ne'e ho aplikasaun.", "displayName": "Naran ne'ebé hatudu ba kliente", "instructions": "Instrusaun pasu-pasu", "codInfo": "COD disponivel (zona Dili, limite no taxa) jere iha Zona entrega no Konfigurasaun loja."
+  },
+  "cod": {
+    "title": "Rekonsiliasaun osan COD", "subtitle": "Osan-kash ne'ebé entregadór simu bainhira entrega, hein atu fó ba finansa.", "export": "Ezporta CSV", "toReconcile": "Osan atu rekonsilia", "selected": "Hili ona",
+    "ordersCount": "Pedidu {n}", "reconcileSelected": "Rekonsilia ne'ebé hili", "tabPending": "Iha entregadór", "tabDone": "Rekonsilia ona", "allCouriers": "Entregadór hotu", "empty": "La iha entrega COD iha ne'e.", "delivered": "Entrega",
+    "collected": "Simu", "withCourier": "Iha entregadór", "reconciledDone": "Osan rekonsilia ona", "confirmText": "Konfirma katak pedidu {n} ho valór {total} entregadór fó ona?"
+  },
+  "customers": {
+    "title": "Kliente sira", "subtitle": "Konta, pedidu no elijibilidade COD.", "search": "Naran, e-mail ka telefone", "onlyFlagged": "COD bloka deit", "orders": "Pedidu", "joined": "Rejistu", "lastLogin": "Tama ikus",
+    "codBlocked": "COD bloka", "refusals": "Rejeita COD dala {n}", "profile": "Perfil", "codControl": "Elijibilidade COD", "codAllowed": "COD permite", "codHint": "Kliente ne'ebé marka la haree Selu bainhira simu. Limite marka automátiku defini iha Konfigurasaun loja.",
+    "flag": "Bloka COD", "unflag": "Permite COD fali", "flagText": "Kliente ne'e sei la hetan opsaun Selu bainhira simu. Nia bele selu liuhosi banku, ATM, T-Pay ka Mosan.", "flagSaved": "Elijibilidade COD atualiza ona", "addresses": "Enderesu rai ona",
+    "deactivate": "Dezativa konta", "activate": "Ativa fali konta", "deactivateText": "Kliente sei sai husi konta no la bele tama.", "activateText": "Kliente bele tama fali."
+  },
+  "products": {
+    "title": "Produtu sira", "subtitle": "Katálogu multilíngua ho variante tamañu / kór.", "new": "Produtu foun", "edit": "Edita produtu", "search": "Naran ka SKU", "allCategories": "Kategoria hotu", "anyStatus": "Estadu hotu",
+    "lowOnly": "Estoke ki'ik deit", "product": "Produtu", "category": "Kategoria", "price": "Folin (USD)", "stock": "Estoke", "variantsCount": "Variante {n}", "featured": "Destake", "readOnly": "Ita bele hare produtu ne'e maibé la bele troka.",
+    "content": "Konteúdu (lian 4)", "name": "Naran", "description": "Deskrisaun", "langHint": "Tetun mak lian padraun; lian mamuk sei uza Tetun automátiku.", "images": "Imajen sira", "mainImage": "Prinsipál", "variants": "Variante sira",
+    "variant": "Variante", "size": "Tamañu", "color": "Kór", "hex": "Amostra", "priceOverride": "Folin espesiál", "addVariant": "Aumenta variante", "genSizes": "Tamañu (fahe ho vírgula)", "genColors": "Kór (fahe ho vírgula)", "generate": "Kria",
+    "pricing": "Folin", "compareAt": "Folin antigu (USD)", "compareHint": "Boot liu folin: hatudu marka deskonto no folin riska.", "organization": "Organizasaun", "slug": "Slug URL", "slugHint": "Husik mamuk atu kria automátiku.",
+    "visible": "Hatudu iha loja", "featuredHome": "Hatudu iha pájina uluk", "deleteText": "Produtu ne'ebé iha pedidu ona sei dezativa deit, atu istória pedidu la lakon.", "deleted": "Produtu hamoos ona", "deactivated": "Produtu dezativa ona (iha istória pedidu)"
+  },
+  "categories": { "title": "Kategoria sira", "subtitle": "Halibur produtu no hatudu iha pájina uluk.", "new": "Kategoria foun", "edit": "Edita kategoria", "image": "Imajen", "order": "Orden", "products": "Produtu", "visible": "Hatudu iha loja", "deleteText": "Produtu {n} sei la iha kategoria. Kontinua?" },
+  "inventory": { "title": "Inventáriu", "subtitle": "Estoke ba variante. Limite avizu: unidade {n}.", "ok": "Iha estoke" },
+  "coupons": {
+    "title": "Kupaun no deskonto", "subtitle": "Deskonto persentu ka USD fixu ho validade tuir oras Dili.", "new": "Kupaun foun", "edit": "Edita kupaun", "code": "Kódigu", "codeHint": "Letra, númeru, - no _ deit.", "type": "Tipu",
+    "percent": "Persentu", "fixed": "Valór fixu (USD)", "percentValue": "Persentu deskonto", "fixedValue": "Valór deskonto", "discount": "Deskonto", "maxDiscount": "Deskonto máximu", "maxDiscountHint": "Limite ba kupaun persentu. Mamuk = laiha limite.",
+    "upTo": "to'o {max}", "minOrder": "Pedidu mínimu", "usage": "Uza ona", "usageLimit": "Limite uza", "usageHint": "Mamuk = laiha limite.", "startsAt": "Hahú", "endsAt": "Remata", "validity": "Validade", "description": "Deskrisaun", "deleteText": "Hamoos kupaun {code}?"
+  },
+  "reviews": { "title": "Avaliasaun sira", "subtitle": "Avaliasaun husi sosa-na'in verifikadu. Subar buat ne'ebé la di'ak.", "product": "Produtu", "rating": "Nota", "comment": "Komentáriu", "verified": "kompra verifikadu", "published": "Publika ona", "hidden": "Subar", "hide": "Subar", "publish": "Publika" },
+  "banners": {
+    "title": "Banner sira", "subtitle": "Slider prinsipál no banner promosaun iha pájina uluk.", "hero": "Slide prinsipál", "promo": "Banner promosaun", "new": "Banner foun", "edit": "Edita banner", "image": "Imajen",
+    "heroHint": "Imajen luan (besik 1024×430 ka boot liu) ho fatin mamuk iha liman karuk ba testu.", "promoHint": "Imajen luan estilu moris ne'ebé hatudu iha liman los promosaun.", "badge": "Etiketa ki'ik", "titleField": "Títulu", "highlight": "Aksentu itálika", "subtitleField": "Subtítulu",
+    "cta": "Testu butaun", "link": "Ligasaun butaun", "deleteText": "Hamoos banner ne'e?"
+  },
+  "pages": {
+    "title": "Pájina sira (CMS)", "subtitle": "Kona-ba ami, termu COD, privasidade no pájina seluk iha lian haat.", "new": "Pájina foun", "edit": "Edita pájina", "page": "Pájina", "languages": "Lian", "updated": "Atualiza", "published": "Publika ona", "draft": "Rascunhu",
+    "slugHint": "Letra ki'ik, númeru no tésan. URL públiku: /page/<slug>.", "titleField": "Títulu", "body": "Konteúdu", "markdownHint": "Markdown simples: ## títulu, - lista, 1. lista númeru, **bold**, liña mamuk = parágrafu foun. HTML la hatudu nunka."
+  },
+  "inquiries": { "title": "Mensajen sira", "subtitle": "Mensajen husi formuláriu kontaktu.", "unread": "Seidauk lee", "new": "Foun", "reply": "Responde ho e-mail", "markRead": "Marka lee ona", "markUnread": "Marka seidauk lee", "deleteText": "Hamoos mensajen ne'e ba dala hotu?" },
+  "newsletter": { "title": "Subscritór buletín", "subtitle": "Subscritór {n}", "csv": "Download CSV" },
+  "zones": {
+    "title": "Zona entrega no COD", "subtitle": "Taxa entrega, limite entrega livre no fatin ne'ebé Selu bainhira simu permite.",
+    "codRule": "Selu bainhira simu funsiona DEIT iha munisípiu Dili, iha postu administrativu no suku ne'ebé ativa iha okos. Atauro no munisípiu seluk la inklui nunka.",
+    "diliTitle": "Munisípiu Dili", "othersTitle": "Munisípiu seluk", "municipality": "Munisípiu", "fee": "Taxa entrega", "freeOver": "Entrega livre liu", "eta": "Tempu entrega", "codEnabled": "Permite COD iha postu ne'e",
+    "deliveryActive": "Entrega iha ne'e", "sucos": "Suku ({n})", "sucoHint": "Klik suku atu ativa/dezativa COD. Suku ne'ebé riska la inklui iha COD.", "toggleSuco": "Troka COD ba suku ne'e", "noCod": "la iha COD", "addSuco": "Aumenta suku…",
+    "codDiliOnly": "COD disponivel iha Dili deit", "codDiliOnlyShort": "Dili deit"
+  },
+  "settings": {
+    "title": "Konfigurasaun loja", "subtitle": "Dadus loja, regra COD no operasaun pedidu.", "storeInfo": "Dadus loja", "storeName": "Naran loja", "address": "Enderesu", "tagline": "Slogan", "returnDays": "Prazu fila fali (loron)",
+    "codRules": "Regra COD", "codRulesHint": "Aplika iha servidór ba pedidu hotu. Osan mak USD.", "codMin": "Pedidu COD mínimu", "codMax": "Pedidu COD máximu", "codFee": "Taxa tratamentu COD", "codFeeHint": "0 = laiha taxa.",
+    "codAutoBlock": "Marka automátiku depois rejeita", "codAutoBlockHint": "Entrega COD rejeita dala hira molok COD subar ba kliente. 0 = nunka.", "codTermsVersion": "Versaun termu COD", "codTermsVersionHint": "Troka bainhira atualiza pájina termu COD; rai ho pedidu ida-idak ne'ebé aseita.",
+    "zonesNote": "Taxa entrega no limite entrega livre defini ba zona ida-idak iha Zona entrega no COD.", "operations": "Operasaun", "deadline": "Prazu pagamentu (oras)", "deadlineHint": "Pedidu banku / karteira ne'ebé seidauk selu sei kansela depois tempu ne'e.",
+    "lowStock": "Avizu estoke ki'ik iha", "maxQty": "Kuantidade máxima ba sasán ida", "currencyNote": "Folin hotu iha dolar amerikanu. Data no limite loron uza Asia/Dili (UTC+9)."
+  },
+  "reports": {
+    "title": "Relatóriu no ezporta", "subtitle": "Rezumu reseita no ezporta CSV (Asia/Dili).", "monthly": "Reseita fulan-fulan (pedidu selu ona)", "exports": "Ezporta CSV", "lastDays": "Loron {n} ikus", "badRange": "Hili intervalu data ne'ebé válidu.",
+    "note": "Fitxeiru CSV iha formatu UTF-8 (bele loke iha Excel ka Google Sheets) no ezporta hotu rejistu iha auditoria.",
+    "type": { "orders": "Pedidu sira", "payments": "Pagamentu sira", "cod": "Osan COD", "revenue": "Reseita loron-loron" },
+    "typeHint": { "orders": "Pedidu hotu ho total, estadu no área", "payments": "Komprovativu pagamentu no rezultadu revizaun", "cod": "Pedidu COD entrega ona no rekonsiliasaun", "revenue": "Reseita selu ona ba loron no métodu" }
+  },
+  "staff": {
+    "title": "Funsionáriu sira", "subtitle": "Konta back-office no sira-nia papél.", "new": "Konta funsionáriu foun", "edit": "Edita konta funsionáriu", "roles": "Papél sira", "you": "ita", "superLocked": "Super Admin deit mak bele edita Super Admin",
+    "resetPassword": "Liafuan-pase foun (reset)", "resetHint": "Husik mamuk atu rai liafuan-pase ohin. Reset halo uza-na'in sai husi fatin hotu.", "passwordHint": "Karakter 8 ka liu ho letra no númeru.",
+    "selfLocked": "Ita la bele troka ita-nia an nia papél ka dezativa an rasik.", "grantHint": "Ita bele fó deit papél ne'ebé permisaun sira ita mós iha.", "accountActive": "Konta ativu"
+  },
+  "roles": {
+    "title": "Papél no permisaun", "subtitle": "Kontrola loloos saida mak papél ida-idak bele haree no halo.", "new": "Papél personalizadu foun", "newHint": "Hahú husi papél mamuk, depois marka permisaun sira.", "system": "Sistema", "custom": "Personalizadu", "all": "hotu",
+    "locked": "Papél ne'e la bele edita.", "viewOnly": "Ita bele hare papél ne'e maibé la bele troka.", "description": "Deskrisaun", "matrix": "Matriz permisaun", "selectGroup": "Hili hotu", "clearGroup": "Hamoos hotu",
+    "grantHint": "Ita bele fó deit permisaun ne'ebé ita mós iha. Uza-na'in ho papél ne'e sai husi konta atu mudansa sira funsiona hanesan.", "saved": "Papél rai ona. Uza-na'in sira ne'ebé afeta tenke tama fali.", "deleteText": "Hamoos papél personalizadu ne'e?",
+    "groups": { "dashboard": "Painel", "catalogue": "Katálogu", "cms": "CMS loja", "orders": "Pedidu sira", "payments": "Pagamentu sira", "customers": "Kliente sira", "reports": "Relatóriu", "settings": "Konfigurasaun", "access": "Kontrolu asesu" },
+    "names": { "SUPER_ADMIN": "Super Admin", "STORE_MANAGER": "Jestór loja", "FINANCE_STAFF": "Funsionáriu finansa", "ORDER_FULFILLMENT": "Prepara pedidu", "CUSTOMER_SUPPORT": "Apoiu ba kliente", "CUSTOMER": "Kliente" },
+    "descriptions": {
+      "SUPER_ADMIN": "Asesu totál, inklui papél, funsionáriu, konfigurasaun no auditoria.", "STORE_MANAGER": "Katálogu, inventáriu, kupaun, banner, CMS no supervizaun pedidu.",
+      "FINANCE_STAFF": "Verifikasaun pagamentu, rekonsiliasaun COD, relatóriu reseita no ezporta.", "ORDER_FULFILLMENT": "Empaka, haruka no entrega pedidu; hili entregadór COD iha Dili.",
+      "CUSTOMER_SUPPORT": "Kliente, pedidu (lee deit), mensajen no moderasaun avaliasaun.", "CUSTOMER": "Kliente loja. La bele tama iha área admin."
+    }
+  },
+  "perm": {
+    "dashboard": { "view": "Hare painel analítiku" },
+    "products": { "view": "Hare produtu no estoke", "create": "Kria produtu", "update": "Edita produtu no variante", "delete": "Hamoos ka dezativa produtu" },
+    "inventory": { "update": "Hadi'a nivel estoke" }, "categories": { "manage": "Jere kategoria" }, "coupons": { "manage": "Jere kupaun no deskonto" }, "reviews": { "moderate": "Subar ka publika avaliasaun" },
+    "banners": { "manage": "Jere banner prinsipál no promosaun" }, "cms": { "manage": "Edita pájina estátika" },
+    "orders": { "view": "Hare pedidu", "update_status": "Konfirma, empaka, haruka no entrega pedidu", "cancel": "Kansela pedidu", "assign_courier": "Hili entregadór COD Dili" },
+    "invoices": { "print": "Imprime fatura no folha empakamentu" },
+    "payments": { "view": "Hare komprovativu pagamentu no lista", "verify": "Aprova ka rejeita pagamentu", "refund": "Marka osan fila fali ona" },
+    "cod": { "reconcile": "Rekonsilia osan COD", "flag_customers": "Marka kliente ba rejeita COD" },
+    "customers": { "view": "Hare kliente", "manage": "Ativa ka dezativa kliente" }, "inquiries": { "manage": "Lee no trata mensajen" },
+    "reports": { "view": "Hare relatóriu reseita", "export": "Ezporta relatóriu CSV" },
+    "zones": { "manage": "Jere zona entrega no COD" }, "settings": { "manage": "Jere konfigurasaun loja no pagamentu" },
+    "staff": { "manage": "Kria funsionáriu no fó papél" }, "roles": { "manage": "Edita papél no permisaun" }, "audit": { "view": "Hare rejistu auditoria" }
+  },
+  "audit": { "title": "Rejistu auditoria", "subtitle": "Se mak halo saida, bainhira no husi nebé.", "immutable": "Aumenta deit", "allActions": "Asaun hotu", "action": "Asaun", "who": "Uza-na'in", "target": "Alvu", "tz": "Oras iha Asia/Dili. Báze de dadus la simu mudansa ka hamoos ba liña sira ne'e." },
+  "print": {
+    "invoice": "Fatura", "packingSlip": "Folha empakamentu", "billTo": "Fatura ba", "shipTo": "Entrega ba", "details": "Detallu pedidu", "paymentMethod": "Métodu pagamentu", "paymentStatus": "Estadu pagamentu", "area": "Área",
+    "collectCash": "Simu osan-kash bainhira entrega", "exactCash": "Folin loos iha osan-kash USD", "item": "Sasán", "qty": "Kuant.", "unit": "Folin unidade", "thanks": "Obrigadu/a ba ita-nia kompra iha {store}!", "handle": "Tau matan ho di'ak · hare sasán hotu molok taka"
+  }
+}

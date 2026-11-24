@@ -1,0 +1,153 @@
+{
+  "common": { "active": "Aktif", "inactive": "Nonaktif" },
+  "upload": { "choose": "Pilih gambar", "add": "Tambah", "hint": "JPG, PNG, atau WebP · maks. 5 MB · dikodekan ulang dan metadata dihapus" },
+  "nav": {
+    "badge": "Admin", "menu": "Buka menu", "viewStore": "Lihat toko", "logout": "Keluar",
+    "groups": { "overview": "Ringkasan", "sales": "Penjualan", "catalogue": "Katalog", "storefront": "Etalase toko", "settings": "Pengaturan", "access": "Akses" },
+    "dashboard": "Dasbor", "orders": "Pesanan", "payments": "Verifikasi pembayaran", "cod": "Uang tunai COD", "customers": "Pelanggan",
+    "products": "Produk", "categories": "Kategori", "inventory": "Inventaris", "coupons": "Kupon", "reviews": "Ulasan",
+    "banners": "Banner", "pages": "Halaman (CMS)", "inquiries": "Pesan masuk", "newsletter": "Newsletter",
+    "zones": "Zona pengiriman & COD", "paymentMethods": "Metode pembayaran", "settings": "Pengaturan toko", "reports": "Laporan & ekspor",
+    "staff": "Staf", "roles": "Peran & izin", "audit": "Log audit"
+  },
+  "login": { "title": "Masuk admin", "subtitle": "Back office Eloura Chic", "submit": "Masuk", "secure": "Area terlindungi. Setiap tindakan dicatat dalam log audit.", "notStaff": "Akun ini tidak memiliki akses admin." },
+  "forbidden": { "title": "Akses ditolak", "text": "Peran Anda tidak mencakup area ini. Hubungi Super Admin jika Anda memerlukan akses.", "back": "Kembali ke dasbor" },
+  "dashboard": {
+    "title": "Dasbor", "subtitle": "Hari ini {date} · Asia/Dili", "welcome": "Selamat datang, {name}", "welcomeText": "Gunakan menu untuk membuka area yang dapat diakses peran Anda.",
+    "revenueToday": "Pendapatan hari ini", "revenueMonth": "Pendapatan bulan ini", "revenue14": "Pendapatan 14 hari terakhir", "newCustomers": "Pelanggan baru",
+    "ordersToday": "{n} pesanan hari ini", "paidOnly": "Hanya pesanan lunas", "last14": "Pesanan lunas", "last7": "7 hari terakhir",
+    "chartTitle": "Pendapatan dan pesanan · 14 hari", "revenue": "Pendapatan", "orders": "Pesanan", "tzNote": "Hari dihitung menurut waktu Dili (UTC+9).",
+    "queues": "Antrean kerja", "byStatus": "Pesanan menurut status", "byMethod": "Metode pembayaran", "topProducts": "Produk terlaris · 30 hari", "units": "{n} pcs",
+    "lowStock": "Stok menipis", "manageStock": "Kelola stok", "stockOk": "Semua tingkat stok aman.", "soldOut": "Habis", "left": "Sisa {n}", "monthly": "Pendapatan bulanan",
+    "q": {
+      "awaitingVerification": "Pembayaran perlu diverifikasi", "codToConfirm": "COD perlu dikonfirmasi (telepon / WhatsApp)", "toPack": "Pesanan perlu dikemas", "outForDelivery": "Dalam pengiriman",
+      "codCash": "Uang COD perlu direkonsiliasi", "refunds": "Pengembalian dana tertunda", "inquiries": "Pesan belum dibaca"
+    }
+  },
+  "orders": {
+    "title": "Pesanan", "subtitle": "Cari, saring, dan proses pesanan pelanggan.", "searchPlaceholder": "Kode pesanan, nama, atau telepon", "allStatuses": "Semua status", "allPayments": "Semua pembayaran", "allMethods": "Semua metode",
+    "order": "Pesanan", "customer": "Pelanggan", "area": "Area", "method": "Metode", "payment": "Pembayaran", "items": "{n} barang", "total": "{n} pesanan ditemukan",
+    "placedOn": "Dipesan pada {date}", "payBy": "Bayar sebelum {date}", "itemsTitle": "Barang", "discount": "Diskon", "shipping": "Pengiriman", "codFee": "Biaya COD",
+    "proofs": "Bukti pembayaran", "openPayments": "Pusat pembayaran", "timeline": "Linimasa", "byCustomer": "Pelanggan", "bySystem": "Sistem",
+    "actions": "Tindakan", "updated": "Pesanan diperbarui", "courierFirst": "Tugaskan kurir sebelum mengirim pesanan COD ini.", "codCollectHint": "Konfirmasi kurir menerima uang tunai persis sejumlah ini.",
+    "awaitPaymentHint": "Pesanan ini maju otomatis saat keuangan menyetujui bukti pembayaran.", "cancelOrder": "Batalkan pesanan", "cancelText": "Stok dikembalikan ke inventaris. Pesanan yang sudah dibayar ditandai untuk pengembalian dana.",
+    "reason": "Alasan", "codRefused": "Pelanggan menolak pengiriman COD", "codRefusedHint": "Dihitung untuk penandaan COD otomatis pelanggan ini.", "markRefunded": "Tandai pengembalian dana selesai", "refundText": "Konfirmasi bahwa {total} sudah dikembalikan kepada pelanggan.",
+    "customerNote": "Catatan pelanggan", "deliverTo": "Kirim ke", "whatsApp": "WhatsApp pelanggan", "confirmWhatsApp": "Konfirmasi via WhatsApp", "codPanel": "Bayar di tempat", "termsAccepted": "Ketentuan disetujui", "cashDue": "Uang yang harus diterima",
+    "collected": "Uang diterima", "reconciled": "Direkonsiliasi keuangan", "courier": "Kurir", "noCourier": "— belum ditugaskan —", "courierNote": "Catatan untuk kurir", "saveCourier": "Simpan kurir",
+    "internalNotes": "Catatan internal", "notePlaceholder": "Tambahkan catatan untuk tim…", "noteHint": "Catatan hanya terlihat oleh staf, tidak pernah oleh pelanggan.", "invoice": "Faktur", "packingSlip": "Slip kemasan",
+    "next": { "confirmCod": "Konfirmasi pesanan COD", "markPacked": "Tandai sudah dikemas", "sendOut": "Kirim untuk pengantaran", "markDelivered": "Tandai terkirim" },
+    "reasons": { "CUSTOMER_REQUEST": "Permintaan pelanggan", "UNREACHABLE": "Pelanggan tidak dapat dihubungi", "COD_REFUSED": "COD ditolak di depan pintu", "OUT_OF_STOCK": "Stok habis", "PAYMENT_PROBLEM": "Masalah pembayaran", "OTHER": "Lainnya", "PAYMENT_DEADLINE_EXPIRED": "Batas waktu pembayaran habis" },
+    "events": {
+      "created": "Pesanan dibuat", "status": "Status berubah", "payment_submitted": "Bukti pembayaran dikirim", "payment_approved": "Pembayaran disetujui", "payment_rejected": "Pembayaran ditolak",
+      "cancelled": "Pesanan dibatalkan", "refund": "Pengembalian dana selesai", "note": "Catatan internal", "courier_assigned": "Kurir ditugaskan", "cod_flagged": "Pelanggan ditandai untuk COD", "cod_reconciled": "Uang COD direkonsiliasi"
+    }
+  },
+  "payments": {
+    "title": "Verifikasi pembayaran", "subtitle": "Tinjau bukti BNCTL (bank dan ATM), T-Pay, dan Mosan, lalu setujui atau tolak.", "inQueue": "{n} dalam antrean", "search": "Cari pesanan, pelanggan, atau referensi",
+    "queueEmpty": "Antrean kosong. Kerja bagus!", "pick": "Pilih pembayaran untuk ditinjau.", "duplicate": "Referensi ganda", "amountDiffers": "Jumlah berbeda", "proof": "Bukti pembayaran", "openFile": "Buka berkas",
+    "noFile": "Tidak ada berkas terlampir.", "pdfHint": "Bukti ini berupa PDF. Buka di tab baru untuk membacanya.", "zoom": "Perbesar bukti", "zoomHint": "Klik gambar untuk memperbesar", "details": "Detail pembayaran", "reference": "Referensi / ID transaksi",
+    "payer": "Pembayar", "statedTime": "Waktu menurut pelanggan", "submittedAt": "Dikirim", "proofAmount": "Jumlah pada bukti", "orderTotal": "Total pesanan", "amountOk": "Jumlah sesuai dengan total pesanan.",
+    "amountWarn": "Jumlah tidak sesuai dengan total pesanan. Periksa struk dengan teliti.", "duplicateWarn": "Referensi yang sama dikirim untuk: {codes}. Periksa kemungkinan satu transfer dipakai berulang.", "reviewNote": "Catatan peninjauan",
+    "orderSummary": "Ringkasan pesanan", "decision": "Keputusan", "approve": "Setujui pembayaran", "reject": "Tolak", "approveNote": "Catatan (opsional)", "approvePlaceholder": "mis. terlihat di mutasi BNCTL", "rejectReason": "Alasan penolakan",
+    "rejectHint": "Pelanggan melihat alasan ini dan dapat mengunggah bukti baru.", "confirmReject": "Tolak pembayaran", "approved": "Pembayaran disetujui. Pesanan masuk ke pemrosesan.", "rejected": "Pembayaran ditolak. Pelanggan telah diberi tahu.",
+    "methodsTitle": "Metode pembayaran", "methodsSubtitle": "Nomor rekening, nomor dompet, kode QR, dan petunjuk yang ditampilkan kepada pelanggan.",
+    "walletNote": "T-Pay dan Mosan berjalan dengan verifikasi manual: pelanggan membayar ke nomor merchant Anda lalu mengirim ID transaksi dan tangkapan layar; keuangan memverifikasi dengan mutasi dompet. API langsung dapat dipasang nanti tanpa mengubah checkout.",
+    "configured": "Sudah diatur", "notConfigured": "Belum diatur", "hiddenWarn": "Belum ada data penerimaan yang asli: di produksi metode ini disembunyikan dari pelanggan sampai Anda mengisinya.",
+    "enabled": "Aktif saat checkout", "bankName": "Nama bank", "accountHolder": "Pemilik rekening", "accountNumber": "Nomor rekening", "branch": "Cabang", "merchantName": "Nama merchant", "merchantNumber": "Nomor merchant",
+    "qr": "Kode QR merchant", "qrHint": "Pelanggan dapat memindai QR ini dengan aplikasi.", "displayName": "Nama yang ditampilkan ke pelanggan", "instructions": "Petunjuk langkah demi langkah", "codInfo": "Ketersediaan COD (zona Dili, batas, dan biaya) diatur di Zona pengiriman dan Pengaturan toko."
+  },
+  "cod": {
+    "title": "Rekonsiliasi uang COD", "subtitle": "Uang tunai yang diterima kurir saat pengantaran, menunggu diserahkan ke keuangan.", "export": "Ekspor CSV", "toReconcile": "Uang perlu direkonsiliasi", "selected": "Terpilih",
+    "ordersCount": "{n} pesanan", "reconcileSelected": "Rekonsiliasi yang dipilih", "tabPending": "Di kurir", "tabDone": "Sudah direkonsiliasi", "allCouriers": "Semua kurir", "empty": "Tidak ada pengiriman COD di sini.", "delivered": "Terkirim",
+    "collected": "Diterima", "withCourier": "Di kurir", "reconciledDone": "Uang direkonsiliasi", "confirmText": "Konfirmasi bahwa {n} pesanan senilai {total} telah diserahkan oleh kurir?"
+  },
+  "customers": {
+    "title": "Pelanggan", "subtitle": "Akun, pesanan, dan kelayakan COD.", "search": "Nama, email, atau telepon", "onlyFlagged": "Hanya COD diblokir", "orders": "Pesanan", "joined": "Bergabung", "lastLogin": "Masuk terakhir",
+    "codBlocked": "COD diblokir", "refusals": "{n} penolakan COD", "profile": "Profil", "codControl": "Kelayakan COD", "codAllowed": "COD diizinkan", "codHint": "Pelanggan yang ditandai tidak pernah melihat Bayar di tempat. Ambang penandaan otomatis diatur di Pengaturan toko.",
+    "flag": "Blokir COD", "unflag": "Izinkan COD lagi", "flagText": "Pelanggan ini tidak lagi ditawari Bayar di tempat. Mereka tetap dapat membayar lewat bank, ATM, T-Pay, atau Mosan.", "flagSaved": "Kelayakan COD diperbarui", "addresses": "Alamat tersimpan",
+    "deactivate": "Nonaktifkan akun", "activate": "Aktifkan kembali akun", "deactivateText": "Pelanggan akan keluar dan tidak dapat masuk.", "activateText": "Pelanggan dapat masuk kembali."
+  },
+  "products": {
+    "title": "Produk", "subtitle": "Katalog multibahasa dengan varian ukuran / warna.", "new": "Produk baru", "edit": "Ubah produk", "search": "Nama atau SKU", "allCategories": "Semua kategori", "anyStatus": "Semua status",
+    "lowOnly": "Hanya stok menipis", "product": "Produk", "category": "Kategori", "price": "Harga (USD)", "stock": "Stok", "variantsCount": "{n} varian", "featured": "Unggulan", "readOnly": "Anda dapat melihat produk ini tetapi tidak dapat mengubahnya.",
+    "content": "Konten (4 bahasa)", "name": "Nama", "description": "Deskripsi", "langHint": "Tetum adalah bahasa bawaan; bahasa yang kosong otomatis memakai Tetum.", "images": "Gambar", "mainImage": "Utama", "variants": "Varian",
+    "variant": "Varian", "size": "Ukuran", "color": "Warna", "hex": "Contoh warna", "priceOverride": "Harga khusus", "addVariant": "Tambah varian", "genSizes": "Ukuran (pisahkan dengan koma)", "genColors": "Warna (pisahkan dengan koma)", "generate": "Buat",
+    "pricing": "Harga", "compareAt": "Harga coret (USD)", "compareHint": "Lebih tinggi dari harga: menampilkan lencana diskon dan harga dicoret.", "organization": "Pengaturan", "slug": "Slug URL", "slugHint": "Kosongkan untuk dibuat otomatis.",
+    "visible": "Tampil di toko", "featuredHome": "Tampilkan di beranda", "deleteText": "Produk yang pernah dipesan hanya dinonaktifkan agar riwayat pesanan tetap utuh.", "deleted": "Produk dihapus", "deactivated": "Produk dinonaktifkan (memiliki riwayat pesanan)"
+  },
+  "categories": { "title": "Kategori", "subtitle": "Kelompokkan produk dan isi strip kategori di beranda.", "new": "Kategori baru", "edit": "Ubah kategori", "image": "Gambar", "order": "Urutan", "products": "Produk", "visible": "Tampil di toko", "deleteText": "{n} produk akan menjadi tanpa kategori. Lanjutkan?" },
+  "inventory": { "title": "Inventaris", "subtitle": "Stok per varian. Ambang peringatan: {n} unit.", "ok": "Tersedia" },
+  "coupons": {
+    "title": "Kupon & diskon", "subtitle": "Diskon persen atau nominal USD dengan masa berlaku menurut waktu Dili.", "new": "Kupon baru", "edit": "Ubah kupon", "code": "Kode", "codeHint": "Hanya huruf, angka, - dan _.", "type": "Jenis",
+    "percent": "Persentase", "fixed": "Nominal tetap (USD)", "percentValue": "Persen diskon", "fixedValue": "Nominal diskon", "discount": "Diskon", "maxDiscount": "Diskon maksimum", "maxDiscountHint": "Membatasi kupon persentase. Kosong = tanpa batas.",
+    "upTo": "hingga {max}", "minOrder": "Pesanan minimum", "usage": "Terpakai", "usageLimit": "Batas penggunaan", "usageHint": "Kosong = tanpa batas.", "startsAt": "Mulai", "endsAt": "Berakhir", "validity": "Masa berlaku", "description": "Deskripsi", "deleteText": "Hapus kupon {code}?"
+  },
+  "reviews": { "title": "Ulasan", "subtitle": "Ulasan pembeli terverifikasi. Sembunyikan yang tidak pantas.", "product": "Produk", "rating": "Nilai", "comment": "Komentar", "verified": "pembelian terverifikasi", "published": "Dipublikasikan", "hidden": "Disembunyikan", "hide": "Sembunyikan", "publish": "Publikasikan" },
+  "banners": {
+    "title": "Banner", "subtitle": "Slider utama dan banner promo di tengah beranda.", "hero": "Slide utama", "promo": "Banner promo", "new": "Banner baru", "edit": "Ubah banner", "image": "Gambar",
+    "heroHint": "Gambar lebar (sekitar 1024×430 atau lebih besar) dengan ruang kosong di kiri untuk teks.", "promoHint": "Gambar gaya hidup lebar yang tampil di sisi kanan promo.", "badge": "Label kecil", "titleField": "Judul", "highlight": "Aksen miring", "subtitleField": "Subjudul",
+    "cta": "Teks tombol", "link": "Tautan tombol", "deleteText": "Hapus banner ini?"
+  },
+  "pages": {
+    "title": "Halaman (CMS)", "subtitle": "Tentang kami, ketentuan COD, privasi, dan halaman statis lain dalam empat bahasa.", "new": "Halaman baru", "edit": "Ubah halaman", "page": "Halaman", "languages": "Bahasa", "updated": "Diperbarui", "published": "Terbit", "draft": "Draf",
+    "slugHint": "Huruf kecil, angka, dan tanda hubung. URL publik: /page/<slug>.", "titleField": "Judul", "body": "Isi", "markdownHint": "Markdown ringan: ## judul, - daftar poin, 1. daftar bernomor, **tebal**, baris kosong = paragraf baru. HTML tidak pernah ditampilkan."
+  },
+  "inquiries": { "title": "Pesan masuk", "subtitle": "Pesan dari formulir kontak.", "unread": "Belum dibaca", "new": "Baru", "reply": "Balas lewat email", "markRead": "Tandai sudah dibaca", "markUnread": "Tandai belum dibaca", "deleteText": "Hapus pesan ini secara permanen?" },
+  "newsletter": { "title": "Pelanggan newsletter", "subtitle": "{n} pelanggan", "csv": "Unduh CSV" },
+  "zones": {
+    "title": "Zona pengiriman & COD", "subtitle": "Ongkos kirim, batas gratis ongkir, dan lokasi yang mengizinkan Bayar di tempat.",
+    "codRule": "Bayar di tempat HANYA berlaku di dalam Munisipalitas Dili, pada posto administrativo dan suco yang diaktifkan di bawah. Atauro dan semua munisipalitas lain selalu dikecualikan.",
+    "diliTitle": "Munisipalitas Dili", "othersTitle": "Munisipalitas lain", "municipality": "Munisipalitas", "fee": "Ongkos kirim", "freeOver": "Gratis ongkir di atas", "eta": "Lama pengiriman", "codEnabled": "Izinkan COD di posto ini",
+    "deliveryActive": "Kirim ke sini", "sucos": "Suco ({n})", "sucoHint": "Klik suco untuk mengaktifkan/menonaktifkan COD. Suco yang dicoret dikecualikan dari COD.", "toggleSuco": "Ubah COD untuk suco ini", "noCod": "tanpa COD", "addSuco": "Tambah suco…",
+    "codDiliOnly": "COD hanya tersedia di Dili", "codDiliOnlyShort": "Hanya Dili"
+  },
+  "settings": {
+    "title": "Pengaturan toko", "subtitle": "Data toko, aturan COD, dan operasional pesanan.", "storeInfo": "Data toko", "storeName": "Nama toko", "address": "Alamat", "tagline": "Slogan", "returnDays": "Masa pengembalian (hari)",
+    "codRules": "Aturan COD", "codRulesHint": "Diterapkan di server untuk setiap pesanan. Mata uang adalah USD.", "codMin": "Pesanan minimum COD", "codMax": "Pesanan maksimum COD", "codFee": "Biaya penanganan COD", "codFeeHint": "0 = tanpa biaya.",
+    "codAutoBlock": "Tandai otomatis setelah penolakan", "codAutoBlockHint": "Jumlah pengiriman COD yang ditolak sebelum COD disembunyikan bagi pelanggan. 0 = tidak pernah.", "codTermsVersion": "Versi ketentuan COD", "codTermsVersionHint": "Ubah saat memperbarui halaman ketentuan COD; versi ini disimpan pada setiap pesanan yang disetujui.",
+    "zonesNote": "Ongkos kirim dan batas gratis ongkir diatur per zona di Zona pengiriman & COD.", "operations": "Operasional", "deadline": "Batas waktu pembayaran (jam)", "deadlineHint": "Pesanan bank / dompet yang belum dibayar dibatalkan setelah waktu ini.",
+    "lowStock": "Peringatan stok menipis pada", "maxQty": "Jumlah maksimum per barang", "currencyNote": "Semua jumlah dalam dolar AS. Tanggal dan batas hari memakai Asia/Dili (UTC+9)."
+  },
+  "reports": {
+    "title": "Laporan & ekspor", "subtitle": "Ringkasan pendapatan dan ekspor CSV (Asia/Dili).", "monthly": "Pendapatan bulanan (pesanan lunas)", "exports": "Ekspor CSV", "lastDays": "{n} hari terakhir", "badRange": "Pilih rentang tanggal yang valid.",
+    "note": "Berkas CSV berformat UTF-8 (dapat dibuka di Excel atau Google Sheets) dan setiap ekspor dicatat dalam log audit.",
+    "type": { "orders": "Pesanan", "payments": "Pembayaran", "cod": "Uang COD", "revenue": "Pendapatan harian" },
+    "typeHint": { "orders": "Semua pesanan dengan total, status, dan area", "payments": "Bukti pembayaran dan hasil peninjauan", "cod": "Pesanan COD terkirim dan rekonsiliasi", "revenue": "Pendapatan lunas per hari dan per metode" }
+  },
+  "staff": {
+    "title": "Staf", "subtitle": "Akun back office dan perannya.", "new": "Akun staf baru", "edit": "Ubah akun staf", "roles": "Peran", "you": "Anda", "superLocked": "Hanya Super Admin yang dapat mengubah Super Admin",
+    "resetPassword": "Kata sandi baru (atur ulang)", "resetHint": "Kosongkan untuk mempertahankan yang lama. Pengaturan ulang akan mengeluarkan pengguna dari semua perangkat.", "passwordHint": "Minimal 8 karakter dengan huruf dan angka.",
+    "selfLocked": "Anda tidak dapat mengubah peran sendiri atau menonaktifkan diri sendiri.", "grantHint": "Anda hanya dapat memberi peran yang izinnya juga Anda miliki.", "accountActive": "Akun aktif"
+  },
+  "roles": {
+    "title": "Peran & izin", "subtitle": "Atur dengan tepat apa yang dapat dilihat dan dilakukan setiap peran.", "new": "Peran khusus baru", "newHint": "Mulai dari peran kosong, lalu centang izinnya.", "system": "Sistem", "custom": "Khusus", "all": "semua",
+    "locked": "Peran ini tidak dapat diubah.", "viewOnly": "Anda dapat melihat peran ini tetapi tidak dapat mengubahnya.", "description": "Deskripsi", "matrix": "Matriks izin", "selectGroup": "Pilih semua", "clearGroup": "Hapus semua",
+    "grantHint": "Anda hanya dapat memberi izin yang juga Anda miliki. Pengguna dengan peran ini dikeluarkan agar perubahan langsung berlaku.", "saved": "Peran disimpan. Pengguna terkait harus masuk lagi.", "deleteText": "Hapus peran khusus ini?",
+    "groups": { "dashboard": "Dasbor", "catalogue": "Katalog", "cms": "CMS etalase", "orders": "Pesanan", "payments": "Pembayaran", "customers": "Pelanggan", "reports": "Laporan", "settings": "Pengaturan", "access": "Kontrol akses" },
+    "names": { "SUPER_ADMIN": "Super Admin", "STORE_MANAGER": "Manajer toko", "FINANCE_STAFF": "Staf keuangan", "ORDER_FULFILLMENT": "Pemenuhan pesanan", "CUSTOMER_SUPPORT": "Layanan pelanggan", "CUSTOMER": "Pelanggan" },
+    "descriptions": {
+      "SUPER_ADMIN": "Akses penuh, termasuk peran, staf, pengaturan, dan log audit.", "STORE_MANAGER": "Katalog, inventaris, kupon, banner, CMS, dan pengawasan pesanan.",
+      "FINANCE_STAFF": "Verifikasi pembayaran, rekonsiliasi COD, laporan pendapatan, dan ekspor.", "ORDER_FULFILLMENT": "Mengemas, mengirim, dan mengantar pesanan; penugasan kurir COD di Dili.",
+      "CUSTOMER_SUPPORT": "Pelanggan, pesanan (hanya baca), pesan masuk, dan moderasi ulasan.", "CUSTOMER": "Pelanggan toko. Tidak dapat mengakses area admin."
+    }
+  },
+  "perm": {
+    "dashboard": { "view": "Melihat dasbor analitik" },
+    "products": { "view": "Melihat produk dan stok", "create": "Membuat produk", "update": "Mengubah produk dan varian", "delete": "Menghapus atau menonaktifkan produk" },
+    "inventory": { "update": "Menyesuaikan tingkat stok" }, "categories": { "manage": "Mengelola kategori" }, "coupons": { "manage": "Mengelola kupon dan diskon" }, "reviews": { "moderate": "Menyembunyikan atau menerbitkan ulasan" },
+    "banners": { "manage": "Mengelola banner utama dan promo" }, "cms": { "manage": "Mengubah halaman statis" },
+    "orders": { "view": "Melihat pesanan", "update_status": "Mengonfirmasi, mengemas, mengirim, dan mengantar pesanan", "cancel": "Membatalkan pesanan", "assign_courier": "Menugaskan kurir COD Dili" },
+    "invoices": { "print": "Mencetak faktur dan slip kemasan" },
+    "payments": { "view": "Melihat bukti pembayaran dan antrean", "verify": "Menyetujui atau menolak pembayaran", "refund": "Menandai pengembalian dana selesai" },
+    "cod": { "reconcile": "Merekonsiliasi uang COD", "flag_customers": "Menandai pelanggan karena penolakan COD" },
+    "customers": { "view": "Melihat pelanggan", "manage": "Mengaktifkan atau menonaktifkan pelanggan" }, "inquiries": { "manage": "Membaca dan menangani pesan masuk" },
+    "reports": { "view": "Melihat laporan pendapatan", "export": "Mengekspor laporan CSV" },
+    "zones": { "manage": "Mengelola zona pengiriman dan COD" }, "settings": { "manage": "Mengelola pengaturan toko dan pembayaran" },
+    "staff": { "manage": "Membuat staf dan menetapkan peran" }, "roles": { "manage": "Mengubah peran dan izin" }, "audit": { "view": "Melihat log audit" }
+  },
+  "audit": { "title": "Log audit", "subtitle": "Siapa melakukan apa, kapan, dan dari mana.", "immutable": "Hanya tambah", "allActions": "Semua tindakan", "action": "Tindakan", "who": "Pengguna", "target": "Sasaran", "tz": "Waktu dalam Asia/Dili. Basis data menolak setiap perubahan atau penghapusan baris ini." },
+  "print": {
+    "invoice": "Faktur", "packingSlip": "Slip kemasan", "billTo": "Ditagihkan kepada", "shipTo": "Kirim ke", "details": "Detail pesanan", "paymentMethod": "Metode pembayaran", "paymentStatus": "Status pembayaran", "area": "Area",
+    "collectCash": "Terima uang tunai saat pengantaran", "exactCash": "Jumlah pas dalam uang tunai USD", "item": "Barang", "qty": "Jml", "unit": "Harga satuan", "thanks": "Terima kasih telah berbelanja di {store}!", "handle": "Tangani dengan hati-hati · periksa setiap barang sebelum disegel"
+  }
+}
