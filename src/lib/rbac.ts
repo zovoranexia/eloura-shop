@@ -46,7 +46,7 @@ export const SYSTEM_ROLES: { key: string; name: string; description: string; per
     description: 'Catalogue, inventory, coupons, banners, CMS and order oversight.',
     permissions: [
       'dashboard.view', 'products.view', 'products.create', 'products.update', 'products.delete', 'inventory.update', 'categories.manage',
-      'coupons.manage', 'banners.manage', 'cms.manage', 'orders.view', 'orders.update_status', 'orders.cancel', 'customers.view',
+      'coupons.manage', 'banners.manage', 'cms.manage', 'orders.view', 'orders.update_status', 'orders.cancel', 'orders.assign_courier', 'customers.view',
       'reports.view', 'invoices.print', 'reviews.moderate',
     ],
   },

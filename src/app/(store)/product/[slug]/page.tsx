@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { getT } from '@/lib/i18n';
 import { getSessionUser } from '@/lib/auth';
 import { productDetail } from '@/server/catalog';
+import { siteUrl } from '@/server/storefront';
 import { ProductDetailView } from '@/components/store/ProductDetailView';
 import { ProductCard } from '@/components/store/ProductCard';
 
@@ -24,13 +25,13 @@ export default async function ProductPage({ params }: Props) {
   if (!p) notFound();
 
   const ld = {
-    '@context': 'https://schema.org', '@type': 'Product', name: p.name, description: p.description, sku: p.sku, image: p.images,
+    '@context': 'https://schema.org', '@type': 'Product', name: p.name, description: p.description, sku: p.sku, image: p.images.map((src) => new URL(src, siteUrl()).toString()),
     offers: { '@type': 'Offer', priceCurrency: 'USD', price: (p.priceCents / 100).toFixed(2), availability: p.variants.some((v) => v.stock > 0) ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' },
     ...(p.rating ? { aggregateRating: { '@type': 'AggregateRating', ratingValue: p.rating, reviewCount: p.ratingCount } } : {}),
   };
   return (
     <div className="container-x py-8 md:py-10">
-      <nav aria-label="breadcrumb" className="mb-5 text-xs text-taupe">
+      <nav aria-label={t('common.breadcrumb')} className="mb-5 text-xs text-taupe">
         <Link href="/" className="hover:text-mauve">{t('nav.home')}</Link> / <Link href="/shop" className="hover:text-mauve">{t('nav.shop')}</Link>
         {p.category ? <> / <Link href={`/shop?category=${p.category.slug}`} className="hover:text-mauve">{p.category.name}</Link></> : null} / <span className="text-espresso">{p.name}</span>
       </nav>

@@ -1,11 +1,11 @@
 'use client';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { AlertCircle, ArrowLeft, ArrowRight, Check, CreditCard, Landmark, Smartphone, Wallet, Banknote, ShoppingBag } from 'lucide-react';
 import { useT } from '@/components/I18nProvider';
 import { useToast } from '@/components/ui/Toast';
-import { api, ApiError, errorMessage, fieldMessage } from '@/lib/client/api';
+import { api, ApiError, centsText, errorMessage, fieldMessage } from '@/lib/client/api';
 import { useAuth } from '@/lib/client/auth';
 import { useCart } from '@/lib/client/cart';
 import { useStoreConfig } from '@/lib/client/store-config';
@@ -40,6 +40,10 @@ export function CheckoutFlow({ addresses }: { addresses: CustomerAddress[] }) {
   const [quote, setQuote] = useState<Quote | null>(null);
   const [busy, setBusy] = useState(false);
   const [prefilled, setPrefilled] = useState(false);
+  const [quoteBusy, setQuoteBusy] = useState(false); // a quote request is pending: the figures on screen are not final
+  const [recheck, setRecheck] = useState(0);
+  const attempt = useRef<{ sig: string; key: string } | null>(null); // idempotency key of the current checkout attempt
+  const submitting = useRef(false); // hard guard against a double submit (state updates are asynchronous)
 
   // prefill from the account (name / e-mail / phone + default saved address)
   useEffect(() => {
@@ -62,26 +66,30 @@ export function CheckoutFlow({ addresses }: { addresses: CustomerAddress[] }) {
   useEffect(() => {
     if (!cart.ready || !cart.items.length) return;
     const ctrl = new AbortController();
+    setQuoteBusy(true);
     const h = setTimeout(() => {
       api<Quote>('/api/cart/quote', {
         body: { items: cart.items, municipality: f.municipality || undefined, adminPost: f.adminPost || undefined, suco: f.suco || undefined, street: f.street || undefined, phone: f.phone || undefined, coupon: cart.coupon || undefined },
         signal: ctrl.signal,
-      }).then(setQuote).catch(() => undefined);
+      }).then((q) => { if (ctrl.signal.aborted) return; setQuote(q); setQuoteBusy(false); }).catch(() => { if (!ctrl.signal.aborted) setQuoteBusy(false); });
     }, 300);
     return () => { clearTimeout(h); ctrl.abort(); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [itemsKey, f.municipality, f.adminPost, f.suco, f.street, f.phone, cart.coupon, cart.ready, user?.id]);
+  }, [itemsKey, f.municipality, f.adminPost, f.suco, f.street, f.phone, cart.coupon, cart.ready, user?.id, recheck]);
 
   // drop a chosen method that stopped being available (e.g. COD after switching municipality)
   const method = quote?.methods.find((m) => m.key === f.paymentMethod);
   useEffect(() => {
-    if (f.paymentMethod && quote && (!method || !method.available)) setF((cur) => ({ ...cur, paymentMethod: '', acceptCodTerms: false }));
+    if (f.paymentMethod && quote && (!method || !method.available)) {
+      setF((cur) => ({ ...cur, paymentMethod: '', acceptCodTerms: false }));
+      setStep((s) => (s === 3 ? 2 : s)); // the review step is meaningless without a valid method
+    }
   }, [quote, method, f.paymentMethod]);
 
   const lines = (quote?.lines ?? []).filter(isLine);
   const codFee = method?.key === 'COD' ? method.feeCents : 0;
   const total = (quote ? quote.subtotalCents - quote.discountCents + quote.shippingCents : 0) + codFee;
-  const stockProblem = lines.some((l) => !l.enough || l.stock === 0);
+  const stockProblem = (quote?.lines ?? []).some((l) => !isLine(l) || !l.available || !l.enough || l.stock === 0);
 
   function validateStep1() {
     const e: Record<string, string> = {};
@@ -108,19 +116,28 @@ export function CheckoutFlow({ addresses }: { addresses: CustomerAddress[] }) {
   }
 
   async function place() {
+    if (submitting.current) return;
+    submitting.current = true;
     setBusy(true);
     try {
-      const r = await api<{ code: string; token: string }>('/api/orders', {
-        body: {
+      const payload = {
           items: cart.items, name: f.name.trim(), email: f.email.trim() || undefined, phone: f.phone.trim(), municipality: f.municipality, adminPost: f.adminPost || undefined,
           suco: f.suco || undefined, street: f.street.trim(), addressNotes: f.addressNotes.trim() || undefined, note: f.note.trim() || undefined,
-          paymentMethod: f.paymentMethod, coupon: cart.coupon || undefined, acceptCodTerms: f.paymentMethod === 'COD' ? f.acceptCodTerms : undefined,
-        },
-      });
+          paymentMethod: f.paymentMethod, coupon: quote?.couponCode || undefined, acceptCodTerms: f.paymentMethod === 'COD' ? f.acceptCodTerms : undefined,
+      };
+      // Same payload retried (e.g. after a dropped connection) = same key, so the server never creates a duplicate order.
+      const sig = JSON.stringify(payload);
+      if (!attempt.current || attempt.current.sig !== sig) attempt.current = { sig, key: crypto.randomUUID() };
+      const r = await api<{ code: string; token: string }>('/api/orders', { body: payload, idempotencyKey: attempt.current.key });
+      attempt.current = null;
       cart.clear();
+      cart.applyCoupon(''); // the coupon was consumed by this order
       router.push(`/order/${r.code}?t=${encodeURIComponent(r.token)}`);
     } catch (e) {
+      submitting.current = false;
       setBusy(false);
+      setRecheck((n) => n + 1); // prices / stock may be what went wrong: re-quote
+      cart.refresh();
       if (e instanceof ApiError) {
         if (e.code === 'VALIDATION') {
           setErrors(e.fields);
@@ -146,7 +163,7 @@ export function CheckoutFlow({ addresses }: { addresses: CustomerAddress[] }) {
     );
   }
 
-  const reasonText = (m: MethodOption) => (m.reason ? t(`errors.${m.reason}`, { max: (m.max ?? 0) / 100, min: (m.min ?? 0) / 100 }) : '');
+  const reasonText = (m: MethodOption) => (m.reason ? t(`errors.${m.reason}`, { max: centsText(m.max), min: centsText(m.min) }) : '');
 
   return (
     <div className="grid items-start gap-8 lg:grid-cols-[1fr_390px]">
@@ -157,7 +174,7 @@ export function CheckoutFlow({ addresses }: { addresses: CustomerAddress[] }) {
             const done = step > n, cur = step === n;
             return (
               <li key={label} className="flex flex-1 items-center gap-2" aria-current={cur ? 'step' : undefined}>
-                <button type="button" disabled={!done} onClick={() => setStep(n)} className={`grid h-8 w-8 shrink-0 place-items-center rounded-full text-xs font-bold ${done ? 'bg-mauve text-white' : cur ? 'bg-espresso text-white' : 'bg-cream-deep text-taupe'}`}>{done ? <Check size={14} /> : n}</button>
+                <button type="button" disabled={!done} onClick={() => setStep(n)} aria-label={label} className={`grid h-8 w-8 shrink-0 place-items-center rounded-full text-xs font-bold ${done ? 'bg-mauve text-white' : cur ? 'bg-espresso text-white' : 'bg-cream-deep text-taupe'}`}>{done ? <Check size={14} /> : n}</button>
                 <span className={`hidden font-semibold sm:inline ${cur ? 'text-espresso' : 'text-taupe'}`}>{label}</span>
                 {i < 2 ? <span className="h-px flex-1 bg-cream-line" /> : null}
               </li>
@@ -230,7 +247,7 @@ export function CheckoutFlow({ addresses }: { addresses: CustomerAddress[] }) {
             <div className="rounded-2xl bg-cream px-4 py-3 text-sm">
               {quote?.zone ? (
                 <p className="flex flex-wrap items-center gap-x-2">
-                  <span className="font-semibold">{quote.zone.name}{quote.zone.adminPost ? ` · ${f.suco || ''}` : ''}</span>
+                  <span className="font-semibold">{[quote.zone.name, quote.zone.adminPost ? f.suco : ''].filter(Boolean).join(' · ')}</span>
                   <span className="text-taupe">{quote.shippingCents === 0 ? t('checkout.delivery_free') : t('checkout.delivery_fee', { fee: formatUSD(quote.shippingCents) })}</span>
                   {quote.zone.etaText ? <span className="text-taupe">· {t('checkout.delivery_eta', { eta: quote.zone.etaText })}</span> : null}
                   {quote.zone.freeOverCents && quote.shippingCents > 0 ? <span className="w-full text-xs text-mauve">{t('checkout.delivery_free_over', { amount: formatUSD(quote.zone.freeOverCents) })}</span> : null}
@@ -277,7 +294,7 @@ export function CheckoutFlow({ addresses }: { addresses: CustomerAddress[] }) {
 
             <div className="flex justify-between">
               <button type="button" onClick={() => setStep(1)} className="btn-ghost"><ArrowLeft size={16} /> {t('common.back')}</button>
-              <button type="button" onClick={next} className="btn-primary !px-7" disabled={!quote}>{t('common.next')} <ArrowRight size={16} /></button>
+              <button type="button" onClick={next} className="btn-primary !px-7" disabled={!quote || quoteBusy}>{t('common.next')} <ArrowRight size={16} /></button>
             </div>
           </section>
         ) : null}
@@ -306,7 +323,7 @@ export function CheckoutFlow({ addresses }: { addresses: CustomerAddress[] }) {
             {stockProblem ? <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{t('errors.OUT_OF_STOCK')} <Link href="/cart" className="font-semibold underline">{t('cart.view_cart')}</Link></p> : null}
             <div className="flex justify-between">
               <button type="button" onClick={() => setStep(2)} className="btn-ghost"><ArrowLeft size={16} /> {t('common.back')}</button>
-              <button type="button" onClick={place} disabled={busy || stockProblem || !method} className="btn-primary !px-8 !py-3">{busy ? t('checkout.placing') : `${t('checkout.place_order')} · ${formatUSD(total)}`}</button>
+              <button type="button" onClick={place} disabled={busy || quoteBusy || stockProblem || !method} className="btn-primary !px-8 !py-3">{busy ? t('checkout.placing') : `${t('checkout.place_order')} · ${formatUSD(total)}`}</button>
             </div>
           </section>
         ) : null}

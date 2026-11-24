@@ -1,4 +1,5 @@
 'use client';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { ShoppingBag, Trash2 } from 'lucide-react';
 import { useT } from '@/components/I18nProvider';
@@ -18,6 +19,9 @@ export function CartView() {
   const lines = (quote?.lines ?? []).filter(isLine);
   const sub = quote?.subtotalCents ?? 0;
   const blocked = lines.some((l) => !l.enough || l.stock === 0);
+  const { ready, refresh } = cart;
+  // stock / prices may have changed since the provider last quoted
+  useEffect(() => { if (ready) refresh(); }, [ready, refresh]);
 
   if (!cart.ready) return <p className="py-20 text-center text-taupe">{t('common.loading')}</p>;
   if (!items.length) {
@@ -74,7 +78,7 @@ export function CartView() {
           </p>
         ) : null}
         <div className="flex items-baseline justify-between border-t border-cream-line pt-4"><span className="font-semibold">{t('common.total')}</span><span className="text-2xl font-bold">{formatUSD(sub - (quote?.discountCents ?? 0))}</span></div>
-        <Link href="/checkout" aria-disabled={blocked || cart.quoting} className={`btn-primary btn-block !py-3 ${blocked ? 'pointer-events-none opacity-50' : ''}`}>{t('cart.checkout')}</Link>
+        <Link href="/checkout" onClick={(e) => { if (blocked) e.preventDefault(); }} aria-disabled={blocked} tabIndex={blocked ? -1 : undefined} className={`btn-primary btn-block !py-3 ${blocked ? 'pointer-events-none opacity-50' : ''}`}>{t('cart.checkout')}</Link>
         <Link href="/shop" className="btn-ghost btn-block">{t('cart.continue')}</Link>
       </aside>
     </div>

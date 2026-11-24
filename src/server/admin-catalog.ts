@@ -125,7 +125,7 @@ export const productListWhere = (q: URLSearchParams): Prisma.ProductWhereInput =
 };
 
 export const categorySchema = z.object({
-  name: z.record(z.string().max(200)), image: z.string().max(300).nullable().optional(),
+  name: z.record(z.string().max(200)), image: z.string().max(300).regex(/^(\/media\/|\/images\/)/, 'INVALID').nullable().optional().or(z.literal('')),
   sortOrder: z.number().int().min(0).max(9999).default(0), isActive: z.boolean().default(true), slug: z.string().max(70).optional(),
 });
 

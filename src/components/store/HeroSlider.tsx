@@ -12,6 +12,7 @@ export function HeroSlider({ banners }: { banners: StoreBanner[] }) {
   const [paused, setPaused] = useState(false);
   const touch = useRef<number | null>(null);
   const n = banners.length;
+  const cur = n ? idx % n : 0; // banners can shrink after a refresh while idx points past the end
 
   const go = useCallback((i: number) => setIdx(((i % n) + n) % n), [n]);
   useEffect(() => {
@@ -34,11 +35,11 @@ export function HeroSlider({ banners }: { banners: StoreBanner[] }) {
       className="relative overflow-hidden rounded-hero bg-[#EFE4DD] shadow-soft"
       onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}
       onTouchStart={(e) => { touch.current = e.touches[0].clientX; }}
-      onTouchEnd={(e) => { if (touch.current != null) { const d = e.changedTouches[0].clientX - touch.current; if (Math.abs(d) > 50) go(idx + (d < 0 ? 1 : -1)); touch.current = null; } }}
+      onTouchEnd={(e) => { if (touch.current != null) { const d = e.changedTouches[0].clientX - touch.current; if (Math.abs(d) > 50) go(cur + (d < 0 ? 1 : -1)); touch.current = null; } }}
     >
       <div className="grid">
         {banners.map((b, i) => {
-          const active = i === idx;
+          const active = i === cur;
           const H = i === 0 ? 'h1' : 'h2';
           return (
             <div key={b.id} role="group" aria-roledescription="slide" aria-label={`${i + 1} / ${n}`} aria-hidden={!active} {...(!active ? { inert: '' as unknown as boolean } : {})}
@@ -69,12 +70,12 @@ export function HeroSlider({ banners }: { banners: StoreBanner[] }) {
 
       {n > 1 ? (
         <>
-          <button type="button" onClick={() => go(idx - 1)} aria-label={t('hero.prev')} className="absolute left-3 top-[115px] z-20 grid h-10 w-10 place-items-center rounded-full bg-white shadow-card hover:bg-cream-deep sm:top-[150px] md:left-4 md:top-1/2 md:-translate-y-1/2"><ChevronLeft size={20} /></button>
-          <button type="button" onClick={() => go(idx + 1)} aria-label={t('hero.next')} className="absolute right-3 top-[115px] z-20 grid h-10 w-10 place-items-center rounded-full bg-white shadow-card hover:bg-cream-deep sm:top-[150px] md:right-4 md:top-1/2 md:-translate-y-1/2"><ChevronRight size={20} /></button>
+          <button type="button" onClick={() => go(cur - 1)} aria-label={t('hero.prev')} className="absolute left-3 top-[115px] z-20 grid h-10 w-10 place-items-center rounded-full bg-white shadow-card hover:bg-cream-deep sm:top-[150px] md:left-4 md:top-1/2 md:-translate-y-1/2"><ChevronLeft size={20} /></button>
+          <button type="button" onClick={() => go(cur + 1)} aria-label={t('hero.next')} className="absolute right-3 top-[115px] z-20 grid h-10 w-10 place-items-center rounded-full bg-white shadow-card hover:bg-cream-deep sm:top-[150px] md:right-4 md:top-1/2 md:-translate-y-1/2"><ChevronRight size={20} /></button>
           <div className="absolute inset-x-0 bottom-4 z-20 flex justify-center gap-2" role="tablist" aria-label={t('hero.label')}>
             {banners.map((b, i) => (
-              <button key={b.id} type="button" role="tab" aria-selected={i === idx} aria-label={t('hero.goto', { n: i + 1 })} onClick={() => go(i)}
-                className={`h-2.5 rounded-full transition-all ${i === idx ? 'w-6 bg-mauve' : 'w-2.5 bg-mauve/30 hover:bg-mauve/60'}`} />
+              <button key={b.id} type="button" role="tab" aria-selected={i === cur} aria-label={t('hero.goto', { n: i + 1 })} onClick={() => go(i)}
+                className={`h-2.5 rounded-full transition-all ${i === cur ? 'w-6 bg-mauve' : 'w-2.5 bg-mauve/30 hover:bg-mauve/60'}`} />
             ))}
           </div>
         </>

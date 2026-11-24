@@ -1,6 +1,7 @@
+import type { Metadata } from 'next';
 import { getLocale } from '@/lib/i18n';
 import { getSessionUser, publicUser } from '@/lib/auth';
-import { getStoreConfig } from '@/server/storefront';
+import { getStoreConfig, siteUrl } from '@/server/storefront';
 import { StoreConfigProvider } from '@/lib/client/store-config';
 import { AuthProvider } from '@/lib/client/auth';
 import { CartProvider } from '@/lib/client/cart';
@@ -10,6 +11,9 @@ import { Footer } from '@/components/store/Footer';
 import { CartDrawer } from '@/components/store/CartDrawer';
 
 export const dynamic = 'force-dynamic';
+
+// absolute base for relative og:image / canonical URLs (otherwise Next falls back to http://localhost:3000)
+export const metadata: Metadata = { metadataBase: new URL(siteUrl()) };
 
 export default async function StoreLayout({ children }: { children: React.ReactNode }) {
   const locale = getLocale();

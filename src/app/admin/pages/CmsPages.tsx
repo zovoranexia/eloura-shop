@@ -17,10 +17,12 @@ export function CmsPages() {
   const { busy, run } = useAction();
   const [form, setForm] = useState<Form | null>(null);
   const [errs, setErrs] = useState<Record<string, string>>({});
+  const [slugTaken, setSlugTaken] = useState(false);
 
   async function save() {
     if (!form) return;
     setErrs({});
+    if (form.isNew && data?.some((p) => p.slug === form.slug)) { setSlugTaken(true); return; }
     const r = await run(async () => {
       try { return await api(`/api/admin/pages/${form.slug}`, { method: 'PUT', body: { title: form.title, body: form.body, isPublished: form.isPublished } }); }
       catch (e) { if (e instanceof ApiError) setErrs(e.fields); throw e; }
@@ -31,7 +33,7 @@ export function CmsPages() {
   return (
     <>
       <PageHeader title={t('admin.pages.title')} subtitle={t('admin.pages.subtitle')}
-        actions={<button type="button" className="btn-primary" onClick={() => { setErrs({}); setForm({ slug: '', isNew: true, title: {}, body: {}, isPublished: true }); }}><FilePlus size={16} /> {t('admin.pages.new')}</button>} />
+        actions={<button type="button" className="btn-primary" onClick={() => { setErrs({}); setSlugTaken(false); setForm({ slug: '', isNew: true, title: {}, body: {}, isPublished: true }); }}><FilePlus size={16} /> {t('admin.pages.new')}</button>} />
       {error ? <ErrorBox error={error} /> : loading && !data ? <Loading /> : !data?.length ? <div className="card"><Empty /></div> : (
         <TableWrap>
           <thead className="bg-cream"><tr><th className={th}>{t('admin.pages.page')}</th><th className={th}>Slug</th><th className={th}>{t('admin.pages.languages')}</th><th className={th}>{t('admin.pages.updated')}</th><th className={th}>{t('common.status')}</th><th className={th} /></tr></thead>
@@ -45,7 +47,7 @@ export function CmsPages() {
                 <td className={td}>{p.isPublished ? <Badge tone="green">{t('admin.pages.published')}</Badge> : <Badge>{t('admin.pages.draft')}</Badge>}</td>
                 <td className={`${td} whitespace-nowrap text-right`}>
                   <a className="btn-ghost btn-sm" href={`/page/${p.slug}`} target="_blank" rel="noopener noreferrer"><ExternalLink size={14} /></a>
-                  <button type="button" className="btn-ghost btn-sm" onClick={() => { setErrs({}); setForm({ slug: p.slug, isNew: false, title: p.title ?? {}, body: p.body ?? {}, isPublished: p.isPublished }); }}><Pencil size={14} /> {t('common.edit')}</button>
+                  <button type="button" className="btn-ghost btn-sm" onClick={() => { setErrs({}); setSlugTaken(false); setForm({ slug: p.slug, isNew: false, title: p.title ?? {}, body: p.body ?? {}, isPublished: p.isPublished }); }}><Pencil size={14} /> {t('common.edit')}</button>
                 </td>
               </tr>
             ))}
@@ -58,8 +60,8 @@ export function CmsPages() {
         {form && (
           <div className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Slug" error={errs.slug ? fieldMessage(t, errs.slug) : undefined} hint={t('admin.pages.slugHint')}>
-                <input className="input font-mono" value={form.slug} disabled={!form.isNew} maxLength={40} onChange={(e) => setForm({ ...form, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })} />
+              <Field label="Slug" error={slugTaken ? t('admin.pages.slugTaken') : errs.slug ? fieldMessage(t, errs.slug) : undefined} hint={t('admin.pages.slugHint')}>
+                <input className="input font-mono" value={form.slug} disabled={!form.isNew} maxLength={40} onChange={(e) => { setSlugTaken(false); setForm({ ...form, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') }); }} />
               </Field>
               <div className="flex items-end pb-1"><Switch checked={form.isPublished} onChange={(isPublished) => setForm({ ...form, isPublished })} label={t('admin.pages.published')} /></div>
             </div>

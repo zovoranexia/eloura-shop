@@ -1,4 +1,5 @@
 'use client';
+/* eslint-disable @next/next/no-img-element */
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { ArrowLeft, Banknote, Check, FileText, MessageCircle, Package, Printer, RotateCcw, Send, Truck, X } from 'lucide-react';
@@ -9,7 +10,7 @@ import { useAdminUser } from '@/components/admin/AdminUser';
 import {
   Badge, Card, ConfirmModal, ErrorBox, Field, Loading, MethodBadge, Modal, OrderStatusBadge, PageHeader, PaymentStatusBadge, ProofStatusBadge, Spinner, useAction,
 } from '@/components/admin/ui';
-import { CANCEL_REASONS, WA_MESSAGES, areaLabel, municipalityName, postName } from '@/components/admin/constants';
+import { CANCEL_REASONS, WA_GENERIC, WA_MESSAGES, areaLabel, municipalityName, postName } from '@/components/admin/constants';
 import { formatDateTime } from '@/lib/time';
 import { formatUSD } from '@/lib/money';
 import { normalizePhone } from '@/lib/phone';
@@ -27,15 +28,16 @@ export function OrderDetail({ id }: { id: number }) {
   const { busy, run } = useAction();
   const [cancelOpen, setCancelOpen] = useState(false);
   const [refundOpen, setRefundOpen] = useState(false);
+  const [deliverOpen, setDeliverOpen] = useState(false);
   const [note, setNote] = useState('');
   const [courierId, setCourierId] = useState<string>('');
   const [courierNote, setCourierNote] = useState('');
   const [storeName, setStoreName] = useState('Eloura Chic');
 
-  useEffect(() => {
-    if (order?.cod?.courier) setCourierId(String(order.cod.courier.id));
-    if (order?.cod?.courierNote) setCourierNote(order.cod.courierNote);
-  }, [order?.cod?.courier, order?.cod?.courierNote]);
+  const assignedCourierId = order?.cod?.courier?.id ?? null;
+  const assignedCourierNote = order?.cod?.courierNote ?? '';
+  useEffect(() => { setCourierId(assignedCourierId ? String(assignedCourierId) : ''); }, [assignedCourierId]);
+  useEffect(() => { setCourierNote(assignedCourierNote); }, [assignedCourierNote]);
   useEffect(() => { fetch('/api/config').then((r) => r.json()).then((c) => c?.store?.name && setStoreName(c.store.name)).catch(() => undefined); }, []);
 
   if (error) return <ErrorBox error={error} />;
@@ -46,7 +48,9 @@ export function OrderDetail({ id }: { id: number }) {
   const canAdvance = can('orders.update_status') && !!nextKey && !(order.status === 'PENDING_CONFIRMATION' && !isCod);
   const needsCourier = isCod && order.status === 'PACKED' && !order.cod?.courier;
   const phone = normalizePhone(order.customer.phone);
-  const wa = phone.valid ? `https://wa.me/${phone.wa}?text=${encodeURIComponent((WA_MESSAGES[order.locale] ?? WA_MESSAGES.en)({ name: order.customer.name, code: order.code, total: formatUSD(order.totalCents), store: storeName }))}` : null;
+  const confirmingCod = isCod && order.status === 'PENDING_CONFIRMATION';
+  const waTexts = confirmingCod ? WA_MESSAGES : WA_GENERIC;
+  const wa = phone.valid ? `https://wa.me/${phone.wa}?text=${encodeURIComponent((waTexts[order.locale] ?? waTexts.en)({ name: order.customer.name, code: order.code, total: formatUSD(order.totalCents), store: storeName }))}` : null;
   const reasonLabel = (n?: string | null) => {
     if (!n) return '';
     const [code, ...rest] = n.split(' - ');
@@ -100,8 +104,8 @@ export function OrderDetail({ id }: { id: number }) {
             </dl>
           </Card>
 
-          {order.proofs.length > 0 && (
-            <Card title={t('admin.orders.proofs')} actions={can('payments.view') ? <Link href="/admin/payments?status=all" className="btn-outline btn-sm"><FileText size={14} /> {t('admin.orders.openPayments')}</Link> : undefined}>
+          {order.proofs.length > 0 && can('payments.view') && (
+            <Card title={t('admin.orders.proofs')} actions={<Link href="/admin/payments?status=all" className="btn-outline btn-sm"><FileText size={14} /> {t('admin.orders.openPayments')}</Link>}>
               <ul className="divide-y divide-cream-line text-sm">
                 {order.proofs.map((p) => (
                   <li key={p.id} className="flex flex-wrap items-center justify-between gap-2 py-2.5">
@@ -126,7 +130,7 @@ export function OrderDetail({ id }: { id: number }) {
                     {e.to && <span className="ml-2 font-normal text-taupe">{e.from ? `${t(`status.order.${e.from}`)} → ` : ''}{t(`status.order.${e.to}`)}</span>}
                   </p>
                   <p className="text-xs text-taupe">{formatDateTime(e.createdAt, locale)} · {e.actor === 'customer' ? t('admin.orders.byCustomer') : e.actor === 'system' ? t('admin.orders.bySystem') : e.actor}</p>
-                  {e.note && <p className="mt-0.5 text-sm text-espresso-soft">{e.type === 'created' ? t(`status.method.${e.note}`) : reasonLabel(e.note)}</p>}
+                  {e.note && !(e.type === 'courier_assigned' && /^\d*$/.test(e.note)) && <p className="mt-0.5 text-sm text-espresso-soft">{e.type === 'created' ? t(`status.method.${e.note}`) : reasonLabel(e.note)}</p>}
                 </li>
               ))}
             </ol>
@@ -139,7 +143,7 @@ export function OrderDetail({ id }: { id: number }) {
               <div className="space-y-3">
                 {canAdvance && (
                   <>
-                    <button type="button" className="btn-primary btn-block" disabled={busy || needsCourier} onClick={() => act('/advance', {}, t('admin.orders.updated'))}>
+                    <button type="button" className="btn-primary btn-block" disabled={busy || needsCourier} onClick={() => (nextKey === 'markDelivered' && isCod ? setDeliverOpen(true) : act('/advance', {}, t('admin.orders.updated')))}>
                       {busy ? <Spinner className="!text-white" /> : <Check size={16} />}
                       {t(`admin.orders.next.${nextKey}`)}{nextKey === 'markDelivered' && isCod ? ` · ${formatUSD(order.totalCents)}` : ''}
                     </button>
@@ -147,7 +151,7 @@ export function OrderDetail({ id }: { id: number }) {
                     {nextKey === 'markDelivered' && isCod && <p className="text-xs text-taupe">{t('admin.orders.codCollectHint')}</p>}
                   </>
                 )}
-                {!canAdvance && order.status !== 'DELIVERED' && order.status !== 'CANCELLED' && !isCod && <p className="rounded-xl bg-cream p-3 text-xs text-taupe">{t('admin.orders.awaitPaymentHint')}</p>}
+                {!canAdvance && !isCod && (order.status === 'PENDING_PAYMENT' || order.status === 'AWAITING_VERIFICATION') && <p className="rounded-xl bg-cream p-3 text-xs text-taupe">{t('admin.orders.awaitPaymentHint')}</p>}
                 {can('orders.cancel') && ['PENDING_PAYMENT', 'AWAITING_VERIFICATION', 'PENDING_CONFIRMATION', 'PROCESSING', 'PACKED', 'OUT_FOR_DELIVERY'].includes(order.status) && (
                   <button type="button" className="btn-outline btn-block !border-red-300 !text-red-700 hover:!bg-red-50" onClick={() => setCancelOpen(true)}><X size={16} /> {t('admin.orders.cancelOrder')}</button>
                 )}
@@ -161,7 +165,7 @@ export function OrderDetail({ id }: { id: number }) {
           <Card title={t('admin.orders.customer')}>
             <p className="font-semibold">{order.customer.name}</p>
             <p className="text-sm text-taupe">{order.customer.phone}{order.customer.email ? ` · ${order.customer.email}` : ''}</p>
-            {wa && <a href={wa} target="_blank" rel="noopener noreferrer" className="btn-outline btn-sm mt-3"><MessageCircle size={14} /> {t(isCod && order.status === 'PENDING_CONFIRMATION' ? 'admin.orders.confirmWhatsApp' : 'admin.orders.whatsApp')}</a>}
+            {wa && <a href={wa} target="_blank" rel="noopener noreferrer" className="btn-outline btn-sm mt-3"><MessageCircle size={14} /> {t(confirmingCod ? 'admin.orders.confirmWhatsApp' : 'admin.orders.whatsApp')}</a>}
             <div className="mt-4 border-t border-cream-line pt-3 text-sm">
               <p className="label">{t('admin.orders.deliverTo')}</p>
               <p>{order.address.street}</p>
@@ -213,8 +217,10 @@ export function OrderDetail({ id }: { id: number }) {
         </div>
       </div>
 
-      <CancelModal open={cancelOpen} isCod={isCod} busy={busy} onClose={() => setCancelOpen(false)}
+      <CancelModal open={cancelOpen} isCod={isCod} refusable={isCod && order.status === 'OUT_FOR_DELIVERY'} busy={busy} onClose={() => setCancelOpen(false)}
         onSubmit={async (b) => { const r = await act('/cancel', b, t('admin.orders.updated')); if (r) setCancelOpen(false); }} />
+      <ConfirmModal open={deliverOpen} title={t('admin.orders.next.markDelivered')} text={`${t('admin.orders.codCollectHint')} ${formatUSD(order.totalCents)}`} busy={busy}
+        onClose={() => setDeliverOpen(false)} onConfirm={async () => { const r = await act('/advance', {}, t('admin.orders.updated')); if (r) setDeliverOpen(false); }} />
       <ConfirmModal open={refundOpen} title={t('admin.orders.markRefunded')} text={t('admin.orders.refundText', { total: formatUSD(order.totalCents) })} busy={busy}
         onClose={() => setRefundOpen(false)} onConfirm={async () => { const r = await act('/refund', {}, t('admin.orders.updated')); if (r) setRefundOpen(false); }} />
     </>
@@ -225,14 +231,15 @@ function Row({ label, value }: { label: string; value: string }) {
   return <div className="flex justify-between gap-4"><dt className="text-taupe">{label}</dt><dd className="text-right font-medium">{value}</dd></div>;
 }
 
-function CancelModal({ open, isCod, busy, onClose, onSubmit }: {
-  open: boolean; isCod: boolean; busy: boolean; onClose: () => void; onSubmit: (b: { reason: string; note?: string; codRefused?: boolean }) => void;
+function CancelModal({ open, isCod, refusable, busy, onClose, onSubmit }: {
+  open: boolean; isCod: boolean; refusable: boolean; busy: boolean; onClose: () => void; onSubmit: (b: { reason: string; note?: string; codRefused?: boolean }) => void;
 }) {
   const { t } = useI18n();
-  const [reason, setReason] = useState<string>(isCod ? 'COD_REFUSED' : 'CUSTOMER_REQUEST');
+  // A refused-at-the-door cancellation counts against the customer (auto COD block), so it is only pre-selected while the order is out for delivery.
+  const [reason, setReason] = useState<string>(refusable ? 'COD_REFUSED' : 'CUSTOMER_REQUEST');
   const [text, setText] = useState('');
-  const [refused, setRefused] = useState(isCod);
-  useEffect(() => { if (open) { setReason(isCod ? 'COD_REFUSED' : 'CUSTOMER_REQUEST'); setRefused(isCod); setText(''); } }, [open, isCod]);
+  const [refused, setRefused] = useState(refusable);
+  useEffect(() => { if (open) { setReason(refusable ? 'COD_REFUSED' : 'CUSTOMER_REQUEST'); setRefused(refusable); setText(''); } }, [open, refusable]);
   return (
     <Modal open={open} onClose={onClose} title={t('admin.orders.cancelOrder')} size="sm"
       footer={<><button type="button" className="btn-ghost" onClick={onClose}>{t('common.cancel')}</button>
@@ -240,7 +247,7 @@ function CancelModal({ open, isCod, busy, onClose, onSubmit }: {
       <div className="space-y-3">
         <p className="text-sm text-taupe">{t('admin.orders.cancelText')}</p>
         <Field label={t('admin.orders.reason')}>
-          <select className="input" value={reason} onChange={(e) => { setReason(e.target.value); if (e.target.value === 'COD_REFUSED') setRefused(true); }}>
+          <select className="input" value={reason} onChange={(e) => { setReason(e.target.value); setRefused(e.target.value === 'COD_REFUSED'); }}>
             {CANCEL_REASONS.map((r) => <option key={r} value={r}>{t(`admin.orders.reasons.${r}`)}</option>)}
           </select>
         </Field>

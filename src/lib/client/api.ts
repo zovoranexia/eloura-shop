@@ -12,7 +12,9 @@ export class ApiError extends Error {
 
 const readCookie = (name: string) => (typeof document === 'undefined' ? '' : (document.cookie.split('; ').find((c) => c.startsWith(`${name}=`))?.split('=')[1] ?? ''));
 
-type Opts = { method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'; body?: unknown; form?: FormData; token?: string; signal?: AbortSignal };
+type Opts = {
+  /** Idempotency-Key header (checkout): a retried request returns the original result instead of repeating the action */
+  idempotencyKey?: string; method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'; body?: unknown; form?: FormData; token?: string; signal?: AbortSignal };
 
 /**
  * Calls our JSON API. Adds the CSRF double-submit header, sends cookies, throws ApiError(code) on failure.
@@ -23,6 +25,7 @@ export async function api<T = unknown>(path: string, opts: Opts = {}): Promise<T
   const headers: Record<string, string> = {};
   if (method !== 'GET') headers['x-csrf-token'] = decodeURIComponent(readCookie('ec_csrf'));
   if (opts.token) headers['x-order-token'] = opts.token;
+  if (opts.idempotencyKey) headers['idempotency-key'] = opts.idempotencyKey;
   let body: BodyInit | undefined;
   if (opts.form) body = opts.form;
   else if (opts.body !== undefined) { headers['Content-Type'] = 'application/json'; body = JSON.stringify(opts.body); }
@@ -42,11 +45,14 @@ export async function api<T = unknown>(path: string, opts: Opts = {}): Promise<T
   return data as T;
 }
 
+/** 5000 -> "50", 7550 -> "75.50" (messages already carry the "$"). */
+export const centsText = (cents: number | null | undefined) => { const v = (cents ?? 0) / 100; return Number.isInteger(v) ? String(v) : v.toFixed(2); };
+
 /** Human message for an ApiError using the `errors.*` dictionary. */
 export function errorMessage(t: (k: string, v?: Record<string, string | number>) => string, e: unknown): string {
   if (e instanceof ApiError) {
     const key = `errors.${e.code}`;
-    const msg = t(key, { max: Number(e.details?.max ?? 0) / 100, min: Number(e.details?.min ?? 0) / 100 });
+    const msg = t(key, { max: centsText(Number(e.details?.max ?? 0)), min: centsText(Number(e.details?.min ?? 0)) });
     return msg === key ? t('errors.INTERNAL') : msg;
   }
   return t('errors.INTERNAL');
@@ -57,5 +63,7 @@ export function fieldMessage(t: (k: string) => string, code?: string): string | 
   if (!code) return undefined;
   const key = `errors.field.${code}`;
   const msg = t(key);
-  return msg === key ? t('errors.field.INVALID') : msg;
+  if (msg !== key) return msg;
+  const general = t(`errors.${code}`); // e.g. INVALID_PHONE, COD_TERMS_REQUIRED
+  return general === `errors.${code}` ? t('errors.field.INVALID') : general;
 }

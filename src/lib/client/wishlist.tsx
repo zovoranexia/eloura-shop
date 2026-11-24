@@ -1,5 +1,5 @@
 'use client';
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { api, errorMessage } from './api';
 import { useAuth } from './auth';
@@ -16,6 +16,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
   const t = useT();
   const toast = useToast();
   const [ids, setIds] = useState<Set<number>>(new Set());
+  const inflight = useRef(new Set<number>()); // a second click while the first request runs would read a stale `ids` and repeat the same operation
 
   useEffect(() => {
     if (!user) { setIds(new Set()); return; }
@@ -30,6 +31,8 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
       router.push(`/login?next=${encodeURIComponent(pathname || '/')}`);
       return;
     }
+    if (inflight.current.has(id)) return;
+    inflight.current.add(id);
     const had = ids.has(id);
     setIds((s) => { const n = new Set(s); if (had) n.delete(id); else n.add(id); return n; });
     try {
@@ -39,6 +42,8 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
     } catch (e) {
       setIds((s) => { const n = new Set(s); if (had) n.add(id); else n.delete(id); return n; });
       toast.error(errorMessage(t, e));
+    } finally {
+      inflight.current.delete(id);
     }
   }, [user, ids, router, pathname, t, toast]);
 

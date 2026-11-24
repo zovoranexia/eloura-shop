@@ -7,7 +7,7 @@ import { Badge, Empty, ErrorBox, Loading, PageHeader, Pagination, TableWrap, td,
 import { formatDateTime } from '@/lib/time';
 
 type Row = { id: number; user: string; action: string; entity: string | null; entityId: string | null; meta: unknown; ip: string | null; createdAt: string };
-const GROUPS = ['auth', 'order', 'payment', 'cod', 'product', 'category', 'coupon', 'banner', 'cms', 'zone', 'suco', 'payment_method', 'settings', 'staff', 'role', 'customer', 'review', 'report', 'upload'];
+const GROUPS = ['auth', 'order', 'payment', 'cod', 'product', 'category', 'coupon', 'banner', 'cms', 'zone', 'suco', 'payment_method', 'settings', 'staff', 'role', 'customer', 'review', 'report', 'upload', 'inventory', 'inquiry', 'newsletter'];
 
 export function AuditLog() {
   const { t, locale } = useI18n();
@@ -20,7 +20,7 @@ export function AuditLog() {
       <div className="card mb-4 flex flex-wrap items-center gap-3 p-4">
         <select className="input w-auto" value={action} onChange={(e) => { setAction(e.target.value); setPage(1); }} aria-label={t('admin.audit.action')}>
           <option value="">{t('admin.audit.allActions')}</option>
-          {GROUPS.map((g) => <option key={g} value={g}>{g}.*</option>)}
+          {GROUPS.map((g) => <option key={g} value={`${g}.`}>{g}.*</option>)}
         </select>
         <p className="text-xs text-taupe">{t('admin.audit.tz')}</p>
       </div>

@@ -8,5 +8,5 @@ export const POST = route<{ id: string }>({ perm: 'payments.refund' }, async (ct
   const id = Number(ctx.params.id);
   await markRefunded(id, { id: ctx.user!.id, name: ctx.user!.name }, note);
   await audit(ctx, 'order.refund', 'order', id);
-  return orderView((await findOrderById(id))!, ctx.locale, { staff: true });
+  return orderView((await findOrderById(id))!, ctx.locale, { staff: true, hideProofs: !ctx.user!.permissions.includes('payments.view') });
 });

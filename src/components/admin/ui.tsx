@@ -290,11 +290,13 @@ export function MultiImageUploader({ value, onChange, kind = 'products', disable
   async function pick(files: FileList | null) {
     if (!files?.length) return;
     setBusy(true);
+    const urls: string[] = [];
     try {
-      const urls: string[] = [];
       for (const f of Array.from(files).slice(0, 10 - value.length)) urls.push(await uploadImage(f, kind));
-      onChange([...value, ...urls]);
-    } catch (e) { toast.error(errorMessage(t, e)); } finally { setBusy(false); if (input.current) input.current.value = ''; }
+    } catch (e) { toast.error(errorMessage(t, e)); } finally {
+      if (urls.length) onChange([...value, ...urls]); // keep the images that did upload even when a later one failed
+      setBusy(false); if (input.current) input.current.value = '';
+    }
   }
   const move = (i: number, d: number) => { const a = [...value]; const j = i + d; if (j < 0 || j >= a.length) return; [a[i], a[j]] = [a[j], a[i]]; onChange(a); };
   return (

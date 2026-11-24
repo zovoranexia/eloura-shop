@@ -8,5 +8,5 @@ export const POST = route<{ id: string }>({ perm: 'orders.update_status' }, asyn
   const b = await ctx.body(z.object({ note: z.string().trim().max(500).optional(), collectedCents: z.number().int().min(0).optional() }));
   const o = await advanceOrder(Number(ctx.params.id), { id: ctx.user!.id, name: ctx.user!.name }, b);
   await audit(ctx, `order.${o.status.toLowerCase()}`, 'order', o.id, { code: o.code });
-  return orderView((await findOrderById(o.id))!, ctx.locale, { staff: true });
+  return orderView((await findOrderById(o.id))!, ctx.locale, { staff: true, hideProofs: !ctx.user!.permissions.includes('payments.view') });
 });

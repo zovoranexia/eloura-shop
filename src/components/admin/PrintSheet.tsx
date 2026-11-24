@@ -12,6 +12,7 @@ import { PrintButton } from './PrintButton';
 export async function PrintSheet({ id, kind }: { id: number; kind: 'invoice' | 'packing' }) {
   await requirePagePermission(['orders.view', 'invoices.print']);
   const { t, locale } = getT({ admin: true });
+  if (!Number.isInteger(id) || id < 1) notFound();
   const raw = await findOrderById(id);
   if (!raw) notFound();
   const o = await orderView(raw, locale, { staff: true });

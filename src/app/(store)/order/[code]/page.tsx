@@ -9,7 +9,8 @@ import { OrderView } from '@/components/store/OrderView';
 type Props = { params: { code: string }; searchParams: { t?: string | string[] } };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  return { title: `${getT().t('order.title')} ${params.code}`, robots: { index: false, follow: false } };
+  // the access token travels in the URL: never leak it through the Referer header to third-party links / images
+  return { title: `${getT().t('order.title')} ${params.code}`, robots: { index: false, follow: false }, referrer: 'no-referrer' };
 }
 
 const same = (a: string, b: string) => {
@@ -30,7 +31,7 @@ export default async function OrderPage({ params, searchParams }: Props) {
         <div className="mx-auto max-w-md rounded-card bg-white p-8 text-center shadow-card">
           <h1 className="font-serif text-3xl">{t('order.access_title')}</h1>
           <p className="mt-3 text-sm text-taupe">{t('order.access_text')}</p>
-          <div className="mt-6 flex flex-col gap-3"><Link href="/track" className="btn-primary">{t('nav.track')}</Link>{!user ? <Link href={`/login?next=/order/${params.code}`} className="btn-outline">{t('nav.login')}</Link> : null}</div>
+          <div className="mt-6 flex flex-col gap-3"><Link href="/track" className="btn-primary">{t('nav.track')}</Link>{!user ? <Link href={`/login?next=${encodeURIComponent(`/order/${params.code}`)}`} className="btn-outline">{t('nav.login')}</Link> : null}</div>
         </div>
       </div>
     );

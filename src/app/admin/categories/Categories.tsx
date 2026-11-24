@@ -1,4 +1,5 @@
 'use client';
+/* eslint-disable @next/next/no-img-element */
 import { useState } from 'react';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { useI18n } from '@/components/I18nProvider';
@@ -22,6 +23,7 @@ export function Categories() {
   async function save() {
     if (!form) return;
     setErrs({});
+    if (!form.name.tet?.trim() && !form.name.en?.trim()) { setErrs({ name: 'REQUIRED' }); return; } // same rule as the create endpoint (the update endpoint does not check it)
     const body = { name: form.name, image: form.image, sortOrder: form.sortOrder, isActive: form.isActive, slug: form.slug || undefined };
     const r = await run(async () => {
       try { return form.id ? await api(`/api/admin/categories/${form.id}`, { method: 'PUT', body }) : await api('/api/admin/categories', { body }); }

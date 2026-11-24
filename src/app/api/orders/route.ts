@@ -24,5 +24,7 @@ const schema = z.object({
 
 export const POST = route({ limit: ['checkout', 15, 10 * 60_000] }, async (ctx) => {
   const b = await ctx.body(schema);
-  return createOrder({ user: ctx.user, locale: ctx.locale, input: { ...b, paymentMethod: b.paymentMethod as never } });
+  const rawKey = ctx.req.headers.get('idempotency-key') ?? '';
+  const idempotencyKey = /^[A-Za-z0-9_-]{16,64}$/.test(rawKey) ? rawKey : null;
+  return createOrder({ user: ctx.user, locale: ctx.locale, idempotencyKey, input: { ...b, paymentMethod: b.paymentMethod as never } });
 });

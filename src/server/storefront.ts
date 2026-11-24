@@ -1,5 +1,6 @@
 import 'server-only';
 import { prisma } from '@/lib/db';
+import { env } from '@/lib/env';
 import { loc, type Locale } from '@/lib/i18n';
 import { getSetting } from './settings';
 import { allMethods, isOffered, isConfigured } from './payments';
@@ -83,10 +84,16 @@ export async function listCustomerAddresses(userId: number) {
 }
 export type CustomerAddress = Awaited<ReturnType<typeof listCustomerAddresses>>[number];
 
+/** Public origin of the shop (no trailing slash, no path) for sitemap / robots / absolute metadata URLs. */
+export function siteUrl(): string {
+  try { return new URL(env.appUrl).origin; } catch { return 'http://localhost:3000'; }
+}
+
 export async function sitemapEntries() {
-  const [products, categories] = await Promise.all([
+  const [products, categories, pages] = await Promise.all([
     prisma.product.findMany({ where: { isActive: true }, select: { slug: true, updatedAt: true } }),
     prisma.category.findMany({ where: { isActive: true }, select: { slug: true } }),
+    prisma.cmsPage.findMany({ where: { isPublished: true }, select: { slug: true, updatedAt: true } }),
   ]);
-  return { products, categories };
+  return { products, categories, pages };
 }

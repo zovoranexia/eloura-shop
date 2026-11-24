@@ -21,14 +21,14 @@ type Detail = {
 export function CustomerDetail({ id }: { id: number }) {
   const { t, locale } = useI18n();
   const { can } = useAdminUser();
-  const { data, loading, error, reload } = useAdminData<Detail>(`/api/admin/customers/${id}`);
+  const { data, error, reload } = useAdminData<Detail>(`/api/admin/customers/${id}`);
   const { busy, run } = useAction();
   const [flagOpen, setFlagOpen] = useState(false);
   const [reason, setReason] = useState('');
   const [toggleOpen, setToggleOpen] = useState(false);
 
   if (error) return <ErrorBox error={error} />;
-  if (loading || !data) return <Loading />;
+  if (!data) return <Loading />;
 
   const setFlag = async (blocked: boolean) => {
     const r = await run(() => api(`/api/admin/customers/${id}/cod-flag`, { body: { blocked, reason: reason.trim() || undefined } }), t('admin.customers.flagSaved'));

@@ -1,4 +1,5 @@
 'use client';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { ShoppingBag, Trash2 } from 'lucide-react';
 import { useT } from '@/components/I18nProvider';
@@ -12,9 +13,11 @@ import { ProductImage } from './ProductImage';
 
 export function CartDrawer() {
   const t = useT();
-  const { drawerOpen, setDrawerOpen, items, quote, setQty, remove, quoting } = useCart();
+  const { drawerOpen, setDrawerOpen, items, quote, setQty, remove, quoting, refresh } = useCart();
   const { commerce, diliFreeOverCents } = useStoreConfig();
   const close = () => setDrawerOpen(false);
+  // stock / prices may have changed since the last quote
+  useEffect(() => { if (drawerOpen) refresh(); }, [drawerOpen, refresh]);
   const lines = (quote?.lines ?? []).filter(isLine);
   const sub = quote?.subtotalCents ?? 0;
   const hint = diliFreeOverCents && sub < diliFreeOverCents ? t('cart.free_hint', { amount: formatUSD(diliFreeOverCents - sub) }) : diliFreeOverCents && sub >= diliFreeOverCents ? t('cart.free_reached') : null;
@@ -58,7 +61,7 @@ export function CartDrawer() {
               <span className={`text-lg font-bold ${quoting ? 'opacity-50' : ''}`}>{formatUSD(sub)}</span>
             </div>
             <p className="text-xs text-taupe">{t('cart.shipping_at_checkout')}</p>
-            <Link href="/checkout" onClick={close} aria-disabled={blocked} className={`btn-primary btn-block ${blocked ? 'pointer-events-none opacity-50' : ''}`}>{t('cart.checkout')}</Link>
+            <Link href="/checkout" onClick={(e) => { if (blocked) e.preventDefault(); else close(); }} aria-disabled={blocked} tabIndex={blocked ? -1 : undefined} className={`btn-primary btn-block ${blocked ? 'pointer-events-none opacity-50' : ''}`}>{t('cart.checkout')}</Link>
             <Link href="/cart" onClick={close} className="btn-ghost btn-block">{t('cart.view_cart')}</Link>
           </div>
         </>

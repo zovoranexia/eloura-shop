@@ -35,6 +35,7 @@ export function Coupons() {
     if (!form) return;
     setErrs({});
     if ((form.startsAt && !parseDiliLocal(form.startsAt)) || (form.endsAt && !parseDiliLocal(form.endsAt))) { setErrs({ startsAt: 'INVALID' }); return; }
+    if (form.startsAt && form.endsAt && form.endsAt <= form.startsAt) { setErrs({ endsAt: 'END_BEFORE_START' }); return; }
     const body = {
       code: form.code.trim().toUpperCase(), description: form.description, type: form.type, value: form.value, minOrderCents: form.minOrderCents,
       maxDiscountCents: form.type === 'PERCENT' ? form.maxDiscountCents : null, usageLimit: form.usageLimit ? Number(form.usageLimit) : null,
@@ -93,7 +94,7 @@ export function Coupons() {
             <Field label={t('admin.coupons.minOrder')}><MoneyInput cents={form.minOrderCents} onChange={(c) => setForm({ ...form, minOrderCents: c ?? 0 })} /></Field>
             <Field label={t('admin.coupons.usageLimit')} hint={t('admin.coupons.usageHint')}><input type="number" min={1} className="input" value={form.usageLimit} onChange={(e) => setForm({ ...form, usageLimit: e.target.value })} placeholder="∞" /></Field>
             <Field label={t('admin.coupons.startsAt')} error={errs.startsAt ? fieldMessage(t, errs.startsAt) : undefined} hint="Asia/Dili"><input type="datetime-local" className="input" value={form.startsAt} onChange={(e) => setForm({ ...form, startsAt: e.target.value })} /></Field>
-            <Field label={t('admin.coupons.endsAt')} hint="Asia/Dili"><input type="datetime-local" className="input" value={form.endsAt} onChange={(e) => setForm({ ...form, endsAt: e.target.value })} /></Field>
+            <Field label={t('admin.coupons.endsAt')} error={errs.endsAt === 'END_BEFORE_START' ? t('admin.coupons.endBeforeStart') : errs.endsAt ? fieldMessage(t, errs.endsAt) : undefined} hint="Asia/Dili"><input type="datetime-local" className="input" value={form.endsAt} onChange={(e) => setForm({ ...form, endsAt: e.target.value })} /></Field>
             <div className="sm:col-span-2"><LangTabs label={t('admin.coupons.description')} value={form.description} onChange={(description) => setForm({ ...form, description })} /></div>
             <Switch checked={form.isActive} onChange={(isActive) => setForm({ ...form, isActive })} label={t('admin.common.active')} />
           </div>

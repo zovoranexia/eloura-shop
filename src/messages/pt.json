@@ -46,7 +46,9 @@
     "send": "Enviar",
     "details": "Detalhes",
     "note": "Nota",
-    "days": "dias"
+    "days": "dias",
+    "breadcrumb": "Caminho de navegação",
+    "pagination": "Paginação"
   },
   "status": {
     "order": {
@@ -159,7 +161,7 @@
       "DUPLICATE_SKU": "SKU duplicado",
       "PERCENT_MAX_100": "Máximo 100%",
       "COD_RANGE": "O máximo não pode ser inferior ao mínimo",
-      "custom": "Valor inválido"
+      "DUPLICATE": "Já existe", "custom": "Valor inválido"
     }
   },
   "emails": {

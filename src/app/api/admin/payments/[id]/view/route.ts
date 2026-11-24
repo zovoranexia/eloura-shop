@@ -1,6 +1,7 @@
 import { route } from '@/lib/api';
 import { prisma } from '@/lib/db';
 import { notFound } from '@/lib/errors';
+import { audit } from '@/lib/audit';
 import { readProof } from '@/lib/upload';
 
 /**
@@ -12,6 +13,7 @@ export const GET = route<{ id: string }>({ perm: 'payments.view' }, async (ctx) 
   const p = await prisma.paymentProof.findUnique({ where: { id: Number(ctx.params.id) } });
   const buf = p ? await readProof(p.fileKey) : null;
   if (!p || !buf) throw notFound();
+  await audit(ctx, 'payment.view_proof', 'payment', p.id);
   return new Response(new Uint8Array(buf), {
     headers: {
       'Content-Type': p.fileMime ?? 'application/octet-stream',

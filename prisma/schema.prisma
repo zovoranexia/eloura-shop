@@ -281,6 +281,8 @@ model Order {
   /// public order reference, e.g. EC-261124-K7QD (also used as the transfer reference)
   code               String           @unique
   accessToken        String
+  /// client-generated key of one checkout attempt: a retry after a network failure returns the same order instead of a duplicate
+  idempotencyKey     String?          @unique
   userId             Int?
   status             OrderStatus      @default(PENDING_PAYMENT)
   paymentStatus      PaymentStatus    @default(UNPAID)

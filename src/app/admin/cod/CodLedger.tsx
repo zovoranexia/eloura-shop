@@ -28,12 +28,15 @@ export function CodLedger() {
   const rows = useMemo(() => (data ?? []).filter((r) => !courier || String(r.courier?.id ?? 0) === courier), [data, courier]);
   const couriers = useMemo(() => [...new Map((data ?? []).filter((r) => r.courier).map((r) => [r.courier!.id, r.courier!.name])).entries()], [data]);
   const pendingTotal = (all.data ?? []).reduce((s, r) => s + (r.collectedCents ?? 0), 0);
-  const selTotal = rows.filter((r) => sel.has(r.id)).reduce((s, r) => s + (r.collectedCents ?? 0), 0);
   const selectable = rows.filter((r) => !r.reconciledAt);
+  // only rows that are still visible (courier filter) and not yet reconciled count as selected
+  const selRows = selectable.filter((r) => sel.has(r.id));
+  const selTotal = selRows.reduce((s, r) => s + (r.collectedCents ?? 0), 0);
   const toggle = (id: number) => setSel((s) => { const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n; });
 
   async function reconcile() {
-    const ids = [...sel].filter((id) => rows.some((r) => r.id === id && !r.reconciledAt));
+    const ids = selRows.map((r) => r.id);
+    if (!ids.length) return;
     const r = await run(() => api<{ reconciled: number }>('/api/admin/cod/reconcile', { body: { orderIds: ids } }), t('admin.cod.reconciledDone'));
     if (r) { setSel(new Set()); setConfirm(false); reload(); all.reload(); }
   }
@@ -44,9 +47,9 @@ export function CodLedger() {
         actions={can('reports.export') ? <a className="btn-outline btn-sm" href={`/api/admin/reports/export?type=cod&from=${addDays(diliDay(), -29)}&to=${diliDay()}`}><Download size={14} /> {t('admin.cod.export')}</a> : undefined} />
       <div className="mb-5 grid gap-4 sm:grid-cols-3">
         <div className="card p-5"><p className="label">{t('admin.cod.toReconcile')}</p><p className="font-serif text-4xl font-medium text-mauve">{formatUSD(pendingTotal)}</p><p className="text-xs text-taupe">{t('admin.cod.ordersCount', { n: all.data?.length ?? 0 })}</p></div>
-        <div className="card p-5"><p className="label">{t('admin.cod.selected')}</p><p className="font-serif text-4xl font-medium">{formatUSD(selTotal)}</p><p className="text-xs text-taupe">{t('admin.cod.ordersCount', { n: sel.size })}</p></div>
+        <div className="card p-5"><p className="label">{t('admin.cod.selected')}</p><p className="font-serif text-4xl font-medium">{formatUSD(selTotal)}</p><p className="text-xs text-taupe">{t('admin.cod.ordersCount', { n: selRows.length })}</p></div>
         <div className="card flex items-center p-5">
-          <button type="button" className="btn-primary btn-block" disabled={!sel.size || busy} onClick={() => setConfirm(true)}>{busy ? <Spinner className="!text-white" /> : <Check size={16} />} {t('admin.cod.reconcileSelected')}</button>
+          <button type="button" className="btn-primary btn-block" disabled={!selRows.length || busy} onClick={() => setConfirm(true)}>{busy ? <Spinner className="!text-white" /> : <Check size={16} />} {t('admin.cod.reconcileSelected')}</button>
         </div>
       </div>
 
@@ -85,7 +88,7 @@ export function CodLedger() {
           </tbody>
         </TableWrap>
       )}
-      <ConfirmModal open={confirm} title={t('admin.cod.reconcileSelected')} text={t('admin.cod.confirmText', { n: sel.size, total: formatUSD(selTotal) })} busy={busy} onClose={() => setConfirm(false)} onConfirm={reconcile} />
+      <ConfirmModal open={confirm} title={t('admin.cod.reconcileSelected')} text={t('admin.cod.confirmText', { n: selRows.length, total: formatUSD(selTotal) })} busy={busy} onClose={() => setConfirm(false)} onConfirm={reconcile} />
     </>
   );
 }

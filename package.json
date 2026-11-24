@@ -19,7 +19,9 @@
     "assets": "node scripts/make-assets.mjs",
     "test": "tsx --test tests/lib.test.ts",
     "test:api": "node --env-file=.env tests/api.smoke.mjs",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "lint": "next lint",
+    "test:services": "tsx --tsconfig tests/tsconfig.json --env-file=.env --test tests/services.test.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -32,11 +34,11 @@
     "jose": "^5.9.6",
     "lucide-react": "^0.468.0",
     "next": "^14.2.0",
-    "nodemailer": "^6.9.16",
+    "nodemailer": "^10.6.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "server-only": "^0.0.1",
-    "sharp": "^0.34.1",
+    "sharp": "^0.35.5",
     "zod": "^3.24.1"
   },
   "devDependencies": {
@@ -46,6 +48,8 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.35",
     "postcss": "^8.4.49",
     "prisma": "^5.22.0",
     "tailwindcss": "^3.4.17",

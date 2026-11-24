@@ -6,8 +6,9 @@ import { audit } from '@/lib/audit';
 import { revokeSessions } from '@/lib/auth';
 
 export const GET = route<{ id: string }>({ perm: 'customers.view' }, async (ctx) => {
-  const u = await prisma.user.findUnique({
-    where: { id: Number(ctx.params.id) },
+  // customers only: staff / super-admin accounts are managed under Staff & Roles
+  const u = await prisma.user.findFirst({
+    where: { id: Number(ctx.params.id), roles: { none: { role: { permissions: { some: {} } } } }, NOT: { roles: { some: { role: { key: 'SUPER_ADMIN' } } } } },
     include: { addresses: true, orders: { orderBy: { id: 'desc' }, take: 50, select: { id: true, code: true, status: true, paymentStatus: true, paymentMethod: true, totalCents: true, createdAt: true } } },
   });
   if (!u) throw notFound();

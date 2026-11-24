@@ -78,6 +78,7 @@
   "categories": { "title": "Kategori", "subtitle": "Kelompokkan produk dan isi strip kategori di beranda.", "new": "Kategori baru", "edit": "Ubah kategori", "image": "Gambar", "order": "Urutan", "products": "Produk", "visible": "Tampil di toko", "deleteText": "{n} produk akan menjadi tanpa kategori. Lanjutkan?" },
   "inventory": { "title": "Inventaris", "subtitle": "Stok per varian. Ambang peringatan: {n} unit.", "ok": "Tersedia" },
   "coupons": {
+    "endBeforeStart": "Waktu berakhir harus setelah waktu mulai.",
     "title": "Kupon & diskon", "subtitle": "Diskon persen atau nominal USD dengan masa berlaku menurut waktu Dili.", "new": "Kupon baru", "edit": "Ubah kupon", "code": "Kode", "codeHint": "Hanya huruf, angka, - dan _.", "type": "Jenis",
     "percent": "Persentase", "fixed": "Nominal tetap (USD)", "percentValue": "Persen diskon", "fixedValue": "Nominal diskon", "discount": "Diskon", "maxDiscount": "Diskon maksimum", "maxDiscountHint": "Membatasi kupon persentase. Kosong = tanpa batas.",
     "upTo": "hingga {max}", "minOrder": "Pesanan minimum", "usage": "Terpakai", "usageLimit": "Batas penggunaan", "usageHint": "Kosong = tanpa batas.", "startsAt": "Mulai", "endsAt": "Berakhir", "validity": "Masa berlaku", "description": "Deskripsi", "deleteText": "Hapus kupon {code}?"
@@ -89,12 +90,14 @@
     "cta": "Teks tombol", "link": "Tautan tombol", "deleteText": "Hapus banner ini?"
   },
   "pages": {
+    "slugTaken": "Halaman dengan slug ini sudah ada. Buka dari daftar untuk mengeditnya.",
     "title": "Halaman (CMS)", "subtitle": "Tentang kami, ketentuan COD, privasi, dan halaman statis lain dalam empat bahasa.", "new": "Halaman baru", "edit": "Ubah halaman", "page": "Halaman", "languages": "Bahasa", "updated": "Diperbarui", "published": "Terbit", "draft": "Draf",
     "slugHint": "Huruf kecil, angka, dan tanda hubung. URL publik: /page/<slug>.", "titleField": "Judul", "body": "Isi", "markdownHint": "Markdown ringan: ## judul, - daftar poin, 1. daftar bernomor, **tebal**, baris kosong = paragraf baru. HTML tidak pernah ditampilkan."
   },
   "inquiries": { "title": "Pesan masuk", "subtitle": "Pesan dari formulir kontak.", "unread": "Belum dibaca", "new": "Baru", "reply": "Balas lewat email", "markRead": "Tandai sudah dibaca", "markUnread": "Tandai belum dibaca", "deleteText": "Hapus pesan ini secara permanen?" },
   "newsletter": { "title": "Pelanggan newsletter", "subtitle": "{n} pelanggan", "csv": "Unduh CSV" },
   "zones": {
+    "removeSucoText": "Hapus suco “{name}” dari daftar? Suco ini tidak akan ditawarkan lagi saat checkout.",
     "title": "Zona pengiriman & COD", "subtitle": "Ongkos kirim, batas gratis ongkir, dan lokasi yang mengizinkan Bayar di tempat.",
     "codRule": "Bayar di tempat HANYA berlaku di dalam Munisipalitas Dili, pada posto administrativo dan suco yang diaktifkan di bawah. Atauro dan semua munisipalitas lain selalu dikecualikan.",
     "diliTitle": "Munisipalitas Dili", "othersTitle": "Munisipalitas lain", "municipality": "Munisipalitas", "fee": "Ongkos kirim", "freeOver": "Gratis ongkir di atas", "eta": "Lama pengiriman", "codEnabled": "Izinkan COD di posto ini",

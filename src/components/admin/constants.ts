@@ -23,6 +23,14 @@ export const WA_MESSAGES: Record<string, (v: { name: string; code: string; total
   id: (v) => `Halo ${v.name}, ini ${v.store}. Kami ingin mengonfirmasi pesanan ${v.code} Anda (bayar di tempat, total ${v.total}). Mohon siapkan uang tunai USD dengan jumlah pas. Apakah alamat dan waktu pengiriman sudah benar? Terima kasih!`,
 };
 
+/** Neutral opener for every other order (the COD confirmation text above only fits a COD order that is waiting for confirmation). */
+export const WA_GENERIC: Record<string, (v: { name: string; code: string; total: string; store: string }) => string> = {
+  tet: (v) => `Bondia ${v.name}, ami husi ${v.store}. Ami kontaktu ita kona-ba pedidu ${v.code} (total ${v.total}). Obrigadu/a!`,
+  pt: (v) => `Olá ${v.name}, fala a ${v.store}. Contactamos a propósito da sua encomenda ${v.code} (total ${v.total}). Obrigado!`,
+  en: (v) => `Hello ${v.name}, this is ${v.store}. We are contacting you about your order ${v.code} (total ${v.total}). Thank you!`,
+  id: (v) => `Halo ${v.name}, ini ${v.store}. Kami menghubungi Anda terkait pesanan ${v.code} (total ${v.total}). Terima kasih!`,
+};
+
 /** System roles are translated by key (their DB names are English); custom roles keep the name typed by the admin. */
 export function roleLabel(t: (k: string) => string, key: string, fallback: string) {
   const k = `admin.roles.names.${key}`;

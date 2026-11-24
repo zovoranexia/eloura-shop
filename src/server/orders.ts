@@ -116,8 +116,15 @@ export type CheckoutInput = {
   street: string; addressNotes?: string; note?: string; paymentMethod: PaymentMethodKey; coupon?: string; acceptCodTerms?: boolean;
 };
 
-export async function createOrder(args: { user: SessionUser | null; input: CheckoutInput; locale: Locale }) {
-  const { user, input, locale } = args;
+const orderSummary = (o: Order) => ({ code: o.code, token: o.accessToken, totalCents: o.totalCents, paymentMethod: o.paymentMethod, status: o.status, expiresAt: o.expiresAt });
+
+export async function createOrder(args: { user: SessionUser | null; input: CheckoutInput; locale: Locale; idempotencyKey?: string | null }) {
+  const { user, input, locale, idempotencyKey } = args;
+  if (idempotencyKey) {
+    // a retry of the same checkout attempt: return the order that was already created
+    const done = await prisma.order.findUnique({ where: { idempotencyKey } });
+    if (done) return orderSummary(done);
+  }
   const phone = normalizePhone(input.phone);
   if (!phone.valid) throw new AppError(422, 'INVALID_PHONE');
 
@@ -132,7 +139,9 @@ export async function createOrder(args: { user: SessionUser | null; input: Check
   const expires = isCod ? null : new Date(Date.now() + commerce.paymentDeadlineHours * 3600e3);
   const token = crypto.randomBytes(18).toString('base64url');
 
-  const order = await prisma.$transaction(async (tx) => {
+  let order: Order;
+  try {
+  order = await prisma.$transaction(async (tx) => {
     const lines = await resolveLines(input.items, tx);
     if (!lines.length) throw new AppError(422, 'EMPTY_CART');
     for (const l of lines) {
@@ -170,7 +179,7 @@ export async function createOrder(args: { user: SessionUser | null; input: Check
     }
     const created = await tx.order.create({
       data: {
-        code: newCode(), accessToken: token, userId: user?.id ?? null,
+        code: newCode(), accessToken: token, idempotencyKey: idempotencyKey ?? null, userId: user?.id ?? null,
         status: isCod ? 'PENDING_CONFIRMATION' : 'PENDING_PAYMENT', paymentStatus: 'UNPAID', paymentMethod: method.key,
         subtotalCents: subtotal, discountCents: discount, couponCode, shippingCents: shipping, codFeeCents: codFee, totalCents: total,
         customerName: input.name, customerEmail: input.email || user?.email || null, customerPhone: phone.e164,
@@ -188,9 +197,17 @@ export async function createOrder(args: { user: SessionUser | null; input: Check
     await addEvent(tx, created.id, 'created', { to: created.status, note: method.key });
     return created;
   });
+  } catch (e) {
+    // two simultaneous requests with the same key: the loser's transaction (and its stock reservation) rolled back; return the winner's order
+    if (idempotencyKey && e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
+      const winner = await prisma.order.findUnique({ where: { idempotencyKey } });
+      if (winner) return orderSummary(winner);
+    }
+    throw e;
+  }
 
   mail(order, 'created');
-  return { code: order.code, token: order.accessToken, totalCents: order.totalCents, paymentMethod: order.paymentMethod, status: order.status, expiresAt: order.expiresAt };
+  return orderSummary(order);
 }
 
 /* ================================================================== read */
@@ -209,8 +226,10 @@ export const findOrderById = (id: number) => prisma.order.findUnique({ where: { 
 const PUBLIC_EVENTS = new Set(['created', 'status', 'payment_submitted', 'payment_approved', 'payment_rejected', 'cancelled', 'refund']);
 
 /** Serialisable order for the UI. `staff` includes internal notes, actors, courier and proof details. */
-export async function orderView(o: OrderFull, locale: Locale, opts: { staff?: boolean } = {}) {
+export async function orderView(o: OrderFull, locale: Locale, opts: { staff?: boolean; hideProofs?: boolean } = {}) {
   const staff = !!opts.staff;
+  // payer name/account and the reference are payment data: staff without payments.view must not receive them
+  const showPayer = staff && !opts.hideProofs;
   const method = await getMethod(o.paymentMethod);
   const payable = (o.status === 'PENDING_PAYMENT' || o.status === 'AWAITING_VERIFICATION') && o.paymentMethod !== 'COD';
   return {
@@ -224,8 +243,8 @@ export async function orderView(o: OrderFull, locale: Locale, opts: { staff?: bo
     userId: o.userId, locale: o.locale,
     items: o.items.map((i) => ({ id: i.id, productId: i.productId, name: loc(i.name, locale), nameI18n: i.name as Record<string, string>, sku: i.sku, size: i.size, color: i.color, image: i.image, unitPriceCents: i.unitPriceCents, qty: i.qty })),
     proofs: o.proofs.map((p) => ({
-      id: p.id, method: p.method, amountCents: p.amountCents, status: p.status, bankKey: p.bankKey, reference: p.reference,
-      payerName: staff ? p.payerName : undefined, payerAccount: staff ? p.payerAccount : undefined, paidAt: p.paidAt?.toISOString() ?? null,
+      id: p.id, method: p.method, amountCents: p.amountCents, status: p.status, bankKey: p.bankKey, reference: staff && opts.hideProofs ? null : p.reference,
+      payerName: showPayer ? p.payerName : undefined, payerAccount: showPayer ? p.payerAccount : undefined, paidAt: p.paidAt?.toISOString() ?? null,
       hasFile: !!p.fileKey, fileMime: p.fileMime, reviewNote: p.reviewNote, reviewedAt: p.reviewedAt?.toISOString() ?? null, createdAt: p.createdAt.toISOString(),
     })),
     events: o.events.filter((e) => staff || PUBLIC_EVENTS.has(e.type)).map((e) => ({
@@ -442,18 +461,22 @@ export async function assignCourier(orderId: number, staff: NonNullable<Actor>, 
     const c = await prisma.user.findFirst({ where: { id: courierId, isActive: true, roles: { some: { role: { key: { in: ['ORDER_FULFILLMENT', 'STORE_MANAGER', 'SUPER_ADMIN'] } } } } } });
     if (!c) throw new AppError(422, 'COURIER_INVALID');
   }
-  const next = await prisma.order.update({ where: { id: orderId }, data: { assignedCourierId: courierId, courierNote: note ?? o.courierNote } });
-  await addEvent(prisma, orderId, 'courier_assigned', { actor: staff, note: note ?? String(courierId ?? '') });
+  const courier = courierId ? await prisma.user.findUnique({ where: { id: courierId }, select: { name: true } }) : null;
+  const next = await prisma.order.update({
+    where: { id: orderId },
+    data: { assignedCourierId: courierId, courierNote: note === undefined ? o.courierNote : note || null },
+  });
+  await addEvent(prisma, orderId, 'courier_assigned', { actor: staff, note: [courier ? courier.name : 'unassigned', note].filter(Boolean).join(' - ') });
   return next;
 }
 
 /** Finance: courier handed the cash over. */
 export async function reconcileCod(orderIds: number[], staff: NonNullable<Actor>) {
-  const r = await prisma.order.updateMany({
-    where: { id: { in: orderIds }, paymentMethod: 'COD', status: 'DELIVERED', codCollectedAt: { not: null }, codReconciledAt: null },
-    data: { codReconciledAt: new Date(), codReconciledById: staff.id },
-  });
-  for (const id of orderIds) await addEvent(prisma, id, 'cod_reconciled', { actor: staff });
+  const where = { id: { in: orderIds }, paymentMethod: 'COD' as const, status: 'DELIVERED' as const, codCollectedAt: { not: null }, codReconciledAt: null };
+  const eligible = (await prisma.order.findMany({ where, select: { id: true } })).map((o) => o.id);
+  if (!eligible.length) return 0;
+  const r = await prisma.order.updateMany({ where: { ...where, id: { in: eligible } }, data: { codReconciledAt: new Date(), codReconciledById: staff.id } });
+  for (const id of eligible) await addEvent(prisma, id, 'cod_reconciled', { actor: staff });
   return r.count;
 }
 

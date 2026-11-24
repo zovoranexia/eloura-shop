@@ -47,7 +47,7 @@ export function ShopFilters({ categories, facets, total, children }: { categorie
 
       <section>
         <h3 className="label">{t('shop.price')} (USD)</h3>
-        <form className="flex items-center gap-2" onSubmit={(e) => { e.preventDefault(); const toC = (v: string) => (v && Number(v) >= 0 ? String(Math.round(Number(v) * 100)) : null); set({ min: toC(min), max: toC(max) }); }}>
+        <form className="flex items-center gap-2" onSubmit={(e) => { e.preventDefault(); const toC = (v: string) => { const n = Number(v.trim().replace(',', '.')); return v.trim() && Number.isFinite(n) && n >= 0 && n <= 1_000_000 ? String(Math.round(n * 100)) : null; }; set({ min: toC(min), max: toC(max) }); }}>
           <input aria-label={t('shop.min')} inputMode="decimal" className="input !px-3 !py-2" placeholder={`${Math.floor(facets.priceMin / 100)}`} value={min} onChange={(e) => setMin(e.target.value)} />
           <span className="text-taupe">–</span>
           <input aria-label={t('shop.max')} inputMode="decimal" className="input !px-3 !py-2" placeholder={`${Math.ceil(facets.priceMax / 100)}`} value={max} onChange={(e) => setMax(e.target.value)} />

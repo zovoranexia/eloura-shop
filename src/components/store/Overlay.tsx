@@ -8,6 +8,9 @@ export function Overlay({ open, onClose, title, side = false, children, wide = f
   const t = useT();
   const ref = useRef<HTMLDivElement>(null);
   const last = useRef<Element | null>(null);
+  // keep the latest onClose without re-running the focus/scroll-lock effect on every parent render (the cart drawer re-renders on each quote)
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
 
   useEffect(() => {
     if (!open) return;
@@ -15,7 +18,7 @@ export function Overlay({ open, onClose, title, side = false, children, wide = f
     const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') closeRef.current();
       if (e.key === 'Tab' && ref.current) {
         const f = ref.current.querySelectorAll<HTMLElement>('a[href],button:not([disabled]),input:not([disabled]),select,textarea,[tabindex]:not([tabindex="-1"])');
         if (!f.length) return;
@@ -32,7 +35,7 @@ export function Overlay({ open, onClose, title, side = false, children, wide = f
       document.removeEventListener('keydown', onKey);
       (last.current as HTMLElement | null)?.focus?.();
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!open) return null;
   const panel = side
@@ -40,11 +43,11 @@ export function Overlay({ open, onClose, title, side = false, children, wide = f
     : `absolute left-1/2 top-1/2 flex max-h-[90vh] w-[94vw] ${wide ? 'max-w-[720px]' : 'max-w-[480px]'} -translate-x-1/2 -translate-y-1/2 flex-col rounded-card bg-white shadow-soft`;
   return (
     <div className="no-print fixed inset-0 z-[80]" role="dialog" aria-modal="true" aria-label={title}>
-      <div className="absolute inset-0 bg-espresso/50" onClick={onClose} />
+      <div className="absolute inset-0 bg-espresso/50" onClick={() => closeRef.current()} />
       <div ref={ref} className={panel}>
         <div className="flex items-center justify-between border-b border-cream-line px-5 py-4">
           <h2 className="font-serif text-2xl">{title}</h2>
-          <button type="button" onClick={onClose} aria-label={t('common.close')} className="rounded-full p-2 text-taupe hover:bg-cream-deep"><X size={20} /></button>
+          <button type="button" onClick={() => closeRef.current()} aria-label={t('common.close')} className="rounded-full p-2 text-taupe hover:bg-cream-deep"><X size={20} /></button>
         </div>
         {children}
       </div>

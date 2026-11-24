@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
+import { siteUrl } from '@/server/storefront';
 
 export default function robots(): MetadataRoute.Robots {
-  const base = process.env.APP_URL || 'http://localhost:3000';
-  return { rules: [{ userAgent: '*', allow: '/', disallow: ['/admin', '/api', '/account', '/checkout', '/order/'] }], sitemap: `${base}/sitemap.xml` };
+  const base = siteUrl();
+  return { rules: [{ userAgent: '*', allow: '/', disallow: ['/admin', '/api', '/account', '/checkout', '/cart', '/track', '/order/', '/wishlist'] }], sitemap: `${base}/sitemap.xml` };
 }

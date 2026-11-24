@@ -1,5 +1,6 @@
 import 'server-only';
 import nodemailer from 'nodemailer';
+import type { Transporter } from 'nodemailer';
 import { env } from '@/lib/env';
 import { translatorFor, isLocale, DEFAULT_LOCALE, type Locale } from '@/lib/i18n';
 import { formatUSD } from '@/lib/money';
@@ -7,7 +8,7 @@ import { getSetting } from './settings';
 
 type Mail = { to: string; subject: string; text: string };
 
-let transport: nodemailer.Transporter | null = null;
+let transport: Transporter | null = null;
 function getTransport() {
   if (!env.smtp.host) return null;
   transport ??= nodemailer.createTransport({

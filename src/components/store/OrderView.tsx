@@ -9,6 +9,7 @@ import { api, errorMessage } from '@/lib/client/api';
 import { formatUSD } from '@/lib/money';
 import { formatDateTime } from '@/lib/time';
 import { normalizePhone } from '@/lib/phone';
+import { useStoreConfig } from '@/lib/client/store-config';
 import type { OrderView as Order } from '@/server/orders';
 import { Field } from './Field';
 import { ProductImage } from './ProductImage';
@@ -23,10 +24,16 @@ const TONE: Record<string, string> = {
 function useCountdown(until: string | null) {
   const [left, setLeft] = useState<number | null>(null);
   useEffect(() => {
-    if (!until) return;
-    const tick = () => setLeft(Math.max(0, new Date(until).getTime() - Date.now()));
-    tick();
+    if (!until) { setLeft(null); return; }
+    const end = new Date(until).getTime();
+    if (!Number.isFinite(end)) { setLeft(null); return; }
+    const tick = () => {
+      const ms = Math.max(0, end - Date.now());
+      setLeft(ms);
+      if (ms === 0) clearInterval(h); // deadline reached: stop ticking
+    };
     const h = setInterval(tick, 1000);
+    tick();
     return () => clearInterval(h);
   }, [until]);
   return left;
@@ -73,7 +80,8 @@ function ProofForm({ order, token, replace }: { order: Order; token?: string; re
   function pick(f: File | null) {
     setErrors((e) => ({ ...e, file: '' }));
     if (!f) return setFile(null);
-    if (!OK_TYPES.includes(f.type)) { setFile(null); return setErrors((e) => ({ ...e, file: t('errors.FILE_INVALID') })); }
+    if (!OK_TYPES.includes(f.type) && !(!f.type && /\.(jpe?g|png|pdf)$/i.test(f.name))) { // some systems report no MIME type; the server sniffs the real content anyway
+       setFile(null); return setErrors((e) => ({ ...e, file: t('errors.FILE_INVALID') })); }
     if (f.size > MAX) { setFile(null); return setErrors((e) => ({ ...e, file: t('errors.FILE_TOO_LARGE') })); }
     setFile(f);
   }
@@ -128,6 +136,7 @@ export function OrderView({ order, token }: { order: Order; token?: string }) {
   const locale = useLocale();
   const toast = useToast();
   const router = useRouter();
+  const config = useStoreConfig();
   const [replace, setReplace] = useState(false);
   const [cancelling, setCancelling] = useState(false);
   const isCod = order.paymentMethod === 'COD';
@@ -170,7 +179,7 @@ export function OrderView({ order, token }: { order: Order; token?: string }) {
 
       {/* progress */}
       {!cancelled ? (
-        <ol className="grid grid-cols-5 gap-1 rounded-card bg-white p-5 shadow-card sm:grid-cols-6" aria-label={t('order.progress')}>
+        <ol className={`grid gap-1 rounded-card bg-white p-5 shadow-card ${flow.length === 6 ? 'grid-cols-6' : 'grid-cols-5'}`} aria-label={t('order.progress')}>
           {flow.map((s, i) => (
             <li key={s} className="flex flex-col items-center gap-1.5 text-center" aria-current={i === idx ? 'step' : undefined}>
               <span className={`grid h-8 w-8 place-items-center rounded-full text-xs font-bold ${i < idx ? 'bg-mauve text-white' : i === idx ? 'bg-espresso text-white ring-4 ring-mauve/20' : 'bg-cream-deep text-taupe'}`}>{i < idx ? <Check size={14} /> : i + 1}</span>
@@ -308,7 +317,7 @@ export function OrderView({ order, token }: { order: Order; token?: string }) {
             <p className="mt-3 font-semibold">{order.customer.name}</p>
             <p>{order.customer.phone}</p>
             <p className="mt-2">{order.address.street}</p>
-            <p className="text-taupe">{[order.address.suco, order.address.adminPost?.replace(/_/g, ' '), order.address.municipality].filter(Boolean).join(', ')}</p>
+            <p className="text-taupe">{[order.address.suco, order.address.adminPost ? (config.diliPosts.find((p) => p.key === order.address.adminPost)?.name ?? order.address.adminPost.replace(/_/g, ' ')) : '', config.municipalities.find((m) => m.key === order.address.municipality)?.name ?? order.address.municipality].filter(Boolean).join(', ')}</p>
             {order.address.notes ? <p className="mt-1 text-xs text-taupe">{order.address.notes}</p> : null}
             <p className="mt-3 text-xs text-taupe">{t('status.method.' + order.paymentMethod)}</p>
           </section>

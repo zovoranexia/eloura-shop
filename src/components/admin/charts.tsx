@@ -8,8 +8,8 @@ export function BarLineChart({ data, barColor = '#7D4E57', lineColor = '#B09365'
 }) {
   const W = 720, H = height, padL = 52, padR = 28, padT = 14, padB = 30;
   const iw = W - padL - padR, ih = H - padT - padB;
-  const max = Math.max(1, ...data.map((d) => d.value));
-  const nice = niceMax(max);
+  const max = Math.max(0, ...data.map((d) => d.value));
+  const nice = max > 0 ? niceMax(max) : 100; // all-zero series: show a sensible 0 - $1 scale instead of cent ticks
   const lmax = Math.max(1, ...data.map((d) => d.line ?? 0));
   const bw = iw / Math.max(1, data.length);
   const x = (i: number) => padL + i * bw + bw / 2;
@@ -64,8 +64,8 @@ export function HBars({ rows, empty }: { rows: HBarRow[]; empty: string }) {
   if (!rows.length) return <p className="py-6 text-center text-sm text-taupe">{empty}</p>;
   return (
     <ul className="space-y-3">
-      {rows.map((r) => (
-        <li key={r.label}>
+      {rows.map((r, i) => (
+        <li key={`${r.label}-${i}`}>
           <div className="mb-1 flex items-baseline justify-between gap-3 text-sm">
             <span className="font-medium text-espresso">{r.label}</span>
             <span className="text-taupe">{r.display}{r.sub ? <span className="ml-2 text-xs">{r.sub}</span> : null}</span>

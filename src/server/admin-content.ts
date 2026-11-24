@@ -9,7 +9,7 @@ const when = z.string().max(20).optional().nullable().refine((v) => !v || !!pars
 export const bannerSchema = z.object({
   placement: z.enum(['HERO', 'PROMO']).default('HERO'),
   image: z.string().max(300).regex(/^(\/media\/|\/images\/)/, 'INVALID'),
-  badge: i18n.optional(), title: i18n, highlight: i18n.optional(), subtitle: i18n.optional(), ctaLabel: i18n.optional(),
+  badge: i18n.optional(), title: i18n.refine((t) => Object.values(t).some((x) => x.trim()), 'REQUIRED'), highlight: i18n.optional(), subtitle: i18n.optional(), ctaLabel: i18n.optional(),
   ctaUrl: z.string().max(200).regex(/^\/[\w\-/?=&%.#]*$/, 'INVALID').default('/shop'),
   sortOrder: z.number().int().min(0).max(99).default(0), isActive: z.boolean().default(true),
   startsAt: when, endsAt: when,
@@ -24,6 +24,7 @@ export const pageSchema = z.object({
   title: i18n, body: i18n, isPublished: z.boolean().default(true),
 });
 
+const url = z.string().trim().max(200).refine((v) => v === '' || /^https?:\/\/[^\s]+$/i.test(v), 'INVALID');
 const bankField = z.string().trim().max(120).optional().or(z.literal(''));
 export const methodSchema = z.object({
   enabled: z.boolean(), sortOrder: z.number().int().min(0).max(99),
@@ -44,7 +45,7 @@ export const zoneSchema = z.object({
 export const settingsSchema = z.object({
   store: z.object({
     name: z.string().trim().min(1).max(80), tagline: i18n, email: z.string().trim().email().max(150), phone: z.string().trim().max(30), whatsapp: z.string().trim().max(30),
-    address: z.string().trim().max(200), instagram: z.string().trim().max(200), facebook: z.string().trim().max(200), tiktok: z.string().trim().max(200), returnDays: z.number().int().min(0).max(90),
+    address: z.string().trim().max(200), instagram: url, facebook: url, tiktok: url, returnDays: z.number().int().min(0).max(90),
   }),
   commerce: z.object({
     paymentDeadlineHours: z.number().int().min(1).max(168), codMinCents: z.number().int().min(0).max(1_000_000), codMaxCents: z.number().int().min(0).max(1_000_000),

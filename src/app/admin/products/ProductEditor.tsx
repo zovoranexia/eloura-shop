@@ -53,6 +53,9 @@ export function ProductEditor({ id }: { id?: number }) {
   const set = <K extends keyof Form>(k: K, v: Form[K]) => setForm((f) => ({ ...f, [k]: v }));
   const setVariant = (i: number, patch: Partial<V>) => setForm((f) => ({ ...f, variants: f.variants.map((v, k) => (k === i ? { ...v, ...patch } : v)) }));
   const err = (k: string) => fieldMessage(t, errors[k]);
+  const vErr = (i: number, f: string) => !!errors[`variants.${i}.${f}`];
+  const firstVariantErr = Object.entries(errors).find(([k]) => k.startsWith('variants.'));
+  const variantError = errors.variants ? err('variants') : firstVariantErr ? fieldMessage(t, firstVariantErr[1]) : undefined;
 
   function generate() {
     const sizes = gen.sizes.split(',').map((s) => s.trim()).filter(Boolean);
@@ -60,7 +63,7 @@ export function ProductEditor({ id }: { id?: number }) {
     const rows: V[] = [];
     for (const c of colors.length ? colors : ['']) for (const s of sizes.length ? sizes : ['']) {
       const sku = [form.sku, s, c && c.slice(0, 3).toUpperCase()].filter(Boolean).join('-');
-      if (!form.variants.some((v) => v.sku === sku) && sku) rows.push({ sku, size: s, color: c, colorHex: '', stock: 0, priceCents: null, isActive: true });
+      if (sku && !form.variants.some((v) => v.sku === sku) && !rows.some((r) => r.sku === sku)) rows.push({ sku, size: s, color: c, colorHex: '', stock: 0, priceCents: null, isActive: true });
     }
     if (!rows.length) return;
     setForm((f) => ({ ...f, variants: [...f.variants.filter((v) => v.sku || v.id), ...rows] }));
@@ -123,12 +126,12 @@ export function ProductEditor({ id }: { id?: number }) {
                 <tbody>
                   {form.variants.map((v, i) => (
                     <tr key={v.id ?? `n${i}`} className="border-t border-cream-line">
-                      <td className="px-3 py-2"><input className="input min-w-[130px]" value={v.sku} disabled={ro} onChange={(e) => setVariant(i, { sku: e.target.value })} /></td>
+                      <td className="px-3 py-2"><input className={`input min-w-[130px]${vErr(i, 'sku') ? ' input-error' : ''}`} value={v.sku} disabled={ro} onChange={(e) => setVariant(i, { sku: e.target.value })} /></td>
                       <td className="px-3 py-2"><input className="input w-20" value={v.size} disabled={ro} onChange={(e) => setVariant(i, { size: e.target.value })} /></td>
                       <td className="px-3 py-2"><input className="input w-28" value={v.color} disabled={ro} onChange={(e) => setVariant(i, { color: e.target.value })} /></td>
                       <td className="px-3 py-2"><div className="flex items-center gap-1.5"><input type="color" className="h-9 w-9 rounded border border-cream-line" value={v.colorHex || '#cccccc'} disabled={ro} onChange={(e) => setVariant(i, { colorHex: e.target.value })} aria-label={t('admin.products.hex')} />
                         {v.colorHex && !ro && <button type="button" className="text-xs text-taupe underline" onClick={() => setVariant(i, { colorHex: '' })}>×</button>}</div></td>
-                      <td className="px-3 py-2"><input type="number" min={0} className="input w-24" value={v.stock} disabled={ro} onChange={(e) => setVariant(i, { stock: Math.max(0, Math.floor(Number(e.target.value) || 0)) })} /></td>
+                      <td className="px-3 py-2"><input type="number" min={0} max={100000} className={`input w-24${vErr(i, 'stock') ? ' input-error' : ''}`} value={v.stock} disabled={ro} onChange={(e) => setVariant(i, { stock: Math.max(0, Math.floor(Number(e.target.value) || 0)) })} /></td>
                       <td className="px-3 py-2"><MoneyInput className="w-28" cents={v.priceCents} allowEmpty disabled={ro} placeholder="—" onChange={(c) => setVariant(i, { priceCents: c })} /></td>
                       <td className="px-3 py-2"><Switch checked={v.isActive} disabled={ro} onChange={(c) => setVariant(i, { isActive: c })} /></td>
                       <td className="px-3 py-2 text-right">{!ro && form.variants.length > 1 && <button type="button" className="rounded p-1.5 text-red-700 hover:bg-red-50" onClick={() => set('variants', form.variants.filter((_, k) => k !== i))} aria-label={t('common.remove')}><Trash2 size={15} /></button>}</td>
@@ -137,7 +140,7 @@ export function ProductEditor({ id }: { id?: number }) {
                 </tbody>
               </table>
             </div>
-            {err('variants') && <p className="field-error px-5 pb-2">{err('variants')}</p>}
+            {variantError && <p className="field-error px-5 pb-2">{variantError}</p>}
             {!ro && (
               <div className="flex flex-wrap items-end gap-3 border-t border-cream-line bg-cream/60 p-4">
                 <button type="button" className="btn-outline btn-sm" onClick={() => set('variants', [...form.variants, { sku: '', size: '', color: '', colorHex: '', stock: 0, priceCents: null, isActive: true }])}><Plus size={14} /> {t('admin.products.addVariant')}</button>

@@ -66,13 +66,17 @@ async function main() {
   for (const p of DILI_POSTS) {
     const cfg = diliFees[p.key];
     let zone = await prisma.deliveryZone.findFirst({ where: { municipality: 'dili', adminPost: p.key } });
+    const zoneIsNew = !zone;
     if (!zone) {
       zone = await prisma.deliveryZone.create({
         data: { municipality: 'dili', adminPost: p.key, name: p.name, codEnabled: cfg.cod, deliveryFeeCents: cfg.fee, freeOverCents: cfg.free, etaText: cfg.eta, sortOrder: order },
       });
     }
-    for (const s of DILI_SUCOS[p.key] ?? []) {
-      await prisma.suco.upsert({ where: { zoneId_name: { zoneId: zone.id, name: s } }, update: {}, create: { zoneId: zone.id, name: s, codEnabled: true } });
+    // Only seed the sucos together with a NEW zone: the seed runs on every container start and must not resurrect sucos an admin removed.
+    if (zoneIsNew) {
+      for (const s of DILI_SUCOS[p.key] ?? []) {
+        await prisma.suco.upsert({ where: { zoneId_name: { zoneId: zone.id, name: s } }, update: {}, create: { zoneId: zone.id, name: s, codEnabled: true } });
+      }
     }
     order++;
   }
@@ -99,7 +103,10 @@ async function main() {
   /* ---- store settings defaults are applied in code; nothing to seed ---- */
 
   /* ---- catalogue ---- */
-  if (process.env.SEED_CATALOG !== '0') {
+  // The sample catalogue is seeded ONCE (flag in StoreSetting), never again: otherwise deleted sample products, categories or
+  // banners would reappear on every container restart (the seed runs at each start).
+  const seedState = ((await prisma.storeSetting.findUnique({ where: { key: 'seedState' } }))?.value ?? {}) as { catalog?: boolean };
+  if (process.env.SEED_CATALOG !== '0' && !seedState.catalog && (await prisma.product.count()) === 0) {
     const catIds = new Map<string, number>();
     let i = 0;
     for (const c of CATEGORIES) {
@@ -123,6 +130,7 @@ async function main() {
       await prisma.banner.create({ data: { placement: 'PROMO', image: PROMO_BANNER.image, badge: PROMO_BANNER.badge, title: PROMO_BANNER.title, highlight: PROMO_BANNER.highlight, subtitle: PROMO_BANNER.subtitle, ctaLabel: PROMO_BANNER.ctaLabel, ctaUrl: PROMO_BANNER.ctaUrl } });
     }
     await prisma.coupon.upsert({ where: { code: COUPON_DEMO.code }, update: {}, create: COUPON_DEMO });
+    await prisma.storeSetting.upsert({ where: { key: 'seedState' }, update: { value: { ...seedState, catalog: true } }, create: { key: 'seedState', value: { catalog: true } } });
     console.log(`✔ Catalogue: ${CATEGORIES.length} categories, ${PRODUCTS.length} products, ${HERO_BANNERS.length} hero banners + promo`);
   }
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { getT } from '@/lib/i18n';
 import { listCategories, listProducts } from '@/server/catalog';
@@ -8,13 +9,15 @@ import { ShopFilters } from '@/components/store/ShopFilters';
 
 type SP = Record<string, string | string[] | undefined>;
 
+// Every field degrades to "no filter" instead of throwing: a hand-edited URL must never produce a 500 page.
+const MAX_CENTS = 100_000_000; // keeps Prisma's 32-bit Int comparisons safe
 const schema = z.object({
-  category: z.string().max(80).optional(), q: z.string().trim().max(80).optional(),
+  category: z.string().max(80).optional().catch(undefined), q: z.string().transform((s) => s.trim().slice(0, 80)).optional().catch(undefined),
   sort: z.enum(['newest', 'price_asc', 'price_desc', 'discount']).catch('newest'),
   sale: z.literal('1').optional().catch(undefined), featured: z.literal('1').optional().catch(undefined),
-  min: z.coerce.number().int().min(0).optional().catch(undefined), max: z.coerce.number().int().min(0).optional().catch(undefined),
-  size: z.string().max(20).optional(), color: z.string().max(40).optional(),
-  page: z.coerce.number().int().min(1).catch(1),
+  min: z.coerce.number().int().min(0).max(MAX_CENTS).optional().catch(undefined), max: z.coerce.number().int().min(0).max(MAX_CENTS).optional().catch(undefined),
+  size: z.string().max(20).optional().catch(undefined), color: z.string().max(40).optional().catch(undefined),
+  page: z.coerce.number().int().min(1).max(100_000).catch(1),
 });
 const first = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
 
@@ -44,10 +47,12 @@ export default async function ShopPage({ searchParams }: { searchParams: SP }) {
     if (p > 1) q.set('page', String(p));
     return `/shop${q.toString() ? `?${q}` : ''}`;
   };
+  // out-of-range page (shared link after the catalogue shrank, hand-edited URL): go to the last real page instead of an empty list
+  if (f.page > result.pages) redirect(pageHref(result.pages));
 
   return (
     <div className="container-x py-8 md:py-10">
-      <nav aria-label="breadcrumb" className="mb-3 text-xs text-taupe">
+      <nav aria-label={t('common.breadcrumb')} className="mb-3 text-xs text-taupe">
         <Link href="/" className="hover:text-mauve">{t('nav.home')}</Link> / <Link href="/shop" className="hover:text-mauve">{t('nav.shop')}</Link>{current ? <> / <span className="text-espresso">{current.name}</span></> : null}
       </nav>
       <h1 className="mb-6 text-4xl md:text-5xl">{title}</h1>
@@ -64,7 +69,7 @@ export default async function ShopPage({ searchParams }: { searchParams: SP }) {
           </div>
         )}
         {result.pages > 1 ? (
-          <nav className="mt-8 flex items-center justify-center gap-2" aria-label="pagination">
+          <nav className="mt-8 flex items-center justify-center gap-2" aria-label={t('common.pagination')}>
             {f.page > 1 ? <Link href={pageHref(f.page - 1)} className="btn-outline btn-sm">{t('common.previous')}</Link> : null}
             <span className="px-3 text-sm text-taupe">{t('common.page', { page: result.page, pages: result.pages })}</span>
             {f.page < result.pages ? <Link href={pageHref(f.page + 1)} className="btn-outline btn-sm">{t('common.next')}</Link> : null}

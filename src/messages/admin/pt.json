@@ -78,6 +78,7 @@
   "categories": { "title": "Categorias", "subtitle": "Agrupe produtos e alimente a faixa de categorias da página inicial.", "new": "Nova categoria", "edit": "Editar categoria", "image": "Imagem", "order": "Ordem", "products": "Produtos", "visible": "Visível na loja", "deleteText": "{n} produtos ficarão sem categoria. Continuar?" },
   "inventory": { "title": "Inventário", "subtitle": "Stock por variante. Limite de alerta: {n} unidades.", "ok": "Em stock" },
   "coupons": {
+    "endBeforeStart": "O fim tem de ser posterior ao início.",
     "title": "Cupões e descontos", "subtitle": "Descontos em percentagem ou valor fixo em USD, com validade na hora de Díli.", "new": "Novo cupão", "edit": "Editar cupão", "code": "Código", "codeHint": "Apenas letras, números, - e _.", "type": "Tipo",
     "percent": "Percentagem", "fixed": "Valor fixo (USD)", "percentValue": "Percentagem de desconto", "fixedValue": "Valor de desconto", "discount": "Desconto", "maxDiscount": "Desconto máximo", "maxDiscountHint": "Limita cupões de percentagem. Vazio = sem limite.",
     "upTo": "até {max}", "minOrder": "Encomenda mínima", "usage": "Usado", "usageLimit": "Limite de utilizações", "usageHint": "Vazio = ilimitado.", "startsAt": "Início", "endsAt": "Fim", "validity": "Validade", "description": "Descrição", "deleteText": "Eliminar o cupão {code}?"
@@ -89,12 +90,14 @@
     "cta": "Texto do botão", "link": "Ligação do botão", "deleteText": "Eliminar este banner?"
   },
   "pages": {
+    "slugTaken": "Já existe uma página com este slug. Abra-a na lista para a editar.",
     "title": "Páginas (CMS)", "subtitle": "Sobre nós, termos COD, privacidade e outras páginas estáticas em quatro idiomas.", "new": "Nova página", "edit": "Editar página", "page": "Página", "languages": "Idiomas", "updated": "Atualizada", "published": "Publicada", "draft": "Rascunho",
     "slugHint": "Letras minúsculas, números e hífenes. URL público: /page/<slug>.", "titleField": "Título", "body": "Conteúdo", "markdownHint": "Markdown simples: ## títulos, - listas, 1. listas numeradas, **negrito**, linha em branco = novo parágrafo. O HTML nunca é interpretado."
   },
   "inquiries": { "title": "Mensagens", "subtitle": "Mensagens enviadas pelo formulário de contacto.", "unread": "Por ler", "new": "Nova", "reply": "Responder por e-mail", "markRead": "Marcar como lida", "markUnread": "Marcar como não lida", "deleteText": "Eliminar esta mensagem definitivamente?" },
   "newsletter": { "title": "Subscritores da newsletter", "subtitle": "{n} subscritores", "csv": "Transferir CSV" },
   "zones": {
+    "removeSucoText": "Remover o suco “{name}” da lista? Deixará de ser oferecido no checkout.",
     "title": "Zonas de entrega e COD", "subtitle": "Taxas de entrega, limites de entrega grátis e onde o pagamento na entrega é permitido.",
     "codRule": "O pagamento na entrega funciona APENAS no município de Díli, nos postos administrativos e sucos ativados abaixo. Atauro e todos os outros municípios ficam sempre excluídos.",
     "diliTitle": "Município de Díli", "othersTitle": "Outros municípios", "municipality": "Município", "fee": "Taxa de entrega", "freeOver": "Entrega grátis acima de", "eta": "Prazo de entrega", "codEnabled": "Permitir COD neste posto",

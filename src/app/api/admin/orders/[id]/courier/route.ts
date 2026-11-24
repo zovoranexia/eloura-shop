@@ -8,5 +8,5 @@ export const POST = route<{ id: string }>({ perm: 'orders.assign_courier' }, asy
   const id = Number(ctx.params.id);
   await assignCourier(id, { id: ctx.user!.id, name: ctx.user!.name }, b.courierId, b.note);
   await audit(ctx, 'order.assign_courier', 'order', id, { courierId: b.courierId });
-  return orderView((await findOrderById(id))!, ctx.locale, { staff: true });
+  return orderView((await findOrderById(id))!, ctx.locale, { staff: true, hideProofs: !ctx.user!.permissions.includes('payments.view') });
 });

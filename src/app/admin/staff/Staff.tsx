@@ -33,7 +33,15 @@ export function Staff() {
     setErrs({});
     const r = await run(async () => {
       try {
-        if (form.id) return await api(`/api/admin/staff/${form.id}`, { method: 'PATCH', body: { name: form.name, isActive: isSelf ? undefined : form.isActive, roleKeys: isSelf ? undefined : form.roleKeys, password: form.password || undefined } });
+        if (form.id) {
+          // Send roles / active flag only when they changed: re-sending unchanged roles makes the server re-check "can the actor grant them?",
+          // which would wrongly block a name change or password reset on someone holding a role the actor cannot grant.
+          const orig = staff.data?.find((m) => m.id === form.id);
+          const origRoles = (orig?.roles ?? []).map((r) => r.key).sort().join();
+          const rolesChanged = !isSelf && [...form.roleKeys].sort().join() !== origRoles;
+          const activeChanged = !isSelf && !!orig && form.isActive !== orig.isActive;
+          return await api(`/api/admin/staff/${form.id}`, { method: 'PATCH', body: { name: form.name, isActive: activeChanged ? form.isActive : undefined, roleKeys: rolesChanged ? form.roleKeys : undefined, password: form.password || undefined } });
+        }
         return await api('/api/admin/staff', { body: { name: form.name, email: form.email, password: form.password, roleKeys: form.roleKeys, locale: form.locale } });
       } catch (e) { if (e instanceof ApiError) setErrs(e.fields); throw e; }
     }, t('common.saved'));

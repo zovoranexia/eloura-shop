@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { Prisma } from '@prisma/client';
 import { ZodError, type ZodTypeAny, type z } from 'zod';
-import { AppError, forbidden, unauthorized, unprocessable } from './errors';
+import { AppError, forbidden, notFound, unauthorized, unprocessable } from './errors';
 import { CSRF_COOKIE, getSessionUser, type SessionUser } from './auth';
 import { env } from './env';
 import { getLocale, type Locale } from './i18n';
@@ -16,7 +16,9 @@ export type Ctx<P = Record<string, string>> = {
   ip: string;
   userAgent: string;
   locale: Locale;
-  /** Parse + validate the JSON body (max 1 MB). */
+  /** Multipart body (uploads). Requires Content-Length and caps it at ~6 MB so a client cannot stream unbounded data into memory. */
+  form: () => Promise<FormData>;
+  /** Parse + validate the JSON body (max 1 MB, enforced while streaming, also for chunked bodies). */
   body: <S extends ZodTypeAny>(schema: S) => Promise<z.output<S>>;
   query: <S extends ZodTypeAny>(schema: S) => z.output<S>;
 };
@@ -45,6 +47,28 @@ export function clientIp(req: NextRequest): string {
 }
 
 const MUTATING = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
+const MAX_JSON_BYTES = 1_000_000;
+const MAX_FORM_BYTES = 6 * 1024 * 1024; // 5 MB file + form overhead
+
+/** Reads the request body but aborts as soon as `max` bytes are exceeded (works without a Content-Length header). */
+async function readBodyCapped(req: NextRequest, max: number): Promise<Uint8Array> {
+  if (Number(req.headers.get('content-length') || 0) > max) throw new AppError(413, 'PAYLOAD_TOO_LARGE');
+  if (!req.body) return new Uint8Array();
+  const reader = req.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    total += value.byteLength;
+    if (total > max) { await reader.cancel().catch(() => undefined); throw new AppError(413, 'PAYLOAD_TOO_LARGE'); }
+    chunks.push(value);
+  }
+  const out = new Uint8Array(total);
+  let off = 0;
+  for (const c of chunks) { out.set(c, off); off += c.byteLength; }
+  return out;
+}
 
 /** Double-submit CSRF token + Origin check for state-changing requests. */
 function checkCsrf(req: NextRequest) {
@@ -70,6 +94,12 @@ export function route<P = Record<string, string>>(opts: Opts, handler: (ctx: Ctx
       if (opts.limit) rateLimit(`${opts.limit[0]}:${ip}`, opts.limit[1], opts.limit[2]);
       if (!opts.noCsrf && MUTATING.has(req.method)) checkCsrf(req);
 
+      // Numeric path ids must be plain digits ("abc", "1.5", "1e3" are 404, never silently coerced).
+      for (const k of ['id', 'productId']) {
+        const v = (extra?.params as Record<string, string> | undefined)?.[k];
+        if (v !== undefined && !/^\d{1,10}$/.test(v)) throw notFound();
+      }
+
       const user = await getSessionUser();
       if (opts.auth || opts.perm || opts.anyPerm) {
         if (!user) throw unauthorized();
@@ -81,11 +111,17 @@ export function route<P = Record<string, string>>(opts: Opts, handler: (ctx: Ctx
       const ctx: Ctx<P> = {
         req, params: extra?.params ?? ({} as P), user, ip, userAgent: (req.headers.get('user-agent') || '').slice(0, 255), locale: getLocale(),
         async body<S extends ZodTypeAny>(schema: S): Promise<z.output<S>> {
-          const len = Number(req.headers.get('content-length') || 0);
-          if (len > 1_000_000) throw new AppError(413, 'PAYLOAD_TOO_LARGE');
           let raw: unknown;
-          try { raw = await req.json(); } catch { throw new AppError(400, 'BAD_JSON'); }
+          try { raw = JSON.parse(new TextDecoder().decode(await readBodyCapped(req, MAX_JSON_BYTES))); } catch (e) {
+            if (e instanceof AppError) throw e;
+            throw new AppError(400, 'BAD_JSON');
+          }
           return parseWith(schema, raw);
+        },
+        async form() {
+          const len = Number(req.headers.get('content-length'));
+          if (!Number.isFinite(len) || len <= 0 || len > MAX_FORM_BYTES) throw new AppError(413, 'PAYLOAD_TOO_LARGE');
+          try { return await req.formData(); } catch { throw new AppError(400, 'BAD_FORM'); }
         },
         query<S extends ZodTypeAny>(schema: S): z.output<S> {
           return parseWith(schema, Object.fromEntries(req.nextUrl.searchParams));
@@ -129,6 +165,7 @@ export function errorResponse(e: unknown): NextResponse {
     if (e.code === 'P2025') return NextResponse.json({ error: { code: 'NOT_FOUND' } }, { status: 404 });
     if (e.code === 'P2003') return NextResponse.json({ error: { code: 'IN_USE' } }, { status: 409 });
   }
+  if (e instanceof Prisma.PrismaClientValidationError) return NextResponse.json({ error: { code: 'BAD_REQUEST' } }, { status: 400 });
   console.error('[api] unhandled error', e);
   return NextResponse.json({ error: { code: 'INTERNAL' } }, { status: 500 });
 }

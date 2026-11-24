@@ -5,7 +5,7 @@ import { useI18n } from '@/components/I18nProvider';
 import { api } from '@/lib/client/api';
 import { cn } from '@/lib/client/cn';
 import { useAdminData } from '@/components/admin/hooks';
-import { Badge, Card, ErrorBox, Field, Loading, MoneyInput, PageHeader, Spinner, Switch, useAction } from '@/components/admin/ui';
+import { Badge, Card, ConfirmModal, ErrorBox, Field, Loading, MoneyInput, PageHeader, Spinner, Switch, useAction } from '@/components/admin/ui';
 
 type Suco = { id: number; zoneId: number; name: string; codEnabled: boolean; isActive: boolean };
 type Zone = { id: number; municipality: string; adminPost: string | null; name: string; codEnabled: boolean; deliveryFeeCents: number; freeOverCents: number | null; etaText: string | null; sortOrder: number; isActive: boolean; sucos: Suco[] };
@@ -53,6 +53,7 @@ function DiliZone({ zone, onSaved }: { zone: Zone; onSaved: () => void }) {
   const { d, setD, busy, dirty, save } = useZoneDraft(zone, onSaved);
   const { busy: sBusy, run } = useAction();
   const [newSuco, setNewSuco] = useState('');
+  const [rmSuco, setRmSuco] = useState<Suco | null>(null);
   const toggleSuco = async (s: Suco) => { if (await run(() => api(`/api/admin/sucos/${s.id}`, { method: 'PUT', body: { name: s.name, codEnabled: !s.codEnabled, isActive: s.isActive } }))) onSaved(); };
   const removeSuco = async (s: Suco) => { if (await run(() => api(`/api/admin/sucos/${s.id}`, { method: 'DELETE' }))) onSaved(); };
   const addSuco = async () => { const name = newSuco.trim(); if (name.length < 2) return; if (await run(() => api(`/api/admin/zones/${zone.id}/sucos`, { body: { name, codEnabled: true } }), t('common.saved'))) { setNewSuco(''); onSaved(); } };
@@ -77,7 +78,7 @@ function DiliZone({ zone, onSaved }: { zone: Zone; onSaved: () => void }) {
           {zone.sucos.map((s) => (
             <li key={s.id} className={cn('flex items-center overflow-hidden rounded-full border text-xs', s.codEnabled ? 'border-emerald-300 bg-emerald-50' : 'border-cream-line bg-cream-deep text-taupe')}>
               <button type="button" disabled={sBusy} onClick={() => toggleSuco(s)} className="px-3 py-1.5 font-medium hover:underline" title={t('admin.zones.toggleSuco')}>{s.name}{!s.codEnabled && <span className="ml-1 text-[10px] uppercase">· {t('admin.zones.noCod')}</span>}</button>
-              <button type="button" disabled={sBusy} onClick={() => removeSuco(s)} className="border-l border-black/5 px-2 py-1.5 text-taupe hover:bg-red-100 hover:text-red-700" aria-label={t('common.remove')}><X size={12} /></button>
+              <button type="button" disabled={sBusy} onClick={() => setRmSuco(s)} className="border-l border-black/5 px-2 py-1.5 text-taupe hover:bg-red-100 hover:text-red-700" aria-label={t('common.remove')}><X size={12} /></button>
             </li>
           ))}
         </ul>
@@ -86,6 +87,8 @@ function DiliZone({ zone, onSaved }: { zone: Zone; onSaved: () => void }) {
           <button type="submit" className="btn-outline btn-sm" disabled={sBusy || newSuco.trim().length < 2}><Plus size={14} /> {t('common.add')}</button>
         </form>
       </div>
+      <ConfirmModal open={!!rmSuco} danger title={t('common.remove')} text={t('admin.zones.removeSucoText', { name: rmSuco?.name ?? '' })} busy={sBusy}
+        onClose={() => setRmSuco(null)} onConfirm={async () => { if (rmSuco) await removeSuco(rmSuco); setRmSuco(null); }} />
     </Card>
   );
 }

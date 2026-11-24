@@ -238,6 +238,105 @@ async function main() {
   try { await prisma.auditLog.deleteMany({}); } catch { blocked = true; }
   ok(blocked, 'database refuses DELETE on AuditLog');
 
+  console.log('\nRequest hardening');
+  // A chunked JSON body has no Content-Length: the 1 MB cap must still hold (streamed and aborted).
+  const big = new ReadableStream({ start(c) { const chunk = new Uint8Array(256 * 1024).fill(32); for (let i = 0; i < 12; i++) c.enqueue(chunk); c.close(); } });
+  let rr = await fetch(BASE + '/api/newsletter', { method: 'POST', body: big, duplex: 'half', headers: { 'content-type': 'application/json', 'x-forwarded-for': randomIp(), cookie: 'ec_csrf=abc', 'x-csrf-token': 'abc' } });
+  ok(rr.status === 413, 'chunked JSON body over 1 MB is refused (413)', String(rr.status));
+  const boundary = '----x';
+  const mp = new ReadableStream({ start(c) { c.enqueue(new TextEncoder().encode(`--${boundary}\r\nContent-Disposition: form-data; name="reference"\r\n\r\nabc\r\n--${boundary}--\r\n`)); c.close(); } });
+  rr = await fetch(BASE + `/api/orders/${codOrder.code}/proof?t=${codOrder.token}`, { method: 'POST', body: mp, duplex: 'half', headers: { 'content-type': `multipart/form-data; boundary=${boundary}`, 'x-forwarded-for': randomIp(), cookie: 'ec_csrf=abc', 'x-csrf-token': 'abc' } });
+  ok(rr.status === 413, 'multipart upload without Content-Length is refused (413)', String(rr.status));
+  r = await admin.get('/api/admin/orders/abc');
+  ok(r.status === 404, 'non-numeric id returns 404 instead of 500', String(r.status));
+  r = await admin.get('/api/admin/customers/1.5');
+  ok(r.status === 404, 'fractional id returns 404 (not coerced to another record)', String(r.status));
+
+  console.log('\nAccount security');
+  const uniq = `sec${Date.now().toString(36)}${Math.floor(Math.random() * 1e4)}`;
+  const reg = new Client(); await reg.bootstrap();
+  r = await reg.post('/api/auth/register', { name: 'Sec Test', email: `${uniq}@example.test`, password: 'short' });
+  ok(r.status === 422, 'weak password is refused at registration');
+  r = await reg.post('/api/auth/register', { name: 'Sec Test', email: `${uniq}@example.test`, password: 'Secure-Pass-123' });
+  ok(r.status === 200 && r.data.user.roles.some((x) => x.key === 'CUSTOMER'), 'registration creates a CUSTOMER with no permissions');
+  ok(r.data.user.permissions.length === 0, 'new customers hold zero permissions');
+  r = await new Client().bootstrap().then((c) => c.post('/api/auth/register', { name: 'Dup', email: `${uniq}@example.test`.toUpperCase(), password: 'Secure-Pass-123' }));
+  ok(r.status === 409, 'duplicate e-mail (case-insensitive) is refused', String(r.status) + JSON.stringify(r.data));
+  // password change revokes every other session
+  const devA = await new Client().login(`${uniq}@example.test`, 'Secure-Pass-123');
+  const devB = await new Client().login(`${uniq}@example.test`, 'Secure-Pass-123');
+  ok((await devB.get('/api/auth/me')).data.user?.email === `${uniq}@example.test`, 'second device is signed in');
+  r = await devA.post('/api/auth/password', { current: 'wrong-current-1', next: 'Another-Pass-456' });
+  ok(r.status === 401, 'changing password needs the current password');
+  r = await devA.post('/api/auth/password', { current: 'Secure-Pass-123', next: 'Another-Pass-456' });
+  ok(r.status === 200, 'password changed');
+  ok((await devB.get('/api/auth/me')).data.user === null, 'the other device was signed out by the password change');
+  ok((await devA.get('/api/auth/me')).data.user !== null, 'the device that changed it stays signed in');
+  // lockout after 5 failures
+  const lock = new Client(); await lock.bootstrap();
+  for (let i = 0; i < 5; i++) await lock.post('/api/auth/login', { email: `${uniq}@example.test`, password: 'nope-nope-1' });
+  r = await lock.post('/api/auth/login', { email: `${uniq}@example.test`, password: 'Another-Pass-456' });
+  ok(r.status === 423 && r.data.error.code === 'ACCOUNT_LOCKED', 'account is locked after 5 failed logins, even with the right password', String(r.status));
+
+  console.log('\nPrivilege escalation through custom roles');
+  const adminMe = (await admin.get('/api/auth/me')).data.user;
+  const perms = ['staff.manage', 'roles.manage', 'products.view'];
+  r = await admin.post('/api/admin/roles', { name: `Limited ${uniq}`, description: 'test', permissions: perms });
+  ok(r.status === 200, 'super admin creates a limited custom role', JSON.stringify(r.data));
+  const limitedKey = r.data.key;
+  r = await admin.post('/api/admin/staff', { name: 'Limited Admin', email: `${uniq}-lim@example.test`, password: 'Limited-Pass-123', roleKeys: [limitedKey] });
+  ok(r.status === 200, 'staff account created with the limited role');
+  const lim = await new Client().login(`${uniq}-lim@example.test`, 'Limited-Pass-123');
+  r = await lim.post('/api/admin/roles', { name: 'Sneaky', permissions: ['settings.manage'] });
+  ok(r.status === 403 && r.data.error.code === 'CANNOT_GRANT', 'a role manager cannot create a role holding permissions they lack');
+  r = await lim.post('/api/admin/staff', { name: 'Evil', email: `${uniq}-evil@example.test`, password: 'Evil-Pass-12345', roleKeys: ['SUPER_ADMIN'] });
+  ok(r.status === 403 && r.data.error.code === 'CANNOT_GRANT', 'cannot hand out SUPER_ADMIN');
+  r = await lim.post('/api/admin/staff', { name: 'Evil', email: `${uniq}-evil2@example.test`, password: 'Evil-Pass-12345', roleKeys: ['STORE_MANAGER'] });
+  ok(r.status === 403 && r.data.error.code === 'CANNOT_GRANT', 'cannot hand out a role stronger than your own');
+  const staffList = (await lim.get('/api/admin/staff')).data;
+  const superId = staffList.find((x) => x.roles.some((y) => y.key === 'SUPER_ADMIN')).id;
+  r = await lim.req('PATCH', `/api/admin/staff/${superId}`, { body: { password: 'Hijack-Pass-123' } });
+  ok(r.status === 403, 'a limited staff manager cannot reset a Super Admin password');
+  r = await admin.req('PATCH', `/api/admin/staff/${adminMe.id}`, { body: { isActive: false } });
+  ok(r.status === 403 && r.data.error.code === 'CANNOT_MODIFY_SELF', 'nobody can deactivate themselves');
+
+  console.log('\nAdmin image upload (sharp)');
+  const fsm = await import('node:fs');
+  const imgForm = (buf, type, name, kind = 'products') => { const f = new FormData(); f.set('kind', kind); f.set('file', new Blob([buf], { type }), name); return f; };
+  r = await admin.req('POST', '/api/admin/uploads', { form: imgForm(fsm.readFileSync('design/source/hero-1.png'), 'image/png', 'hero.png', 'banners') });
+  ok(r.status === 200 && /^\/media\/banners\/[\w-]+\.webp$/.test(r.data.url), 'PNG upload is re-encoded to WebP and stored under /media', JSON.stringify(r.data));
+  const served = await fetch(BASE + r.data.url);
+  ok(served.status === 200 && served.headers.get('content-type') === 'image/webp', 'the uploaded image is served publicly as image/webp');
+  const meta = await (await import('sharp')).default(Buffer.from(await served.arrayBuffer())).metadata();
+  ok(meta.format === 'webp' && !meta.exif, 'stored file is real WebP without EXIF metadata');
+  r = await admin.req('POST', '/api/admin/uploads', { form: imgForm(Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>'), 'image/svg+xml', 'x.svg') });
+  ok(r.status === 400 && r.data.error.code === 'FILE_INVALID', 'SVG upload is refused');
+  r = await admin.req('POST', '/api/admin/uploads', { form: imgForm(Buffer.alloc(6 * 1024 * 1024 + 10, 1), 'image/png', 'big.png') });
+  ok(r.status === 413, 'oversized upload is refused before it is decoded', String(r.status));
+  r = await customer.req('POST', '/api/admin/uploads', { form: imgForm(fsm.readFileSync('design/source/hero-1.png'), 'image/png', 'a.png') });
+  ok(r.status === 403, 'a customer cannot use the admin upload endpoint');
+  r = await guest.get('/media/products/..%2F..%2Fpackage.json', { raw: false });
+  ok(r.status === 404, 'media route rejects path traversal');
+
+  console.log('\nData exposure between roles');
+  const fOrder = (await fulfil.get(`/api/admin/orders/${oid}`)).data;
+  ok(fOrder.proofs.length > 0 && fOrder.proofs.every((p) => p.reference === null && p.payerName === undefined), 'fulfilment sees that proofs exist but not their reference / payer data');
+  const finOrder = (await finance.get(`/api/admin/orders/${oid}`)).data;
+  ok(finOrder.proofs.some((p) => p.reference), 'finance (payments.view) still sees the proof reference');
+  const adminId = (await admin.get('/api/auth/me')).data.user.id;
+  r = await finance.get(`/api/admin/customers/${adminId}`);
+  ok(r.status === 404, 'the customer detail endpoint does not expose staff / super-admin accounts');
+  r = await finance.get('/api/admin/orders?status=constructor');
+  ok(r.status === 200, 'prototype-key filter values no longer crash the order list');
+  r = await finance.get('/api/admin/payments?status=toString');
+  ok(r.status === 200, 'prototype-key filter values no longer crash the payments list');
+  const k = `smoke-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const body = { ...base, paymentMethod: 'BANK_BNCTL', phone: phone() };
+  const g1 = await guest.post('/api/orders', body, { headers: { 'idempotency-key': k } });
+  const g2 = await guest.post('/api/orders', body, { headers: { 'idempotency-key': k } });
+  ok(g1.status === 200 && g2.status === 200 && g1.data.code === g2.data.code, 'POST /api/orders with the same Idempotency-Key returns the same order', JSON.stringify([g1.data, g2.data]).slice(0, 200));
+  await guest.post(`/api/orders/${g1.data.code}/cancel?t=${g1.data.token}`, {});
+
   console.log('\nPrivilege escalation guards');
   const mgr = await new Client().login('manager@eloura.local');
   r = await mgr.get('/api/admin/staff');

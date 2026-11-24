@@ -23,7 +23,7 @@ export function ExportPanel({ defaultFrom, defaultTo }: { defaultFrom: string; d
       {!valid && <p className="mb-3 text-sm text-red-700">{t('admin.reports.badRange')}</p>}
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {TYPES.map((k) => (
-          <a key={k} aria-disabled={!valid} className={`card flex flex-col gap-1 p-4 transition-shadow hover:shadow-soft ${valid ? '' : 'pointer-events-none opacity-50'}`}
+          <a key={k} aria-disabled={!valid} tabIndex={valid ? undefined : -1} onClick={(e) => { if (!valid) e.preventDefault(); }} className={`card flex flex-col gap-1 p-4 transition-shadow hover:shadow-soft ${valid ? '' : 'pointer-events-none opacity-50'}`}
             href={`/api/admin/reports/export?type=${k}&from=${from}&to=${to}`}>
             <FileSpreadsheet className="text-mauve" size={22} />
             <span className="font-semibold">{t(`admin.reports.type.${k}`)}</span>

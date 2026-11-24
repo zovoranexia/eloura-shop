@@ -1,10 +1,10 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Lock, Plus, Save, Trash2, Users } from 'lucide-react';
 import { useI18n } from '@/components/I18nProvider';
-import { ApiError, api, errorMessage, fieldMessage } from '@/lib/client/api';
+import { ApiError, api, fieldMessage } from '@/lib/client/api';
 import { cn } from '@/lib/client/cn';
-import { useToast } from '@/components/ui/Toast';
 import { useAdminData } from '@/components/admin/hooks';
 import { useAdminUser } from '@/components/admin/AdminUser';
 import { Badge, Card, ConfirmModal, ErrorBox, Field, Loading, Modal, PageHeader, Spinner, useAction } from '@/components/admin/ui';
@@ -15,7 +15,7 @@ type Perm = { key: string; group: string; description: string };
 
 export function Roles() {
   const { t } = useI18n();
-  const toast = useToast();
+  const router = useRouter();
   const { can, user } = useAdminUser();
   const roles = useAdminData<Role[]>('/api/admin/roles');
   const perms = useAdminData<Perm[]>('/api/admin/permissions');
@@ -27,7 +27,7 @@ export function Roles() {
   const [delOpen, setDelOpen] = useState(false);
   const { busy, run } = useAction();
 
-  const list = roles.data ?? [];
+  const list = useMemo(() => roles.data ?? [], [roles.data]);
   const sel = list.find((r) => r.id === selId) ?? null;
   useEffect(() => { if (!selId && list.length) setSelId(list[0].id); }, [list, selId]);
   useEffect(() => { if (sel) { setDraft({ name: sel.name, description: sel.description ?? '', permissions: new Set(sel.permissions) }); setErrs({}); } }, [sel]);
@@ -39,6 +39,7 @@ export function Roles() {
   }, [perms.data]);
 
   if (roles.error) return <ErrorBox error={roles.error} />;
+  if (perms.error) return <ErrorBox error={perms.error} />;
   if ((roles.loading && !roles.data) || perms.loading || !perms.data) return <Loading />;
 
   const editable = can('roles.manage') && !!sel && sel.key !== 'SUPER_ADMIN' && sel.key !== 'CUSTOMER';
@@ -60,7 +61,10 @@ export function Roles() {
       try { return await api(`/api/admin/roles/${sel.id}`, { method: 'PUT', body: { name: draft.name, description: draft.description, permissions: [...draft.permissions] } }); }
       catch (e) { if (e instanceof ApiError) setErrs(e.fields); throw e; }
     }, t('admin.roles.saved'));
-    if (r) roles.reload();
+    if (r) {
+      roles.reload();
+      router.refresh(); // the signed-in user's own permissions (sidebar, buttons) may have just changed
+    }
   }
   async function create() {
     const r = await run(() => api<{ id: number }>('/api/admin/roles', { body: { name: newName.trim(), permissions: [] } }), t('common.saved'));
@@ -68,8 +72,9 @@ export function Roles() {
   }
   async function remove() {
     if (!sel) return;
-    try { await api(`/api/admin/roles/${sel.id}`, { method: 'DELETE' }); toast.success(t('common.saved')); setDelOpen(false); setSelId(null); roles.reload(); }
-    catch (e) { toast.error(errorMessage(t, e)); setDelOpen(false); }
+    const r = await run(() => api(`/api/admin/roles/${sel.id}`, { method: 'DELETE' }), t('common.saved'));
+    setDelOpen(false);
+    if (r) { setSelId(null); roles.reload(); }
   }
 
   return (
@@ -143,7 +148,7 @@ export function Roles() {
         footer={<><button type="button" className="btn-ghost" onClick={() => setCreateOpen(false)}>{t('common.cancel')}</button><button type="button" className="btn-primary" disabled={busy || newName.trim().length < 2} onClick={create}>{t('common.add')}</button></>}>
         <Field label={t('common.name')} hint={t('admin.roles.newHint')}><input className="input" value={newName} maxLength={60} onChange={(e) => setNewName(e.target.value)} autoFocus /></Field>
       </Modal>
-      <ConfirmModal open={delOpen} danger title={t('common.delete')} text={t('admin.roles.deleteText')} onClose={() => setDelOpen(false)} onConfirm={remove} />
+      <ConfirmModal open={delOpen} danger title={t('common.delete')} text={t('admin.roles.deleteText')} busy={busy} onClose={() => setDelOpen(false)} onConfirm={remove} />
     </>
   );
 }

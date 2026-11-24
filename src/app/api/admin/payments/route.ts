@@ -8,7 +8,7 @@ export const GET = route({ perm: 'payments.view' }, async (ctx) => {
   const q = ctx.req.nextUrl.searchParams;
   const { page, limit, skip, take } = paging(q);
   const status = q.get('status') ?? 'SUBMITTED';
-  const where: Prisma.PaymentProofWhereInput = status === 'all' ? {} : { status: (status in ProofStatus ? status : 'SUBMITTED') as ProofStatus };
+  const where: Prisma.PaymentProofWhereInput = status === 'all' ? {} : { status: ((Object.values(ProofStatus) as string[]).includes(status) ? status : 'SUBMITTED') as ProofStatus };
   const [total, rows] = await Promise.all([
     prisma.paymentProof.count({ where }),
     prisma.paymentProof.findMany({

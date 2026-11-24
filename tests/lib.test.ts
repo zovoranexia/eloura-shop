@@ -27,6 +27,16 @@ test('USD money in integer cents', () => {
   assert.equal(parseUSD('12.5'), 1250);
   assert.equal(parseUSD('12,50'), 1250);
   assert.equal(parseUSD('abc'), null);
+  assert.equal(parseUSD(''), null, 'empty is invalid, not zero');
+  assert.equal(parseUSD('   '), null);
+  assert.equal(parseUSD('1.005'), 101, 'rounds half up on the decimal string, not via binary floats');
+  assert.equal(parseUSD('19.99'), 1999);
+  assert.equal(parseUSD('0.1'), 10);
+  assert.equal(parseUSD('.5'), 50);
+  assert.equal(parseUSD('12.'), 1200);
+  assert.equal(parseUSD('1e3'), null, 'scientific notation is not accepted');
+  assert.equal(parseUSD('1.2.3'), null);
+  assert.equal(parseUSD(29), 2900);
   assert.equal(parseUSD('-1'), null);
   assert.equal(centsToInput(1999), '19.99');
 });

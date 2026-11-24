@@ -17,6 +17,9 @@ const nextConfig = {
   output: 'standalone',
   poweredByHeader: false,
   reactStrictMode: true,
+  // The shop serves its own pre-sized WebP files with plain <img>; switching the image optimizer off removes /_next/image
+  // (several Next 14 advisories target it) as an attack surface.
+  images: { unoptimized: true },
   eslint: { ignoreDuringBuilds: true },
   experimental: {
     instrumentationHook: true,

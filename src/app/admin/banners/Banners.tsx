@@ -26,6 +26,7 @@ export function Banners() {
   async function save() {
     if (!form) return;
     setErrs({});
+    if (form.startsAt && form.endsAt && form.endsAt <= form.startsAt) { setErrs({ endsAt: 'END_BEFORE_START' }); return; }
     const body = { ...form, image: form.image ?? '', startsAt: form.startsAt || null, endsAt: form.endsAt || null, id: undefined };
     const r = await run(async () => {
       try { return form.id ? await api(`/api/admin/banners/${form.id}`, { method: 'PUT', body }) : await api('/api/admin/banners', { body }); }
@@ -89,7 +90,7 @@ export function Banners() {
               <Field label={t('admin.banners.link')} error={errs.ctaUrl ? fieldMessage(t, errs.ctaUrl) : undefined} hint="/shop · /shop?category=dresses"><input className="input" value={form.ctaUrl} onChange={(e) => setForm({ ...form, ctaUrl: e.target.value })} /></Field>
               <Field label={t('admin.categories.order')}><input type="number" min={0} max={99} className="input" value={form.sortOrder} onChange={(e) => setForm({ ...form, sortOrder: Math.max(0, Math.min(99, Number(e.target.value) || 0)) })} /></Field>
               <Field label={t('admin.coupons.startsAt')} hint="Asia/Dili"><input type="datetime-local" className="input" value={form.startsAt} onChange={(e) => setForm({ ...form, startsAt: e.target.value })} /></Field>
-              <Field label={t('admin.coupons.endsAt')} hint="Asia/Dili"><input type="datetime-local" className="input" value={form.endsAt} onChange={(e) => setForm({ ...form, endsAt: e.target.value })} /></Field>
+              <Field label={t('admin.coupons.endsAt')} error={errs.endsAt === 'END_BEFORE_START' ? t('admin.coupons.endBeforeStart') : errs.endsAt ? fieldMessage(t, errs.endsAt) : undefined} hint="Asia/Dili"><input type="datetime-local" className="input" value={form.endsAt} onChange={(e) => setForm({ ...form, endsAt: e.target.value })} /></Field>
             </div>
             <Switch checked={form.isActive} onChange={(isActive) => setForm({ ...form, isActive })} label={t('admin.common.active')} />
           </div>

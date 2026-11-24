@@ -78,6 +78,7 @@
   "categories": { "title": "Categories", "subtitle": "Group products and feed the home page category strip.", "new": "New category", "edit": "Edit category", "image": "Image", "order": "Order", "products": "Products", "visible": "Visible in the store", "deleteText": "{n} products will become uncategorised. Continue?" },
   "inventory": { "title": "Inventory", "subtitle": "Stock per variant. Alert threshold: {n} units.", "ok": "In stock" },
   "coupons": {
+    "endBeforeStart": "The end must be after the start.",
     "title": "Coupons & discounts", "subtitle": "Percentage or fixed USD discounts with validity in Dili time.", "new": "New coupon", "edit": "Edit coupon", "code": "Code", "codeHint": "Letters, digits, - and _ only.", "type": "Type",
     "percent": "Percentage", "fixed": "Fixed amount (USD)", "percentValue": "Percent off", "fixedValue": "Amount off", "discount": "Discount", "maxDiscount": "Maximum discount", "maxDiscountHint": "Caps percentage coupons. Empty = no cap.",
     "upTo": "up to {max}", "minOrder": "Minimum order", "usage": "Used", "usageLimit": "Usage limit", "usageHint": "Empty = unlimited.", "startsAt": "Starts", "endsAt": "Ends", "validity": "Validity", "description": "Description", "deleteText": "Delete coupon {code}?"
@@ -89,12 +90,14 @@
     "cta": "Button label", "link": "Button link", "deleteText": "Delete this banner?"
   },
   "pages": {
+    "slugTaken": "A page with this slug already exists. Open it from the list to edit it.",
     "title": "Pages (CMS)", "subtitle": "About, COD terms, Privacy and other static pages in four languages.", "new": "New page", "edit": "Edit page", "page": "Page", "languages": "Languages", "updated": "Updated", "published": "Published", "draft": "Draft",
     "slugHint": "Lowercase letters, digits and dashes. Public URL: /page/<slug>.", "titleField": "Title", "body": "Content", "markdownHint": "Light markdown: ## headings, - bullet lists, 1. numbered lists, **bold**, blank line = new paragraph. HTML is never rendered."
   },
   "inquiries": { "title": "Inquiries", "subtitle": "Messages sent from the contact form.", "unread": "Unread", "new": "New", "reply": "Reply by email", "markRead": "Mark as read", "markUnread": "Mark as unread", "deleteText": "Delete this message permanently?" },
   "newsletter": { "title": "Newsletter subscribers", "subtitle": "{n} subscribers", "csv": "Download CSV" },
   "zones": {
+    "removeSucoText": "Remove the suco “{name}” from the list? It will no longer be offered at checkout.",
     "title": "Delivery & COD zones", "subtitle": "Delivery fees, free-delivery thresholds and where Cash on Delivery is allowed.",
     "codRule": "Cash on Delivery works ONLY inside Dili municipality, in the administrative posts and sucos switched on below. Atauro and every other municipality are always excluded.",
     "diliTitle": "Dili municipality", "othersTitle": "Other municipalities", "municipality": "Municipality", "fee": "Delivery fee", "freeOver": "Free delivery over", "eta": "Delivery time", "codEnabled": "Allow COD in this post",

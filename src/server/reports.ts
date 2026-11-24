@@ -33,7 +33,7 @@ export async function dashboard(locale: 'tet' | 'pt' | 'en' | 'id' = 'en') {
     Promise.all([
       prisma.order.count({ where: { status: 'AWAITING_VERIFICATION' } }),
       prisma.order.count({ where: { status: 'PENDING_CONFIRMATION' } }),
-      prisma.order.count({ where: { status: { in: ['PROCESSING', 'PACKED'] } } }),
+      prisma.order.count({ where: { status: 'PROCESSING' } }),
       prisma.order.count({ where: { status: 'OUT_FOR_DELIVERY' } }),
       prisma.order.count({ where: { paymentStatus: 'REFUND_PENDING' } }),
       prisma.contactMessage.count({ where: { isRead: false } }),

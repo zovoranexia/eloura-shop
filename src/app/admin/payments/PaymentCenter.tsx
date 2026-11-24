@@ -30,6 +30,9 @@ export function PaymentCenter({ initialStatus }: { initialStatus: string }) {
   const items = useMemo(() => (list.data?.items ?? []).filter((p) => !q.trim() || `${p.orderCode} ${p.customerName} ${p.reference ?? ''}`.toLowerCase().includes(q.trim().toLowerCase())), [list.data, q]);
   useEffect(() => { if (items.length && !items.some((p) => p.id === selected)) setSelected(items[0].id); if (!items.length) setSelected(null); }, [items, selected]);
   const current = items.find((p) => p.id === selected) ?? null;
+  // duplicate hints look at the whole loaded page (not just the search-filtered rows) and, like the server rule, only within the same method
+  const allItems = list.data?.items ?? [];
+  const dupsOf = (p: Proof) => (p.reference ? allItems.filter((o) => o.id !== p.id && o.orderId !== p.orderId && o.method === p.method && o.reference?.toLowerCase() === p.reference!.toLowerCase()) : []);
 
   return (
     <>
@@ -53,7 +56,7 @@ export function PaymentCenter({ initialStatus }: { initialStatus: string }) {
               {!items.length ? <Empty text={status === 'SUBMITTED' ? t('admin.payments.queueEmpty') : undefined} /> : (
                 <ul>
                   {items.map((p) => {
-                    const dup = items.some((o) => o.id !== p.id && o.orderId !== p.orderId && p.reference && o.reference?.toLowerCase() === p.reference.toLowerCase());
+                    const dup = dupsOf(p).length > 0;
                     return (
                       <li key={p.id}>
                         <button type="button" onClick={() => setSelected(p.id)} className={cn('w-full border-b border-cream-line px-4 py-3 text-left transition-colors last:border-0', p.id === selected ? 'bg-mauve-soft' : 'hover:bg-cream')}>
@@ -71,7 +74,7 @@ export function PaymentCenter({ initialStatus }: { initialStatus: string }) {
             {list.data && <Pagination page={list.data.page} pages={list.data.pages} onPage={setPage} />}
           </div>
 
-          <div>{current ? <ProofReview key={current.id} proof={current} duplicates={items.filter((o) => o.id !== current.id && o.orderId !== current.orderId && current.reference && o.reference?.toLowerCase() === current.reference.toLowerCase())} onDone={() => list.reload()} /> : <div className="card"><Empty text={t('admin.payments.pick')} /></div>}</div>
+          <div>{current ? <ProofReview key={current.id} proof={current} duplicates={dupsOf(current)} onDone={() => list.reload()} /> : <div className="card"><Empty text={t('admin.payments.pick')} /></div>}</div>
         </div>
       )}
     </>
@@ -167,7 +170,7 @@ function ProofReview({ proof, duplicates, onDone }: { proof: Proof; duplicates: 
                 </Field>
                 <div className="flex gap-2">
                   <button type="button" className="btn-danger" disabled={busy || reason.trim().length < 2} onClick={() => review(false)}>{busy ? <Spinner className="!text-white" /> : <XCircle size={16} />} {t('admin.payments.confirmReject')}</button>
-                  <button type="button" className="btn-ghost" onClick={() => setRejecting(false)}>{t('common.cancel')}</button>
+                  <button type="button" className="btn-ghost" onClick={() => { setRejecting(false); setReason(''); }}>{t('common.cancel')}</button>
                 </div>
               </div>
             ) : (

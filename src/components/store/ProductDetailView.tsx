@@ -61,6 +61,7 @@ export function ProductDetailView({ product, canReview }: { product: ProductDeta
   const cart = useCart();
   const wish = useWishlist();
   const config = useStoreConfig();
+  const toast = useToast();
   const [tab, setTab] = useState<Tab>('description');
   const [img, setImg] = useState(0);
   const [qty, setQty] = useState(1);
@@ -70,12 +71,14 @@ export function ProductDetailView({ product, canReview }: { product: ProductDeta
   const inStock = product.variants.some((x) => x.stock > 0);
   const maxQty = Math.max(1, Math.min(config.commerce.maxQtyPerLine, v?.stock ?? 1));
   const unit = v?.priceCents ?? product.priceCents;
+  const q = Math.min(qty, maxQty); // switching to a variant with less stock must not leave a larger quantity selected
   const diliPost = config.diliPosts[0];
 
   function add() {
     if (!v || v.stock < 1) return;
     const already = cart.qtyOf(v.id);
-    cart.add(v.id, Math.min(qty, Math.max(1, v.stock - already)));
+    if (already >= v.stock) { toast.error(t('cart.only_left', { n: v.stock })); return; } // everything in stock is already in the basket
+    cart.add(v.id, Math.min(q, v.stock - already));
   }
 
   const tabs: { key: Tab; label: string }[] = [
@@ -91,7 +94,7 @@ export function ProductDetailView({ product, canReview }: { product: ProductDeta
         {product.images.length > 1 ? (
           <ul className="mt-3 flex gap-3">
             {product.images.map((src, i) => (
-              <li key={src}>
+              <li key={`${i}-${src}`}>
                 <button type="button" onClick={() => setImg(i)} aria-label={`${product.name} ${i + 1}`} aria-pressed={i === img} className={`overflow-hidden rounded-xl border-2 ${i === img ? 'border-mauve' : 'border-transparent'}`}>
                   <ProductImage src={src} alt="" className="h-20 w-20" />
                 </button>
@@ -121,8 +124,8 @@ export function ProductDetailView({ product, canReview }: { product: ProductDeta
         </p>
 
         <div className="mt-5 flex flex-wrap items-center gap-3">
-          <QtyStepper value={qty} onChange={(n) => setQty(Math.max(1, Math.min(maxQty, n)))} max={maxQty} />
-          <button type="button" onClick={add} disabled={!v || v.stock < 1} className="btn-primary min-w-48 flex-1 !py-3"><ShoppingBag size={17} /> {t('product.add_to_cart')} · {formatUSD(unit * qty)}</button>
+          <QtyStepper value={q} onChange={(n) => setQty(Math.max(1, Math.min(maxQty, n)))} max={maxQty} />
+          <button type="button" onClick={add} disabled={!v || v.stock < 1} className="btn-primary min-w-48 flex-1 !py-3"><ShoppingBag size={17} /> {t('product.add_to_cart')} · {formatUSD(unit * q)}</button>
           <button type="button" onClick={() => wish.toggle(product.id)} aria-pressed={liked} aria-label={liked ? t('product.wishlist_remove') : t('product.wishlist_add')} className="grid h-12 w-12 place-items-center rounded-full border border-cream-line bg-white hover:border-mauve">
             <Heart size={20} className={liked ? 'fill-mauve text-mauve' : ''} />
           </button>
