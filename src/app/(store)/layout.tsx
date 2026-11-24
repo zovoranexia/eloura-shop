@@ -9,6 +9,7 @@ import { WishlistProvider } from '@/lib/client/wishlist';
 import { Header } from '@/components/store/Header';
 import { Footer } from '@/components/store/Footer';
 import { CartDrawer } from '@/components/store/CartDrawer';
+import { BackToTop } from '@/components/store/BackToTop';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,9 +25,10 @@ export default async function StoreLayout({ children }: { children: React.ReactN
         <CartProvider>
           <WishlistProvider>
             <Header />
-            <main id="main" className="min-h-[60vh]">{children}</main>
+            <main id="main" tabIndex={-1} className="min-h-[60vh] focus:outline-none">{children}</main>
             <Footer store={config.store} />
             <CartDrawer />
+            <BackToTop />
           </WishlistProvider>
         </CartProvider>
       </AuthProvider>

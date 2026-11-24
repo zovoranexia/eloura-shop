@@ -4,6 +4,7 @@ import { getT } from '@/lib/i18n';
 import { getSetting } from '@/server/settings';
 import { normalizePhone } from '@/lib/phone';
 import { ContactForm } from '@/components/store/ContactForm';
+import { PhoneLinks } from '@/components/store/PhoneLinks';
 
 export async function generateMetadata(): Promise<Metadata> {
   const { t } = await getT();
@@ -25,7 +26,7 @@ export default async function ContactPage() {
           <h2 className="font-serif text-2xl">{t('contact.info')}</h2>
           <ul className="space-y-3">
             {store.address ? <li className="flex gap-3"><MapPin size={18} className="mt-0.5 text-mauve" /><span>{store.address}</span></li> : null}
-            {store.phone ? <li className="flex gap-3"><Phone size={18} className="mt-0.5 text-mauve" /><a href={`tel:${store.phone.replace(/\s/g, '')}`} className="hover:text-mauve">{store.phone}</a></li> : null}
+            {store.phone ? <li className="flex gap-3"><Phone size={18} className="mt-0.5 text-mauve" aria-hidden="true" /><span><PhoneLinks value={store.phone} className="hover:text-mauve" /></span></li> : null}
             {wa.valid ? <li className="flex gap-3"><MessageCircle size={18} className="mt-0.5 text-mauve" /><a href={`https://wa.me/${wa.wa}`} target="_blank" rel="noopener noreferrer" className="hover:text-mauve">WhatsApp {wa.display}</a></li> : null}
             {store.email ? <li className="flex gap-3"><Mail size={18} className="mt-0.5 text-mauve" /><a href={`mailto:${store.email}`} className="hover:text-mauve">{store.email}</a></li> : null}
           </ul>

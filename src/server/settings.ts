@@ -5,9 +5,11 @@ export const DEFAULT_SETTINGS = {
   store: {
     name: 'Eloura Chic',
     tagline: { tet: 'Moda & Asesóriu feminina', pt: 'Moda e acessórios femininos', en: 'Fashion & Accessories', id: 'Fashion & Aksesori wanita' } as Record<string, string>,
-    email: 'hello@eloura.example',
-    phone: '+670 7700 0000',
-    whatsapp: '+670 7700 0000',
+    email: 'info@eloura.tl',
+    // several numbers may be listed, separated by "/"; each becomes its own tel: link in the storefront
+    phone: '(+670) 74012434 / 76012434',
+    // WhatsApp needs ONE number (used for the wa.me link)
+    whatsapp: '+670 7401 2434',
     address: 'Dili, Timor-Leste',
     instagram: '', facebook: '', tiktok: '',
     returnDays: 7,

@@ -1,5 +1,6 @@
 {
   "common": {
+    "back_to_top": "Back to top",
     "save": "Save",
     "cancel": "Cancel",
     "delete": "Delete",

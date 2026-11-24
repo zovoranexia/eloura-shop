@@ -1,5 +1,6 @@
 {
   "common": {
+    "back_to_top": "Voltar ao topo",
     "save": "Guardar",
     "cancel": "Cancelar",
     "delete": "Eliminar",

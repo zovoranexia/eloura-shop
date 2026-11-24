@@ -8,7 +8,7 @@ export const CATEGORIES: { slug: string; image: string; name: L }[] = [
   { slug: 'dresses', image: '/images/categories/robes.webp', name: { tet: 'Vestidu', pt: 'Vestidos', en: 'Dresses', id: 'Gaun' } },
   { slug: 'tops', image: '/images/categories/tops.webp', name: { tet: 'Kamiza & Blusa', pt: 'Tops e Blusas', en: 'Tops', id: 'Atasan' } },
   { slug: 'bottoms', image: '/images/categories/pantalons.webp', name: { tet: 'Kalsa & Saia', pt: 'Calças e Saias', en: 'Bottoms', id: 'Bawahan' } },
-  { slug: 'bags', image: '/images/categories/sacs.webp', name: { tet: 'Tas', pt: 'Malas e Bolsas', en: 'Bags', id: 'Tas' } },
+  { slug: 'bags', image: '/images/categories/sacs.webp', name: { tet: 'Pasta', pt: 'Malas e Bolsas', en: 'Bags', id: 'Tas' } },
   { slug: 'shoes', image: '/images/categories/chaussures.webp', name: { tet: 'Sapatu', pt: 'Sapatos', en: 'Shoes', id: 'Sepatu' } },
   { slug: 'accessories-beauty', image: '/images/categories/beaute.webp', name: { tet: 'Asesóriu & Beleza', pt: 'Acessórios e Beleza', en: 'Accessories & Beauty', id: 'Aksesori & Kecantikan' } },
 ];
@@ -32,9 +32,9 @@ export const PRODUCTS: {
   },
   {
     slug: 'elegant-handbag', sku: 'EC-BAG-001', category: 'bags', image: '/images/products/sac-elegant.webp', price: 8490, compareAt: 9990, featured: true,
-    name: { tet: 'Tas liman elegante', pt: 'Mala de mão elegante', en: 'Elegant handbag', id: 'Tas tangan elegan' },
+    name: { tet: 'Pasta liman elegante', pt: 'Mala de mão elegante', en: 'Elegant handbag', id: 'Tas tangan elegan' },
     description: {
-      tet: "Tas liman estruturadu kór krema ho besi dourado no tali ba ombru ne'ebé bele hasai.",
+      tet: "Pasta liman estruturadu kór krema ho besi dourado no tali ba ombru ne'ebé bele hasai.",
       pt: 'Mala estruturada em creme com ferragens douradas e alça de ombro removível.',
       en: 'Structured cream handbag with gold-tone hardware and a detachable shoulder strap.',
       id: 'Tas tangan berstruktur warna krem dengan aksen emas dan tali bahu yang dapat dilepas.',
@@ -87,9 +87,9 @@ export const PRODUCTS: {
   },
   {
     slug: 'camel-handbag', sku: 'EC-BAG-002', category: 'bags', image: '/images/products/cat-sacs.webp', price: 6900,
-    name: { tet: 'Tas liman kór kamelu', pt: 'Mala castanho camel', en: 'Camel handbag', id: 'Tas camel' },
+    name: { tet: 'Pasta liman kór kamelu', pt: 'Mala castanho camel', en: 'Camel handbag', id: 'Tas camel' },
     description: {
-      tet: "Tas estruturadu kór kafé kamelu ho fatin sufisiente ba ita-nia sasán importante.",
+      tet: "Pasta estruturadu kór kafé kamelu ho fatin sufisiente ba ita-nia sasán importante.",
       pt: 'Mala estruturada em castanho camel com espaço para o essencial.',
       en: 'Structured camel-brown bag with room for your essentials.',
       id: 'Tas berstruktur warna camel dengan ruang luas untuk barang penting Anda.',
@@ -246,7 +246,7 @@ export const CMS_PAGES: { slug: string; title: L; body: L }[] = [
   },
   {
     slug: 'shipping-returns',
-    title: { tet: 'Entrega & Fila fali', pt: 'Entregas e devoluções', en: 'Shipping & returns', id: 'Pengiriman & pengembalian' },
+    title: { tet: 'Entrega & Fo Fila', pt: 'Entregas e devoluções', en: 'Shipping & returns', id: 'Pengiriman & pengembalian' },
     body: {
       tet: "## Entrega\n- Dili: entrega iha loron 1–2. Entrega gratuita bainhira kompra liu folin minimu ne'ebé hatudu iha checkout.\n- Munisípiu seluk: entrega iha loron 3–7 tuir distánsia.\n\n## Fila fali\nIta bele fila fali sasán iha loron 7 nia laran, bainhira sasán seidauk uza no ho etiketa. Kontaktu ami hodi hahú prosesu.",
       pt: '## Entregas\n- Díli: entrega em 1–2 dias. Entrega gratuita acima do valor mínimo indicado no checkout.\n- Outros municípios: entrega em 3–7 dias, consoante a distância.\n\n## Devoluções\nPode devolver artigos no prazo de 7 dias, se não tiverem sido usados e mantiverem a etiqueta. Contacte-nos para iniciar o processo.',

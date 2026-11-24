@@ -21,3 +21,18 @@ export const isMobile = (v: unknown) => {
   const p = normalizePhone(v);
   return p.valid && p.type === 'mobile';
 };
+
+/**
+ * Splits a display field that may hold several numbers ("(+670) 74012434 / 76012434") into its parts.
+ * `text` is shown as typed; `tel` is the dialable +670 form (null when the part is not a valid TL number).
+ */
+export function splitPhoneList(input: string | null | undefined): { text: string; tel: string | null }[] {
+  return String(input ?? '')
+    .split(/\s*[\/,;]\s*/)
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .map((text) => {
+      const p = normalizePhone(text);
+      return { text, tel: p.valid ? p.e164 : null };
+    });
+}

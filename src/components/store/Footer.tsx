@@ -6,8 +6,10 @@ import type { StoreConfig } from '@/server/storefront';
 import { Logo } from './Logo';
 import { Botanical, TikTokIcon } from './Icons';
 import { NewsletterForm } from './NewsletterForm';
+import { PhoneLinks } from './PhoneLinks';
 
 /** Dark espresso footer with a curved top edge, botanical line-art accents and the newsletter form. */
+// The right gutter (sm:pr-[4.75rem] below 1384px) keeps footer content clear of the floating <BackToTop /> button.
 export async function Footer({ store }: { store: StoreConfig['store'] }) {
   const { t } = await getT();
   const wa = normalizePhone(store.whatsapp);
@@ -23,7 +25,7 @@ export async function Footer({ store }: { store: StoreConfig['store'] }) {
       <div className="bg-espresso" style={{ borderTopLeftRadius: '50% 56px', borderTopRightRadius: '50% 56px' }}>
         <Botanical className="pointer-events-none absolute bottom-24 left-0 hidden h-64 w-40 -translate-x-8 text-gold/30 md:block" />
         <Botanical className="pointer-events-none absolute bottom-24 right-0 hidden h-64 w-40 translate-x-8 -scale-x-100 text-gold/30 md:block" />
-        <div className="container-x relative grid gap-10 pb-10 pt-20 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1.4fr]">
+        <div className="container-x relative grid gap-10 pb-10 pt-20 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1.4fr] sm:pr-[4.75rem] min-[1384px]:pr-6">
           <div>
             <Logo variant="full" light className="h-28 w-auto" />
             <p className="mt-3 max-w-[260px] text-sm text-cream/70">{store.tagline}</p>
@@ -47,7 +49,7 @@ export async function Footer({ store }: { store: StoreConfig['store'] }) {
             ) : null}
             <ul className="mt-4 space-y-2 text-sm text-cream/75">
               {wa.valid ? <li><a href={`https://wa.me/${wa.wa}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 hover:text-white"><MessageCircle size={15} />WhatsApp {wa.display}</a></li> : null}
-              {store.phone ? <li><a href={`tel:${store.phone.replace(/\s/g, '')}`} className="inline-flex items-center gap-2 hover:text-white"><Phone size={15} />{store.phone}</a></li> : null}
+              {store.phone ? <li className="flex items-center gap-2"><Phone size={15} aria-hidden="true" /><span><PhoneLinks value={store.phone} className="hover:text-white" /></span></li> : null}
               {store.email ? <li><a href={`mailto:${store.email}`} className="inline-flex items-center gap-2 hover:text-white"><Mail size={15} />{store.email}</a></li> : null}
             </ul>
           </div>
@@ -58,7 +60,7 @@ export async function Footer({ store }: { store: StoreConfig['store'] }) {
           </div>
         </div>
         <div className="border-t border-cream/10">
-          <div className="container-x flex flex-col items-center justify-between gap-3 py-5 text-xs text-cream/60 sm:flex-row">
+          <div className="container-x flex flex-col items-center justify-between gap-3 py-5 text-xs text-cream/60 sm:flex-row sm:pr-[4.75rem] min-[1384px]:pr-6">
             <p>{t('footer.copyright', { year: new Date().getFullYear(), store: store.name })}</p>
             <ul className="flex flex-wrap justify-center gap-x-5 gap-y-1">
               <li><Link href="/page/terms" className="hover:text-white">{t('footer.terms')}</Link></li>

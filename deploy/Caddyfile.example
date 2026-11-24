@@ -20,15 +20,13 @@ shop.example.com {
 		Permissions-Policy "camera=(), microphone=(), geolocation=()"
 	}
 
-	log {
-		output file /var/log/caddy/eloura-access.log {
-			roll_size 20MiB
-			roll_keep 10
-		}
-	}
+	# Access log goes to the systemd journal (read it with: sudo journalctl -u caddy -f). No log file means no file-permission
+	# problems: `caddy validate` run as root would otherwise create a root-owned file that the "caddy" service user cannot open.
+	log
 }
 
-# Optional: send www.* to the apex domain
-www.shop.example.com {
-	redir https://shop.example.com{uri} permanent
-}
+# Optional: send www.* to the main domain. Remove the leading "# " ONLY if a DNS record for www.shop.example.com exists;
+# without it Caddy keeps failing to obtain a certificate for that name (noisy logs, Let's Encrypt rate limits).
+# www.shop.example.com {
+# 	redir https://shop.example.com{uri} permanent
+# }

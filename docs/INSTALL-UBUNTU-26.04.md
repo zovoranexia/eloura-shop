@@ -304,17 +304,28 @@ sudo apt install -y caddy
 ```
 
 ### 6.3 Konfigurasi
+Isi nama domain Anda **sekali** di variabel `DOMAIN`, lalu jalankan blok ini (jalankan blok ini satu kali; menjalankannya ulang setelah `cp` akan menimpa Caddyfile):
 
 ```bash
+DOMAIN=shop.contoh.com
 sudo cp /opt/eloura/deploy/Caddyfile.example /etc/caddy/Caddyfile
-sudo sed -i 's/shop\.example\.com/shop.contoh.com/g' /etc/caddy/Caddyfile
-sudo mkdir -p /var/log/caddy && sudo chown caddy:caddy /var/log/caddy
+sudo sed -i "s/shop\.example\.com/$DOMAIN/g" /etc/caddy/Caddyfile
+grep -n "example" /etc/caddy/Caddyfile || echo "OK: tidak ada sisa shop.example.com"
 sudo caddy validate --config /etc/caddy/Caddyfile
-sudo systemctl reload caddy
 ```
 
+`grep` harus mencetak `OK: ...`; jika masih menampilkan baris `example`, penggantian domain belum berhasil (pola yang dicari adalah `shop\.example\.com`, **bukan** domain Anda).
+Setelah `Valid configuration`:
+
+```bash
+sudo systemctl reload caddy || sudo systemctl restart caddy
+systemctl status caddy --no-pager | head -12
+```
+
+Jika `systemctl` melaporkan gagal, lihat penyebabnya di bagian 12 (*Caddy gagal reload/start*).
+
 `deploy/Caddyfile.example` sudah berisi: kompresi, batas unggahan 7 MB (aplikasi membatasi file 5 MB), `reverse_proxy` ke `127.0.0.1:3000`,
-dan log berotasi. Caddy menimpa header `X-Forwarded-For` dari klien dengan alamat asli, sehingga rate limit tidak bisa dipalsukan.
+dan log akses ke journald (`sudo journalctl -u caddy -f`). Caddy menimpa header `X-Forwarded-For` dari klien dengan alamat asli, sehingga rate limit tidak bisa dipalsukan.
 
 > **Alternatif nginx + certbot:** lihat `deploy/nginx-eloura.conf.example` (berisi langkah singkat di komentarnya).
 
@@ -477,6 +488,8 @@ docker compose restart app                # restart aplikasi saja
 |---|---|---|
 | Build berhenti / `Killed` | Kehabisan RAM | Pastikan swap aktif (2.6), atau tambah RAM sementara. Alternatif: build di komputer lain lalu `docker save` / registry |
 | Aplikasi terus `Can't reach database server` | `POSTGRES_PASSWORD` di `.env` berbeda dari yang dipakai saat volume dibuat | Kembalikan nilai lama, atau `ALTER USER` (bagian 5). Cek `docker compose logs db` |
+| `systemctl reload caddy` gagal (`Job for caddy.service failed`) | Layanan tidak berjalan, atau port 80/443 dipakai program lain (mis. Apache/nginx bawaan image VPS) | `systemctl status caddy --no-pager`, `sudo journalctl -xeu caddy -n 40 --no-pager`, `sudo ss -ltnp \| grep -E ':80 \|:443 '`. Bila `apache2`/`nginx` memakai port itu: `sudo systemctl disable --now apache2` (atau `nginx`), lalu `sudo systemctl restart caddy` |
+| Caddy gagal start dengan `open ...log: permission denied` | Berkas log milik root (dibuat oleh `sudo caddy validate`) tidak bisa dibuka user `caddy` | `sudo chown -R caddy:caddy /var/log/caddy && sudo systemctl restart caddy`. Caddyfile versi terbaru tidak memakai berkas log lagi |
 | Caddy menampilkan **502** | Container `app` belum hidup | `docker compose ps`, `curl -s http://127.0.0.1:3000/api/health`, `docker compose logs app` |
 | Sertifikat HTTPS tidak terbit | DNS belum menunjuk ke VPS, atau port 80/443 tertutup | `nslookup`, `sudo ufw status`, `sudo journalctl -u caddy -n 50` |
 | Login berhasil tetapi langsung keluar lagi | `APP_URL` tidak sama dengan alamat yang dibuka (mis. `http://` atau domain lain), sehingga cookie `Secure` tidak tersimpan | Samakan `APP_URL` dengan URL publik **https**, lalu `docker compose up -d` |
@@ -519,7 +532,7 @@ Reset kata sandi akun lain yang masih bisa masuk dilakukan di dashboard: **Staff
 | Database | volume Docker `eloura_pgdata` |
 | Upload (publik + bukti bayar privat) | volume Docker `eloura_uploads` → `/data/uploads` di container app |
 | Backup | `/var/backups/eloura` |
-| Reverse proxy | `/etc/caddy/Caddyfile`, log `/var/log/caddy/` |
+| Reverse proxy | `/etc/caddy/Caddyfile`, log akses di journald (`sudo journalctl -u caddy`) |
 | Port | 22, 80, 443 terbuka; app `127.0.0.1:3000` (internal); database tidak dipublikasikan |
 
 Bukti bayar **tidak** pernah disajikan sebagai berkas statis: hanya staf dengan izin *payments.view* yang dapat membukanya lewat API, dan setiap pembukaan dicatat di audit log.

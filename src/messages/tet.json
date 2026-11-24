@@ -1,5 +1,6 @@
 {
   "common": {
+    "back_to_top": "Fila ba leten",
     "save": "Rai",
     "cancel": "Kansela",
     "delete": "Hamoos",
@@ -221,7 +222,7 @@
     "menu": "Menu",
     "main": "Navegasaun prinsipál",
     "language": "Lian",
-    "track": "Segue pedidu",
+    "track": "Buka Tuir Sasan",
     "skip": "Ba konteúdu prinsipál"
   },
   "hero": {
@@ -239,7 +240,7 @@
   },
   "home": {
     "meta_title": "Eloura Chic — Moda & Asesóriu feminina iha Dili",
-    "meta_description": "Vestidu, kamiza, tas, sapatu no asesóriu elegante. Entrega lais iha Dili, pagamentu BNCTL, T-Pay, Mosan no selu bainhira simu.",
+    "meta_description": "Vestidu, kamiza, pasta, sapatu no asesóriu elegante. Entrega lais iha Dili, pagamentu BNCTL, T-Pay, Mosan no selu bainhira simu.",
     "categories_eyebrow": "Ami-nia kategoria",
     "categories_title": "Esplora ami-nia koleksaun",
     "categories_all": "Hare kategoria hotu",
@@ -250,7 +251,7 @@
   },
   "value": {
     "label": "Ami-nia vantajen",
-    "delivery_title": "Entrega livre iha Dili",
+    "delivery_title": "Entrega gratuita iha Dili",
     "delivery_sub": "ba kompra liu {amount}",
     "delivery_sub_plain": "ba zona sira ne'ebé selesionadu",
     "returns_title": "Fila fali fasil",
@@ -286,11 +287,11 @@
     "tab_cod": "Regra COD",
     "tab_reviews": "Avaliasaun",
     "no_description": "Seidauk iha deskrisaun.",
-    "perk_delivery": "Entrega livre iha Dili ba kompra liu {amount}",
+    "perk_delivery": "Entrega gratuita iha Dili ba kompra liu {amount}",
     "perk_delivery_plain": "Entrega lais iha Dili",
     "perk_payments": "Pagamentu seguru: BNCTL, T-Pay, Mosan ka selu bainhira simu (Dili)",
     "shipping_dili": "Entrega iha Dili: {fee}, iha loron {eta} nia laran.",
-    "shipping_free": "Entrega livre iha Dili bainhira kompra liu {amount}.",
+    "shipping_free": "Entrega gratuita iha Dili bainhira kompra liu {amount}.",
     "shipping_other": "Munisípiu seluk: entrega iha loron 3–7 tuir distánsia; taxa kalkula iha checkout.",
     "shipping_returns": "Fila fali sasán iha loron {days} nia laran bainhira seidauk uza.",
     "cod_intro": "Selu bainhira simu (COD) disponivel ho kondisaun sira ne'e:",
@@ -373,10 +374,10 @@
     "address_notes_ph": "Ex.: besik eskola, uma kór azul",
     "order_note": "Nota ba pedidu (opsionál)",
     "delivery_title": "Entrega",
-    "delivery_free": "Entrega livre",
+    "delivery_free": "Entrega gratuita",
     "delivery_fee": "Taxa entrega {fee}",
     "delivery_eta": "iha loron {eta}",
-    "delivery_free_over": "Entrega livre bainhira kompra liu {amount}.",
+    "delivery_free_over": "Entrega gratuita bainhira kompra liu {amount}.",
     "delivery_none": "Hili enderesu atu hatene taxa entrega.",
     "payment_title": "Métodu pagamentu",
     "demo_badge": "Demo",
@@ -544,7 +545,7 @@
     "terms": "Termu & Kondisaun",
     "privacy": "Polítika privasidade",
     "cod_terms": "Termu COD",
-    "shipping_returns": "Entrega & fila fali"
+    "shipping_returns": "Entrega & Fo Fila"
   },
   "notfound": {
     "title": "Pájina la hetan",

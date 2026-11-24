@@ -100,7 +100,7 @@
     "removeSucoText": "Hasai suku “{name}” husi lista? Nia sei la oferese tan bainhira halo pedidu.",
     "title": "Zona entrega no COD", "subtitle": "Taxa entrega, limite entrega livre no fatin ne'ebé Selu bainhira simu permite.",
     "codRule": "Selu bainhira simu funsiona DEIT iha munisípiu Dili, iha postu administrativu no suku ne'ebé ativa iha okos. Atauro no munisípiu seluk la inklui nunka.",
-    "diliTitle": "Munisípiu Dili", "othersTitle": "Munisípiu seluk", "municipality": "Munisípiu", "fee": "Taxa entrega", "freeOver": "Entrega livre liu", "eta": "Tempu entrega", "codEnabled": "Permite COD iha postu ne'e",
+    "diliTitle": "Munisípiu Dili", "othersTitle": "Munisípiu seluk", "municipality": "Munisípiu", "fee": "Taxa entrega", "freeOver": "Entrega gratuita liu", "eta": "Tempu entrega", "codEnabled": "Permite COD iha postu ne'e",
     "deliveryActive": "Entrega iha ne'e", "sucos": "Suku ({n})", "sucoHint": "Klik suku atu ativa/dezativa COD. Suku ne'ebé riska la inklui iha COD.", "toggleSuco": "Troka COD ba suku ne'e", "noCod": "la iha COD", "addSuco": "Aumenta suku…",
     "codDiliOnly": "COD disponivel iha Dili deit", "codDiliOnlyShort": "Dili deit"
   },

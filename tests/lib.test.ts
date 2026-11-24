@@ -1,7 +1,7 @@
 // Unit tests for the pure helpers (no database / server needed):  npm test
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizePhone, isMobile } from '../src/lib/phone';
+import { normalizePhone, isMobile, splitPhoneList } from '../src/lib/phone';
 import { formatUSD, parseUSD, centsToInput } from '../src/lib/money';
 import { diliDay, diliDayStart, addDays, parseDiliLocal, toDiliLocalInput, formatDateTime } from '../src/lib/time';
 import { loc, cleanI18n, translate } from '../src/lib/i18n-shared';
@@ -86,4 +86,19 @@ test('Geography: Dili has 5 posts / 31 sucos and Atauro is separate', () => {
   assert.equal(Object.values(DILI_SUCOS).flat().length, 31);
   assert.ok(MUNICIPALITY_KEYS.includes('atauro') && MUNICIPALITY_KEYS.includes('oecusse'));
   assert.ok(!DILI_POSTS.some((p) => (p.key as string) === 'atauro'));
+});
+
+test('phone lists: several numbers in one field each become a dialable tel: link', () => {
+  assert.deepEqual(splitPhoneList('(+670) 74012434 / 76012434'), [
+    { text: '(+670) 74012434', tel: '+67074012434' },
+    { text: '76012434', tel: '+67076012434' },
+  ]);
+  assert.deepEqual(splitPhoneList('+670 7701 2345'), [{ text: '+670 7701 2345', tel: '+67077012345' }]);
+  assert.deepEqual(splitPhoneList('7401 2434, 3312345;  '), [
+    { text: '7401 2434', tel: '+67074012434' },
+    { text: '3312345', tel: '+6703312345' },
+  ]);
+  assert.deepEqual(splitPhoneList('call us'), [{ text: 'call us', tel: null }], 'free text is shown but never linked');
+  assert.deepEqual(splitPhoneList(''), []);
+  assert.deepEqual(splitPhoneList(undefined), []);
 });
