@@ -68,6 +68,7 @@ Development seed accounts (`NODE_ENV!=production`, password = `SEED_DEMO_PASSWOR
 | `npm run test:services` | 7 integration tests of the business services (expiry, coupons, delivery thresholds, COD caps, concurrency, idempotency) |
 | `npm run db:migrate` / `db:deploy` / `db:seed` / `db:reset` | Prisma migrations and seeding |
 | `npm run assets` | regenerates logo variants, favicon, hero/category/product images from `design/source` |
+| `npm run assets:payments` | regenerates the uniform payment-method badges (BNCTL, P24 ATM, T-Pay, Mosan, COD) from `design/source/payments` |
 
 ## Project layout
 

@@ -26,7 +26,7 @@ export default async function StoreLayout({ children }: { children: React.ReactN
           <WishlistProvider>
             <Header />
             <main id="main" tabIndex={-1} className="min-h-[60vh] focus:outline-none">{children}</main>
-            <Footer store={config.store} />
+            <Footer store={config.store} paymentMethods={config.paymentMethods} />
             <CartDrawer />
             <BackToTop />
           </WishlistProvider>

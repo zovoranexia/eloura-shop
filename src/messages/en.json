@@ -534,6 +534,7 @@
     "sent": "Thank you! We received your message and will reply soon."
   },
   "footer": {
+    "payment_title": "Payment methods",
     "links_title": "Useful links",
     "social_title": "Follow us",
     "newsletter_title": "Newsletter",

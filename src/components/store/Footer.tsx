@@ -7,10 +7,11 @@ import { Logo } from './Logo';
 import { Botanical, TikTokIcon } from './Icons';
 import { NewsletterForm } from './NewsletterForm';
 import { PhoneLinks } from './PhoneLinks';
+import { PaymentBadges } from './PaymentBadges';
 
 /** Dark espresso footer with a curved top edge, botanical line-art accents and the newsletter form. */
 // The right gutter (sm:pr-[4.75rem] below 1384px) keeps footer content clear of the floating <BackToTop /> button.
-export async function Footer({ store }: { store: StoreConfig['store'] }) {
+export async function Footer({ store, paymentMethods }: { store: StoreConfig['store']; paymentMethods: StoreConfig['paymentMethods'] }) {
   const { t } = await getT();
   const wa = normalizePhone(store.whatsapp);
   const socials = [
@@ -57,10 +58,11 @@ export async function Footer({ store }: { store: StoreConfig['store'] }) {
             <h2 className="font-serif text-xl text-white">{t('footer.newsletter_title')}</h2>
             <p className="mb-3 mt-2 text-sm text-cream/70">{t('footer.newsletter_text')}</p>
             <NewsletterForm />
+            <PaymentBadges methods={paymentMethods} />
           </div>
         </div>
         <div className="border-t border-cream/10">
-          <div className="container-x flex flex-col items-center justify-between gap-3 py-5 text-xs text-cream/60 sm:flex-row sm:pr-[4.75rem] min-[1384px]:pr-6">
+          <div className="container-x flex flex-col items-center justify-between gap-3 py-5 max-sm:pb-[4.75rem] text-xs text-cream/60 sm:flex-row sm:pr-[4.75rem] min-[1384px]:pr-6">
             <p>{t('footer.copyright', { year: new Date().getFullYear(), store: store.name })}</p>
             <ul className="flex flex-wrap justify-center gap-x-5 gap-y-1">
               <li><Link href="/page/terms" className="hover:text-white">{t('footer.terms')}</Link></li>

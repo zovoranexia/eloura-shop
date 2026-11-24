@@ -21,7 +21,8 @@
     "test:api": "node --env-file=.env tests/api.smoke.mjs",
     "postinstall": "prisma generate",
     "lint": "eslint .",
-    "test:services": "tsx --tsconfig tests/tsconfig.json --env-file=.env --test tests/services.test.ts"
+    "test:services": "tsx --tsconfig tests/tsconfig.json --env-file=.env --test tests/services.test.ts",
+    "assets:payments": "node scripts/make-payment-badges.mjs"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

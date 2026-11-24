@@ -534,6 +534,7 @@
     "sent": "Terima kasih! Pesan Anda sudah kami terima dan akan segera dibalas."
   },
   "footer": {
+    "payment_title": "Metode pembayaran",
     "links_title": "Tautan berguna",
     "social_title": "Ikuti kami",
     "newsletter_title": "Newsletter",
