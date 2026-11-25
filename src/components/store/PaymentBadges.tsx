@@ -11,8 +11,8 @@ const BADGES: { key: string; src: string }[] = [
 ];
 
 /**
- * "Payment methods" strip for the dark footer. Shows only the methods the shop really offers
- * (in production a method without real receiving details is hidden, so its logo must not be advertised either).
+ * "Payment methods" strip for the dark footer: logos only. Shows every method the admin has enabled; whether a method can
+ * actually be chosen at checkout (receiving details filled in) is decided separately by the checkout.
  */
 export async function PaymentBadges({ methods }: { methods: { key: string; name: string }[] }) {
   const { t } = await getT();

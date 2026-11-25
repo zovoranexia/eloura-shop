@@ -36,6 +36,8 @@ export async function getStoreConfig(locale: Locale) {
     })),
     diliFreeOverCents: freeList.length ? Math.min(...freeList) : null,
     paymentMethods: methods.filter(isOffered).map((m) => ({ key: m.key, name: loc(m.name, locale), demo: m.key !== 'COD' && !isConfigured(m) })),
+    // Footer logo strip only (decoration, not checkout): every enabled method, even before its receiving details are entered.
+    paymentLogos: methods.filter((m) => m.enabled).map((m) => ({ key: m.key, name: loc(m.name, locale) })),
   };
 }
 export type StoreConfig = Awaited<ReturnType<typeof getStoreConfig>>;

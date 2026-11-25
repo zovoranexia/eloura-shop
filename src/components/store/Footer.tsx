@@ -11,7 +11,7 @@ import { PaymentBadges } from './PaymentBadges';
 
 /** Dark espresso footer with a curved top edge, botanical line-art accents and the newsletter form. */
 // The right gutter (sm:pr-[4.75rem] below 1384px) keeps footer content clear of the floating <BackToTop /> button.
-export async function Footer({ store, paymentMethods }: { store: StoreConfig['store']; paymentMethods: StoreConfig['paymentMethods'] }) {
+export async function Footer({ store, paymentMethods }: { store: StoreConfig['store']; paymentMethods: StoreConfig['paymentLogos'] }) {
   const { t } = await getT();
   const wa = normalizePhone(store.whatsapp);
   const socials = [
